@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dr. Printicus - умеренные экранные блоки главной</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #071011;
+        --surface: #101a1c;
+        --line: rgba(120, 164, 166, 0.22);
+        --text: #eef7f4;
+        --muted: #9fb7b5;
+        --accent: #00c8b8;
+        --accent-soft: rgba(0, 200, 184, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Inter,
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(0, 200, 184, 0.11), transparent 36rem),
+          linear-gradient(180deg, #081314 0%, var(--bg) 100%);
+        color: var(--text);
+      }
+
+      main {
+        width: min(1180px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 28px 0 48px;
+      }
+
+      header,
+      article {
+        background: linear-gradient(180deg, rgba(16, 26, 28, 0.88), rgba(8, 14, 15, 0.95));
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+      }
+
+      header {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 22px;
+        padding: 18px;
+        border: 1px solid var(--line);
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.55rem, 4.6vw, 2.5rem);
+        letter-spacing: 0;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .grid {
+        display: grid;
+        gap: 22px;
+      }
+
+      article {
+        display: grid;
+        gap: 14px;
+        padding: 14px;
+        border: 1px solid var(--line);
+      }
+
+      article h2 {
+        font-size: clamp(1.05rem, 3.7vw, 1.35rem);
+        letter-spacing: 0;
+      }
+
+      .label {
+        width: fit-content;
+        padding: 5px 9px;
+        border: 1px solid rgba(0, 200, 184, 0.38);
+        color: var(--accent);
+        background: var(--accent-soft);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid rgba(120, 164, 166, 0.22);
+        background: #101a1c;
+      }
+
+      .open-image {
+        justify-self: start;
+        color: #041111;
+        background: var(--accent);
+        border: 0;
+        padding: 10px 13px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      @media (min-width: 900px) {
+        .grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          align-items: start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="label">home design preview</p>
+        <h1>Умеренные экранные блоки главной</h1>
+        <p>
+          Сохраняем текущие секции и порядок, но делаем каждый нижний блок почти
+          экранным: больше высота, ширина, отступы, мягкие границы и появление с
+          левой/правой стороны при скролле.
+        </p>
+      </header>
+
+      <section class="grid" aria-label="Варианты">
+        <article>
+          <p class="label">вариант J</p>
+          <h2>Экранные секции без жёстких рамок</h2>
+          <p>Ближе всего к текущему дизайну: те же блоки, но каждый занимает почти весь экран.</p>
+          <a href="./variant-j-moderate-fullscreen.png"><img src="./variant-j-moderate-fullscreen.png" alt="Вариант J: экранные секции без жестких рамок" /></a>
+          <a class="open-image" href="./variant-j-moderate-fullscreen.png">Открыть картинку</a>
+        </article>
+
+        <article>
+          <p class="label">вариант K</p>
+          <h2>Чередование появления слева и справа</h2>
+          <p>Секции сохраняют порядок, но композиция чередует крупный текстовый и визуальный блок.</p>
+          <a href="./variant-k-alternating-reveal.png"><img src="./variant-k-alternating-reveal.png" alt="Вариант K: чередование появления секций" /></a>
+          <a class="open-image" href="./variant-k-alternating-reveal.png">Открыть картинку</a>
+        </article>
+
+        <article>
+          <p class="label">вариант L</p>
+          <h2>Мягкие панели по аналогии с hero</h2>
+          <p>Усиленный hero-подобный ритм: больше воздуха, мягкие поверхности и следующий блок виден ниже.</p>
+          <a href="./variant-l-soft-border-sections.png"><img src="./variant-l-soft-border-sections.png" alt="Вариант L: мягкие панели как продолжение hero" /></a>
+          <a class="open-image" href="./variant-l-soft-border-sections.png">Открыть картинку</a>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
