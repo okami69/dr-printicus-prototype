@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="ru" data-theme="dr-printicus-refactor" data-color-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dr. Printicus - прототип магазина</title>
+    <meta name="description" content="Dr. Printicus печатает миниатюры, детали, террейн и STL-модели под заказ с аккуратной подготовкой к покраске." />
+    <link rel="preload" as="image" href="./assets/merchant/hero-crimson-winged-jumppack.png" fetchpriority="high" />
+    <link rel="stylesheet" href="./assets/styles.css?v=audit-priority-01" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand-mark" href="#home" data-route="home" aria-label="Dr. Printicus, на главную">
+        <span class="brand-avatar">
+          <img class="brand-avatar-img" src="./assets/brand-mark-transparent.png?v=brand-head-20260627" alt="" decoding="async" fetchpriority="high" />
+        </span>
+        <span>
+          <strong>Dr. Printicus</strong>
+          <small>Лаборатория 3D-печати</small>
+        </span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Основные разделы">
+        <a href="#catalog" data-route="catalog">Каталог</a>
+        <a href="#stl" data-route="stl">Печать под заказ</a>
+        <a href="#home?scroll=order-flow" data-route="home" data-scroll-to="order-flow">Как заказать</a>
+        <a href="#blog" data-route="blog">Журнал лаборатории</a>
+      </nav>
+
+      <div class="topbar-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Включить светлую тему" aria-pressed="false" title="Включить светлую тему">
+          <svg class="theme-toggle-icon theme-toggle-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.6" />
+            <path d="M12 3.6v1.8" />
+            <path d="M12 18.6v1.8" />
+            <path d="M4.5 12h1.8" />
+            <path d="M17.7 12h1.8" />
+            <path d="m6.7 6.7 1.25 1.25" />
+            <path d="m16.05 16.05 1.25 1.25" />
+            <path d="m17.3 6.7-1.25 1.25" />
+            <path d="m7.95 16.05-1.25 1.25" />
+          </svg>
+          <svg class="theme-toggle-icon theme-toggle-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 14.8A7.5 7.5 0 0 1 9.2 4a8.4 8.4 0 1 0 10.8 10.8Z" />
+          </svg>
+        </button>
+        <a class="cart-shortcut" href="#cart" data-route="cart" aria-label="Корзина">
+          <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.2 6h15l-1.7 8.4a2 2 0 0 1-2 1.6H9.1a2 2 0 0 1-2-1.7L5.7 3.8H3" />
+            <circle cx="9.4" cy="20" r="1.25" />
+            <circle cx="17.4" cy="20" r="1.25" />
+          </svg>
+          <span>Корзина</span>
+          <span class="cart-count" data-cart-count aria-live="polite"></span>
+        </a>
+        <button class="burger-button" type="button" data-drawer-open aria-controls="mobile-drawer" aria-expanded="false" aria-label="Открыть меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobile-drawer" data-mobile-drawer aria-hidden="true">
+      <button class="drawer-scrim" type="button" data-drawer-close aria-label="Закрыть меню"></button>
+      <nav class="drawer-panel" aria-label="Мобильное меню">
+        <div class="drawer-head">
+          <strong>Dr. Printicus</strong>
+          <div class="drawer-actions">
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="Включить светлую тему" aria-pressed="false" title="Включить светлую тему">
+              <svg class="theme-toggle-icon theme-toggle-sun" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="3.6" />
+                <path d="M12 3.6v1.8" />
+                <path d="M12 18.6v1.8" />
+                <path d="M4.5 12h1.8" />
+                <path d="M17.7 12h1.8" />
+                <path d="m6.7 6.7 1.25 1.25" />
+                <path d="m16.05 16.05 1.25 1.25" />
+                <path d="m17.3 6.7-1.25 1.25" />
+                <path d="m7.95 16.05-1.25 1.25" />
+              </svg>
+              <svg class="theme-toggle-icon theme-toggle-moon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 14.8A7.5 7.5 0 0 1 9.2 4a8.4 8.4 0 1 0 10.8 10.8Z" />
+              </svg>
+            </button>
+            <button type="button" data-drawer-close aria-label="Закрыть меню">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+            </button>
+          </div>
+        </div>
+        <a href="#catalog" data-route="catalog">Каталог</a>
+        <a href="#stl" data-route="stl">Печать под заказ</a>
+        <a href="#home?scroll=order-flow" data-route="home" data-scroll-to="order-flow">Как заказать</a>
+        <a href="#blog" data-route="blog">Журнал лаборатории</a>
+        <a href="#cart" data-route="cart">Корзина</a>
+      </nav>
+    </div>
+
+    <main id="prototype" class="shell">
+      <section id="home" class="screen is-active" data-screen="home" aria-labelledby="home-title">
+        <section class="hero-section">
+          <div class="hero-copy">
+            <p class="eyebrow hero-kicker">Dr. Printicus</p>
+            <h1 id="home-title" class="hero-slogan" aria-label="Печатаем с хирургической точностью">
+              <span>Печатаем с</span>
+              <span>хирургической</span>
+              <span>точностью</span>
+            </h1>
+            <div class="cta-row hero-cta-row">
+              <a class="primary" href="#catalog" data-route="catalog">Открыть каталог</a>
+              <a class="secondary" href="#stl" data-route="stl">Печать под заказ</a>
+            </div>
+          </div>
+          <div class="hero-visual" aria-label="Лоты Dr. Printicus">
+            <div class="hero-carousel" data-hero-carousel>
+              <figure class="hero-slide is-active" data-hero-slide>
+                <img src="./assets/merchant/hero-crimson-winged-jumppack.png" alt="Crimson Lords Jetpack" decoding="async" fetchpriority="high" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-ph-two-handed-weapons.png" alt="Primal Hounds two-handed weapons" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-aw-toppers-32-1.png" alt="Anvil Wardens toppers" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-aw-shields.png" alt="Anvil Wardens shields" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-primal-heads-01.png" alt="Primal Hounds heads" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-primal-expansion-banner.png" alt="Primal Hounds Expansion banner" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-crimson-heavy-flamer.png" alt="Crimson Lords Heavy Flamer" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-primal-dread.png" alt="Primal Hounds Dreadnought" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-aw-shoulderpads-01.png" alt="Anvil Wardens shoulderpads" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-cursed-x0006.png" alt="Cursed Company heads" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-aw-cloaks.png" alt="Anvil Wardens cloaks" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-crimson-plasma-gun.png" alt="Crimson Lords plasma gun" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-crimson-topper-90.png" alt="Crimson Lords 90mm topper" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-crimson-ancient-armor.png" alt="Crimson Lords Ancient Armor" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-crimson-battle-priest.png" alt="Crimson Lords Battle Priest" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-crimson-backpacks.png" alt="Crimson Lords backpacks" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-primal-big-shoulderpads.png" alt="Primal Hounds shoulderpads" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-cursed-x0008.png" alt="Cursed Company banner" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-ec-banner.png" alt="Eternal Crusaders banner" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-primal-bear-company-hammer-shield.png" alt="Primal Hounds Bear Company hammer and shield" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-cursed-x0007.png" alt="Cursed Company banner and heads" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-primal-backpack09.png" alt="Primal Hounds Backpack 09" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+              <figure class="hero-slide" data-hero-slide>
+                <img src="./assets/merchant/hero-crimson-claws.png" alt="Crimson Lords claws" loading="lazy" decoding="async" fetchpriority="low" />
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="featured-products section-block scroll-reveal" aria-labelledby="featured-title">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">витрина</p>
+              <h2 id="featured-title">Популярное</h2>
+            </div>
+            <div class="featured-tabs" role="tablist" aria-label="Подборки товаров">
+              <button class="is-active" type="button" data-featured-tab="hits">Хиты</button>
+              <button type="button" data-featured-tab="new">Новинки</button>
+              <button type="button" data-featured-tab="value">Выгодные наборы</button>
+            </div>
+          </div>
+          <div class="featured-rail-frame">
+            <button class="rail-arrow rail-arrow-left" type="button" data-featured-scroll="prev" aria-label="Предыдущие товары">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>
+            </button>
+            <div class="featured-rail" data-featured-rail></div>
+            <button class="rail-arrow rail-arrow-right" type="button" data-featured-scroll="next" aria-label="Следующие товары">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="quality-section section-block scroll-reveal" aria-labelledby="quality-title">
+          <div class="section-head compact">
+            <p class="eyebrow">контроль качества</p>
+            <h2 id="quality-title">Печать без сюрпризов перед покрасом</h2>
+          </div>
+          <div class="quality-grid">
+            <article><strong>Детализация</strong><p>Смотрим читаемость лиц, брони, символов и мелкого рельефа в нужном масштабе.</p></article>
+            <article><strong>Подготовка</strong><p>Ориентируем модель, убираем явные следы поддержек и предупреждаем о хрупких местах.</p></article>
+            <article><strong>Коммерческие лицензии</strong><p>Витрину собираем из моделей, которые можно печатать и продавать легально.</p></article>
+            <article><strong>Надёжная упаковка</strong><p>Мелкие детали и тонкие элементы фиксируем отдельно, чтобы они доехали целыми.</p></article>
+          </div>
+        </section>
+
+        <section id="order-flow" class="order-flow section-block scroll-reveal" aria-labelledby="order-flow-title">
+          <div class="section-head compact">
+            <h2 id="order-flow-title">Как заказать</h2>
+          </div>
+          <ol class="step-grid">
+            <li><span>1</span><strong>Выберите товары</strong><p>Откройте каталог или нужную категорию.</p></li>
+            <li><span>2</span><strong>Добавьте в корзину</strong><p>Количество можно менять до оформления.</p></li>
+            <li><span>3</span><strong>Оставьте контакты</strong><p>Телефон, удобная связь, город и адрес.</p></li>
+            <li><span>4</span><strong>Мы подтвердим доставку, срок и оплату</strong><p>Финальные условия согласуем вручную после обработки.</p></li>
+          </ol>
+        </section>
+
+        <section class="stl-promo section-block split-band scroll-reveal" aria-labelledby="home-stl-title">
+          <div>
+            <p class="eyebrow">дополнительная услуга</p>
+            <h2 id="home-stl-title">Печать под заказ</h2>
+            <p class="service-lead">Если у вас уже есть STL, OBJ или архив моделей, мы не гадаем цену на глаз: проверяем геометрию, масштаб, поддержку и риски печати, а потом возвращаем понятный ручной расчёт.</p>
+            <ul class="service-points" aria-label="Что входит в услугу печати под заказ">
+              <li><strong>Проверка файла</strong><span>толщина деталей, ошибки сетки, масштаб и ориентация</span></li>
+              <li><strong>Подбор материала</strong><span>смола для миниатюр, FDM для крупного террейна и утилитарных деталей</span></li>
+              <li><strong>Подготовка к печати</strong><span>раскладка, поддержки, оценка хрупких мест и следов после снятия</span></li>
+              <li><strong>Согласование перед стартом</strong><span>стоимость, срок, доставка и способ оплаты подтверждаются вручную</span></li>
+            </ul>
+            <p class="service-note">Автоматическую цену не обещаем: сложные модели считаем руками, чтобы не спрятать риски в мелком шрифте.</p>
+          </div>
+          <div class="service-cta">
+            <a class="primary" href="#stl" data-route="stl">Оставить заявку</a>
+            <span>STL / OBJ · смола и FDM · ответ после проверки модели</span>
+          </div>
+        </section>
+
+        <section class="lab-journal-preview section-block scroll-reveal" aria-labelledby="home-blog-title">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">журнал лаборатории</p>
+              <h2 id="home-blog-title">Разборы печати, подготовки и заказов</h2>
+            </div>
+            <a class="secondary" href="#blog" data-route="blog">Все материалы</a>
+          </div>
+          <div class="blog-grid">
+            <a class="blog-card" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur"><span>качество печати</span><h3>Качественная 3D-печать миниатюр</h3><p>Как понять, что модель сохраняет детали и готова к грунту без долгого ремонта.</p></a>
+            <a class="blog-card" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati"><span>покраска</span><h3>Почему заготовка должна быть аккуратной</h3><p>Как печать влияет на грунтовку, проливки, высветления, сборку и итоговый вид.</p></a>
+            <a class="blog-card" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur"><span>смола</span><h3>Смоляная 3D-печать миниатюр</h3><p>Плюсы, ограничения, прочность, поддержки и требования к качеству процесса.</p></a>
+          </div>
+        </section>
+
+        <section class="about-studio section-block" aria-labelledby="about-title">
+          <p class="eyebrow">о студии</p>
+          <h2 id="about-title">Dr. Printicus — маленькая лаборатория для больших столов</h2>
+          <p>Мы печатаем миниатюры, детали и террейн партиями под заказ: без обещаний автоматической цены, зато с понятным составом, аккуратной подготовкой и честным подтверждением перед стартом.</p>
+        </section>
+      </section>
+
+      <section id="catalog" class="screen" data-screen="catalog" aria-labelledby="catalog-title">
+        <div class="catalog-page">
+          <div class="catalog-toolbar">
+            <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><span>Каталог</span></nav>
+            <div class="catalog-title-row">
+              <div>
+                <p class="eyebrow">каталог</p>
+                <h1 id="catalog-title" data-catalog-title>Все товары</h1>
+              </div>
+              <span class="catalog-result-count" data-result-count></span>
+            </div>
+            <div class="catalog-tools">
+              <label class="catalog-search">Поиск <input type="search" placeholder="Статуя, битсы, террейн..." data-catalog-search /></label>
+              <label class="sort-control">Сортировка
+                <select data-sort-control>
+                  <option value="popular">Популярные</option>
+                  <option value="price-asc">Сначала дешевле</option>
+                  <option value="price-desc">Сначала дороже</option>
+                </select>
+              </label>
+              <button class="filter-toggle" type="button" data-filter-toggle aria-expanded="false" aria-controls="catalog-filters">Фильтры</button>
+            </div>
+            <div class="active-filter-chips" data-active-filter-chips></div>
+          </div>
+
+          <div class="catalog-layout">
+            <button class="filter-scrim" type="button" data-filter-close aria-label="Закрыть фильтры"></button>
+            <aside class="catalog-sidebar" id="catalog-filters" data-filter-panel aria-hidden="true" tabindex="-1">
+              <div class="filter-panel-head">
+                <strong>Фильтры</strong>
+                <button type="button" data-filter-close aria-label="Закрыть фильтры">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+                </button>
+              </div>
+              <div class="filter-section" data-filter-root>
+                <strong>Категории</strong>
+                <button class="chip is-active" type="button" data-filter-group="productKind" data-filter-value="all">Все товары</button>
+                <button class="chip" type="button" data-filter-group="productKind" data-filter-value="bundle">Наборы</button>
+                <div class="filter-group">
+                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="universe" data-filter-trigger-label="Вселенная" aria-expanded="false">Выбор вселенной</button>
+                  <div class="filter-options" data-dependent-filter="universe" hidden>
+                    <button class="chip" type="button" data-filter-group="universe" data-filter-value="warhammer">Warhammer</button>
+                    <button class="chip" type="button" data-filter-group="universe" data-filter-value="dnd">D&amp;D</button>
+                    <button class="chip" type="button" data-filter-group="universe" data-filter-value="nri">НРИ</button>
+                  </div>
+                </div>
+                <div class="filter-group generated-filter-group" data-generated-filter-group="faction" hidden>
+                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="faction" data-filter-trigger-label="Фракция" aria-expanded="false">Фракция</button>
+                  <div class="filter-options generated-filter-options" data-dependent-filter="faction" hidden></div>
+                </div>
+                <div class="filter-group">
+                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="details" data-filter-trigger-label="Детали" aria-expanded="false">Детали</button>
+                  <div class="filter-options" data-dependent-filter="details" hidden>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="heads">Головы</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="shoulders">Наплечники</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="weapons">Оружие</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="arms">Руки</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="legs">Ноги</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="armor">Торсы / броня</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="banners">Баннеры</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="cloaks">Плащи</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="dreadnought-upgrades">Дредноут-апгрейды</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="accessories">Аксессуары</button>
+                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="other">Другое</button>
+                  </div>
+                </div>
+                <div class="filter-group generated-filter-group" data-generated-filter-group="unitType" hidden>
+                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="unitType" data-filter-trigger-label="Тип отряда" aria-expanded="false">Тип отряда</button>
+                  <div class="filter-options generated-filter-options" data-dependent-filter="unitType" hidden></div>
+                </div>
+                <div class="filter-group">
+                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="bases" data-filter-trigger-label="База" aria-expanded="false">Базы</button>
+                  <div class="filter-options" data-dependent-filter="bases" hidden>
+                    <button class="chip" type="button" data-filter-group="productKind" data-filter-value="base">Все базы</button>
+                    <button class="chip" type="button" data-filter-group="baseSize" data-filter-value="28mm">28 мм</button>
+                    <button class="chip" type="button" data-filter-group="baseSize" data-filter-value="32mm">32 мм</button>
+                    <button class="chip" type="button" data-filter-group="baseSize" data-filter-value="40mm">40 мм</button>
+                  </div>
+                </div>
+                <button class="chip" type="button" data-filter-group="productKind" data-filter-value="terrain">Террейн</button>
+              </div>
+              <div class="filter-sheet-actions">
+                <button class="primary" type="button" data-filter-close-results>Показать товары</button>
+                <button class="secondary" type="button" data-filter-reset>Сбросить фильтры</button>
+              </div>
+            </aside>
+
+            <section class="catalog-results" aria-label="Товары">
+              <div class="catalog-state catalog-loading" data-catalog-loading hidden>Загружаем товары...</div>
+              <div class="catalog-state catalog-error" data-catalog-error hidden>Не удалось обновить каталог. Попробуйте сбросить фильтры.</div>
+              <div class="product-grid" data-product-grid>
+                <article class="product-card" data-product-id="champion" data-category="model" data-tags="heroes warhammer grimdark bases-32">
+                  <button class="product-card-main" type="button" data-open-product="champion">
+                    <span class="product-media"><img src="./assets/merchant/card-champion.jpg" alt="Anvil Wardens: The Champion" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>хит</span><span>под заказ</span></span>
+                    <strong>Anvil Wardens: The Champion</strong>
+                    <small>Геройская миниатюра для grimdark-отряда и витрины.</small>
+                    <span class="spec-row">32 мм · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">900 ₽</span><button class="primary cart-action" type="button" data-cart-action="champion">В корзину</button><div class="quantity-control" data-card-qty="champion" hidden><button type="button" data-cart-minus="champion">−</button><span data-card-count="champion"></span><button type="button" data-cart-plus="champion">+</button></div></div>
+                </article>
+                <article class="product-card" data-product-id="hunter" data-category="model" data-tags="heroes warhammer grimdark new bases-32">
+                  <button class="product-card-main" type="button" data-open-product="hunter">
+                    <span class="product-media"><img src="./assets/merchant/card-hunter.jpg" alt="Anvil Wardens: The Hunter" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>новинка</span></span>
+                    <strong>Anvil Wardens: The Hunter</strong>
+                    <small>Миниатюра охотника с крупным силуэтом и тонкими деталями.</small>
+                    <span class="spec-row">32 мм · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">650 ₽</span><button class="primary cart-action" type="button" data-cart-action="hunter">В корзину</button><div class="quantity-control" data-card-qty="hunter" hidden><button type="button" data-cart-minus="hunter">−</button><span data-card-count="hunter"></span><button type="button" data-cart-plus="hunter">+</button></div></div>
+                </article>
+                <article class="product-card" data-product-id="heads" data-category="bits" data-tags="bits heads small-item conversion-kits">
+                  <button class="product-card-main" type="button" data-open-product="heads">
+                    <span class="product-media"><img src="./assets/merchant/card-heads.jpg" alt="Головы в респираторах" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>Мин. заказ 250 ₽</span></span>
+                    <strong>Головы в респираторах, 5 шт.</strong>
+                    <small>Конверсионные детали для отрядов и героев.</small>
+                    <span class="spec-row">детали · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">70 ₽</span><button class="primary cart-action" type="button" data-cart-action="heads">В корзину</button><div class="quantity-control" data-card-qty="heads" hidden><button type="button" data-cart-minus="heads">−</button><span data-card-count="heads"></span><button type="button" data-cart-plus="heads">+</button></div></div>
+                </article>
+                <article class="product-card" data-product-id="hounds" data-category="bundle" data-tags="terrain full-packs bundles value warhammer">
+                  <button class="product-card-main" type="button" data-open-product="hounds">
+                    <span class="product-media"><img src="./assets/merchant/card-primal-hounds.jpg" alt="Primal Hounds Expansion" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>выгодный набор</span></span>
+                    <strong>Primal Hounds Expansion</strong>
+                    <small>Фулл-пак деталей и террейна дешевле, чем по частям.</small>
+                    <span class="spec-row">набор · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">2 900 ₽</span><button class="primary cart-action" type="button" data-cart-action="hounds">В корзину</button><div class="quantity-control" data-card-qty="hounds" hidden><button type="button" data-cart-minus="hounds">−</button><span data-card-count="hounds"></span><button type="button" data-cart-plus="hounds">+</button></div></div>
+                </article>
+                <article class="product-card" data-product-id="armor" data-category="bits" data-tags="heroes warhammer new display-models">
+                  <button class="product-card-main" type="button" data-open-product="armor">
+                    <span class="product-media"><img src="./assets/merchant/card-ancient-armor.jpg" alt="Crimson Lords: Ancient Armor" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>новинка</span></span>
+                    <strong>Crimson Lords: Ancient Armor</strong>
+                    <small>Броня, щит и декоративные элементы для героя.</small>
+                    <span class="spec-row">32 мм · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">1 200 ₽</span><button class="primary cart-action" type="button" data-cart-action="armor">В корзину</button><div class="quantity-control" data-card-qty="armor" hidden><button type="button" data-cart-minus="armor">−</button><span data-card-count="armor"></span><button type="button" data-cart-plus="armor">+</button></div></div>
+                </article>
+                <article class="product-card" data-product-id="cursed" data-category="bundle" data-tags="squads warhammer grimdark full-packs">
+                  <button class="product-card-main" type="button" data-open-product="cursed">
+                    <span class="product-media"><img src="./assets/merchant/card-cursed-company.jpg" alt="Cursed Company" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>отряд</span></span>
+                    <strong>Cursed Company</strong>
+                    <small>Отрядные прокси с головами, оружием и базами.</small>
+                    <span class="spec-row">отряд · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">1 850 ₽</span><button class="primary cart-action" type="button" data-cart-action="cursed">В корзину</button><div class="quantity-control" data-card-qty="cursed" hidden><button type="button" data-cart-minus="cursed">−</button><span data-card-count="cursed"></span><button type="button" data-cart-plus="cursed">+</button></div></div>
+                </article>
+                <article class="product-card" data-product-id="shoulders" data-category="bits" data-tags="bits small-item conversion-kits bases-32">
+                  <button class="product-card-main" type="button" data-open-product="shoulders">
+                    <span class="product-media"><img src="./assets/merchant/card-shoulderpads.jpg" alt="Наплечники Anvil Wardens" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>Мин. заказ 250 ₽</span></span>
+                    <strong>Наплечники Anvil Wardens, 5 шт.</strong>
+                    <small>Апгрейды для пехоты, командиров и конверсий.</small>
+                    <span class="spec-row">детали · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">120 ₽</span><button class="primary cart-action" type="button" data-cart-action="shoulders">В корзину</button><div class="quantity-control" data-card-qty="shoulders" hidden><button type="button" data-cart-minus="shoulders">−</button><span data-card-count="shoulders"></span><button type="button" data-cart-plus="shoulders">+</button></div></div>
+                </article>
+                <article class="product-card" data-product-id="banner" data-category="bits" data-tags="bits conversion-kits warhammer grimdark">
+                  <button class="product-card-main" type="button" data-open-product="banner">
+                    <span class="product-media"><img src="./assets/merchant/card-banner.jpg" alt="Crimson Lords: Banner 01" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>детали</span></span>
+                    <strong>Crimson Lords: Banner 01</strong>
+                    <small>Знамя, икона и детали для командного отряда.</small>
+                    <span class="spec-row">детали · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">260 ₽</span><button class="primary cart-action" type="button" data-cart-action="banner">В корзину</button><div class="quantity-control" data-card-qty="banner" hidden><button type="button" data-cart-minus="banner">−</button><span data-card-count="banner"></span><button type="button" data-cart-plus="banner">+</button></div></div>
+                </article>
+                <article class="product-card" data-product-id="artifacts" data-category="terrain" data-tags="rpg dnd props terrain">
+                  <button class="product-card-main" type="button" data-open-product="artifacts">
+                    <span class="product-media"><img src="./assets/merchant/card-hunter.jpg" alt="Кладовая артефактов" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>НРИ</span></span>
+                    <strong>Кладовая артефактов</strong>
+                    <small>Набор пропсов для RPG-сцены и витринной базы.</small>
+                    <span class="spec-row">RPG · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">780 ₽</span><button class="primary cart-action" type="button" data-cart-action="artifacts">В корзину</button><div class="quantity-control" data-card-qty="artifacts" hidden><button type="button" data-cart-minus="artifacts">−</button><span data-card-count="artifacts"></span><button type="button" data-cart-plus="artifacts">+</button></div></div>
+                </article>
+                <article class="product-card" data-product-id="mechanics" data-category="model" data-tags="rpg scifi-rpg squads">
+                  <button class="product-card-main" type="button" data-open-product="mechanics">
+                    <span class="product-media"><img src="./assets/merchant/card-champion.jpg" alt="Отряд полевых механиков" loading="lazy" decoding="async" fetchpriority="low" /></span>
+                    <span class="product-badges"><span>sci-fi</span></span>
+                    <strong>Отряд полевых механиков</strong>
+                    <small>Команда NPC для sci-fi RPG, skirmish и диорам.</small>
+                    <span class="spec-row">отряд · смола · 3–7 дней</span>
+                  </button>
+                  <div class="card-bottom"><span class="price">1 450 ₽</span><button class="primary cart-action" type="button" data-cart-action="mechanics">В корзину</button><div class="quantity-control" data-card-qty="mechanics" hidden><button type="button" data-cart-minus="mechanics">−</button><span data-card-count="mechanics"></span><button type="button" data-cart-plus="mechanics">+</button></div></div>
+                </article>
+              </div>
+              <div class="catalog-state catalog-empty-inline" data-catalog-empty hidden>
+                <h2>По таким фильтрам ничего не нашлось</h2>
+                <p>Сбросьте фильтры или попробуйте другой запрос.</p>
+              </div>
+              <button class="secondary load-more" type="button" data-load-more>Показать ещё</button>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section id="catalog-empty" class="screen" data-screen="catalog-empty" aria-labelledby="catalog-empty-title">
+        <div class="empty-state">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><a href="#catalog" data-route="catalog">Каталог</a></nav>
+          <h1 id="catalog-empty-title">По таким фильтрам ничего не нашлось</h1>
+          <p>Попробуйте убрать часть фильтров или вернуться ко всем товарам.</p>
+          <a class="primary" href="#catalog" data-route="catalog">Вернуться к каталогу</a>
+        </div>
+      </section>
+
+      <section id="product" class="screen" data-screen="product" aria-labelledby="product-title">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><a href="#catalog" data-route="catalog">Каталог</a><span>/</span><span data-detail-breadcrumb>Статуя</span></nav>
+        <div class="product-detail-layout">
+          <div class="product-gallery">
+            <button class="gallery-main" type="button" data-gallery-zoom aria-label="Увеличить изображение">
+              <img src="./assets/merchant/card-hunter.jpg" alt="Статуя Дары технологий" data-detail-main-image loading="lazy" decoding="async" fetchpriority="low" />
+            </button>
+            <div class="gallery-rail" data-gallery-rail>
+              <button class="gallery-nav gallery-nav-up" type="button" data-gallery-scroll="up" aria-label="Показать предыдущие изображения" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6" /></svg>
+              </button>
+              <div class="gallery-thumbs" data-gallery-thumbs aria-label="Ракурсы товара">
+                <button type="button" data-gallery-thumb="./assets/merchant/card-hunter.jpg"><img src="./assets/merchant/card-hunter.jpg" alt="" loading="lazy" decoding="async" fetchpriority="low" /></button>
+                <button type="button" data-gallery-thumb="./assets/merchant/card-ancient-armor.jpg"><img src="./assets/merchant/card-ancient-armor.jpg" alt="" loading="lazy" decoding="async" fetchpriority="low" /></button>
+                <button type="button" data-gallery-thumb="./assets/merchant/card-primal-hounds.jpg"><img src="./assets/merchant/card-primal-hounds.jpg" alt="" loading="lazy" decoding="async" fetchpriority="low" /></button>
+              </div>
+              <button class="gallery-nav gallery-nav-down" type="button" data-gallery-scroll="down" aria-label="Показать следующие изображения" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </button>
+            </div>
+          </div>
+          <aside class="purchase-panel">
+            <p class="status" data-detail-status>Под заказ</p>
+            <h1 id="product-title" data-detail-title>Статуя "Дары технологий"</h1>
+            <p data-detail-description>Террейн для grimdark-стола: статуя, основание, фактурные панели и повреждённые фрагменты.</p>
+            <strong class="detail-price" data-detail-price>900 ₽</strong>
+            <ul class="detail-clarity" data-detail-clarity aria-label="Что входит в покупку">
+              <li>Физическая смоляная печать</li>
+              <li>STL-файл не входит</li>
+              <li>Без покраски</li>
+              <li>Состав указан ниже</li>
+            </ul>
+            <dl class="key-specs">
+              <div><dt>Масштаб</dt><dd data-detail-scale>32 мм / terrain scale</dd></div>
+              <div><dt>Материал</dt><dd data-detail-material>фотополимерная смола</dd></div>
+              <div><dt>Срок изготовления</dt><dd data-detail-time>3–7 рабочих дней</dd></div>
+              <div><dt>Статус</dt><dd data-detail-status-text>под заказ</dd></div>
+            </dl>
+            <div class="detail-buy-row">
+              <button class="primary" type="button" data-detail-cart-add>В корзину</button>
+              <div class="quantity-control detail-quantity" data-detail-qty hidden><button type="button" data-detail-cart-minus>−</button><span data-detail-cart-count></span><button type="button" data-detail-cart-plus>+</button></div>
+              <a class="secondary" href="#checkout" data-quick-order>Быстрая заявка</a>
+            </div>
+            <div class="print-note"><strong>Без покраски.</strong><p>На отдельных деталях могут сохраниться минимальные следы поддержек. Перед грунтом может потребоваться лёгкая зачистка.</p></div>
+            <a class="text-link" href="#catalog" data-route="catalog">Вернуться в каталог</a>
+          </aside>
+          <div class="mobile-detail-action-bar" data-mobile-detail-action aria-label="Быстрое добавление товара">
+            <div>
+              <span>Цена и заказ</span>
+              <strong data-detail-sticky-price>900 ₽</strong>
+            </div>
+            <button class="primary" type="button" data-detail-cart-add>В корзину</button>
+            <div class="quantity-control detail-quantity" data-detail-qty hidden><button type="button" data-detail-cart-minus>−</button><span data-detail-cart-count></span><button type="button" data-detail-cart-plus>+</button></div>
+          </div>
+        </div>
+        <div class="detail-sections">
+          <article><h2>Состав набора</h2><p data-detail-pack>Статуя, основание, две декоративные панели и опциональные повреждённые элементы.</p></article>
+          <article><h2>Характеристики</h2><p data-detail-characteristics>Тип: террейн и декорация. Система: Warhammer / proxy. Стиль: grimdark, gothic, sci-fi.</p></article>
+          <article><h2>Подготовка и возможные следы поддержек</h2><p>Модель промывается, досвечивается и проверяется. Тонкие элементы упаковываются отдельно.</p></article>
+          <article><h2>Доставка</h2><p>Минимальная доставка от 350 ₽. Точную стоимость подтвердим после обработки заявки.</p></article>
+          <article><h2>Лицензия</h2><p data-detail-license>Печать и продажа возможны только при подтверждённой коммерческой лицензии или праве владельца модели на печать. Прокси-миниатюры не аффилированы с правообладателями игровых систем.</p></article>
+          <article><h2>Похожие товары</h2><p>Primal Hounds Expansion, Crimson Lords: Ancient Armor, Cursed Company.</p></article>
+        </div>
+      </section>
+
+      <section id="cart" class="screen cart-screen" data-screen="cart" aria-labelledby="cart-title">
+        <div class="screen-head">
+          <div><p class="eyebrow">корзина</p><h1 id="cart-title">Корзина</h1></div>
+          <div class="screen-actions">
+            <a class="secondary continue-shopping" href="#catalog" data-route="catalog">Продолжить покупки</a>
+            <button class="secondary danger-action cart-clear-action" type="button" data-cart-clear hidden aria-label="Очистить корзину" title="Очистить корзину">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h16" />
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+                <path d="M6 7l1 14h10l1-14" />
+                <path d="M9 7V4h6v3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="checkout-layout">
+          <section class="cart-list" data-cart-list aria-label="Товары в корзине"></section>
+          <aside class="summary-panel">
+            <h2>Итого</h2>
+            <dl>
+              <div><dt>Товары</dt><dd data-cart-subtotal></dd></div>
+              <div><dt>Доставка</dt><dd data-delivery-min></dd></div>
+              <div class="total"><dt>Предварительный итог</dt><dd data-cart-total></dd></div>
+            </dl>
+            <div class="min-order-warning" data-min-order-warning hidden></div>
+            <p class="note">Точную стоимость подтвердим после обработки заявки: доставка, срок изготовления и способ оплаты согласуются вручную.</p>
+            <a class="primary wide" href="#checkout" data-route="checkout" data-checkout-link>Оформить заявку</a>
+          </aside>
+        </div>
+      </section>
+
+      <section id="cart-blocked" class="screen" data-screen="cart-blocked" aria-labelledby="cart-blocked-title">
+        <div class="empty-state">
+          <p class="eyebrow">корзина</p>
+          <h1 id="cart-blocked-title">Сумма товаров меньше минимума</h1>
+          <p>Минимальная сумма заказа — 250 ₽. Добавьте товаров ещё на недостающую сумму. Доставка не учитывается в минимуме.</p>
+          <a class="primary" href="#catalog?part=heads" data-route="catalog" data-part-route="heads">Добавить товары</a>
+        </div>
+      </section>
+
+      <section id="cart-empty" class="screen" data-screen="cart-empty" aria-labelledby="cart-empty-title">
+        <div class="empty-state">
+          <p class="eyebrow">корзина</p>
+          <h1 id="cart-empty-title">Корзина пока пустая</h1>
+          <p>Добавьте миниатюру, пак террейна или детали, чтобы собрать заявку.</p>
+          <a class="primary" href="#catalog" data-route="catalog">В каталог</a>
+        </div>
+      </section>
+
+      <section id="checkout" class="screen" data-screen="checkout" aria-labelledby="checkout-title">
+        <div class="screen-head"><div><p class="eyebrow">оформление заявки</p><h1 id="checkout-title">Контакты и доставка</h1></div></div>
+        <div class="checkout-layout">
+          <form class="request-form" data-checkout-form>
+            <label>Имя <input required placeholder="Ваше имя" /></label>
+            <label>Телефон <input required placeholder="+7..." /></label>
+            <label>Удобный способ связи <select required><option>Telegram</option><option>VK</option><option>Телефон</option><option>Email</option></select></label>
+            <label>Email <input type="email" placeholder="name@mail.ru" /></label>
+            <label>Город <input required placeholder="Город" /></label>
+            <label>Адрес или пункт выдачи <input required placeholder="Адрес или пункт выдачи" /></label>
+            <label>Комментарий <textarea placeholder="Пожелания к упаковке, срокам или составу"></textarea></label>
+            <label>Промокод <input placeholder="Если есть" /></label>
+            <label class="check-row"><input type="checkbox" required /> <span>Согласие на обработку персональных данных</span></label>
+            <p class="form-error" data-checkout-error hidden>Заполните обязательные поля и подтвердите согласие.</p>
+            <button class="primary wide" type="submit" data-checkout-submit>Отправить заявку</button>
+          </form>
+          <aside class="summary-panel">
+            <h2>Состав заявки</h2>
+            <dl>
+              <div><dt>Товары</dt><dd data-checkout-subtotal></dd></div>
+              <div><dt>Минимальная доставка</dt><dd>от 350 ₽</dd></div>
+              <div><dt>Промокод</dt><dd>проверим вручную</dd></div>
+              <div class="total"><dt>Предварительный итог</dt><dd data-checkout-total></dd></div>
+            </dl>
+            <p class="note">Окончательная стоимость, срок изготовления и способ оплаты подтверждаются после обработки заявки.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="success" class="screen" data-screen="success" aria-labelledby="success-title">
+        <div class="success-state">
+          <p class="eyebrow">заявка принята</p>
+          <h1 id="success-title">Заявка принята</h1>
+          <p>Номер заявки: <strong data-success-number>будет назначен после обработки</strong>. Менеджер уточнит доставку, срок изготовления и способ оплаты.</p>
+          <div class="receipt"><strong data-success-items>Состав заявки будет сформирован из корзины</strong><span data-success-contact>Способ связи указан в форме</span></div>
+          <a class="primary" href="#catalog" data-route="catalog">Вернуться в каталог</a>
+        </div>
+      </section>
+
+      <section id="stl" class="screen" data-screen="stl" aria-labelledby="stl-title">
+        <div class="stl-layout">
+          <div class="stl-main">
+            <div class="screen-head compact"><div><p class="eyebrow">услуга</p><h1 id="stl-title">Печать под заказ</h1><p>Опишите задачу и приложите ссылку на облако. Автоматическую цену не обещаем: расчёт делается вручную.</p></div></div>
+            <div class="stl-process">
+              <article><span>1</span><strong>Проверяем модель</strong><p>Масштаб, стенки, тонкие элементы и разбиение.</p></article>
+              <article><span>2</span><strong>Считаем объём, материал и поддержку</strong><p>Подбираем разумный способ печати.</p></article>
+              <article><span>3</span><strong>Возвращаем расчёт</strong><p>Цена, срок, доставка и постобработка до старта.</p></article>
+              <article><span>4</span><strong>Согласуем печать и доставку</strong><p>Запускаем только после подтверждения.</p></article>
+            </div>
+            <div class="quote-contract">
+              <h2>Что влияет на расчёт</h2>
+              <ul>
+                <li>объём модели, масштаб, количество и пустотелость;</li>
+                <li>материал, детализация, хрупкие элементы и поддержки;</li>
+                <li>разбиение на части, постобработка и упаковка;</li>
+                <li>срок изготовления и способ доставки.</li>
+              </ul>
+              <p>Принимаем STL, OBJ и архивы с несколькими файлами. Ориентир ответа по заявке — до 1 рабочего дня после получения ссылки.</p>
+            </div>
+          </div>
+          <form class="request-form stl-form" data-stl-form>
+            <div class="form-section">
+              <h2>Контакты</h2>
+              <div class="form-row">
+                <label>Имя <input required placeholder="Ваше имя" /></label>
+                <label>Email <input type="email" placeholder="name@mail.ru" /></label>
+              </div>
+              <label>Удобный способ связи <select required><option>Telegram</option><option>VK</option><option>WhatsApp</option><option>Телефон</option><option>Email</option></select></label>
+              <label>Контакт для связи <input required placeholder="@username, телефон, VK или email" /></label>
+            </div>
+            <div class="form-section">
+              <h2>Файлы и задача</h2>
+              <label>Ссылка на облако с файлами <input required placeholder="https://..." /></label>
+              <div class="form-row">
+                <label>Масштаб <input required placeholder="Например, 32 мм" /></label>
+                <label>Количество <input type="number" min="1" value="1" required /></label>
+              </div>
+              <label>Комментарий <textarea placeholder="Пожелания к сборке, деталям и упаковке"></textarea></label>
+            </div>
+            <label class="check-row"><input type="checkbox" required data-stl-rights /> <span>Подтверждаю, что у меня есть право передать модель в печать</span></label>
+            <label class="check-row"><input type="checkbox" required /> <span>Согласие на обработку персональных данных</span></label>
+            <p class="form-error" data-stl-error hidden>Заполните обязательные поля и подтвердите согласие.</p>
+            <button class="primary wide" type="submit" data-stl-submit>Получить расчёт</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="stl-success" class="screen" data-screen="stl-success" aria-labelledby="stl-success-title">
+        <div class="success-state stl-success">
+          <p class="eyebrow">заявка на печать</p>
+          <h1 id="stl-success-title">Заявка на печать принята</h1>
+          <p>Мы проверим модель, объём, материал и поддержку, затем вернём расчёт до запуска печати.</p>
+          <a class="primary" href="#catalog" data-route="catalog">Посмотреть готовые лоты</a>
+        </div>
+      </section>
+
+      <section id="blog" class="screen" data-screen="blog" aria-labelledby="blog-title">
+        <div class="journal-page">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><span>Журнал лаборатории</span></nav>
+          <div data-blog-list>
+            <p class="eyebrow">журнал лаборатории</p>
+            <h1 id="blog-title">Материалы лаборатории</h1>
+            <div class="blog-grid">
+              <a class="blog-card" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur"><span>качество печати</span><h2>Качественная 3D-печать миниатюр: как понять, что модель напечатана хорошо</h2><p>Хорошая миниатюра сохраняет детали, переживает доставку и требует только минимальной подготовки перед грунтом.</p></a>
+              <a class="blog-card" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati"><span>покраска</span><h2>Почему миниатюры для покраски должны быть напечатаны аккуратно</h2><p>Чёткая геометрия, чистые поверхности и аккуратные поддержки экономят время художника.</p></a>
+              <a class="blog-card" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur"><span>смола</span><h2>Смоляная 3D-печать миниатюр: плюсы, минусы и требования к качеству</h2><p>Фотополимерная печать хорошо передаёт лица и текстуры, но требует стабильного процесса.</p></a>
+              <a class="blog-card" href="#blog?article=licenzionnaya-3d-pechat-miniatyur" data-route="blog" data-article-route="licenzionnaya-3d-pechat-miniatyur"><span>лицензии</span><h2>Лицензионная 3D-печать миниатюр: почему это важно</h2><p>Коммерческая лицензия даёт прозрачное происхождение, устойчивый каталог и поддержку авторов.</p></a>
+            </div>
+          </div>
+          <article class="article-reader" data-article-view hidden>
+            <a class="text-link" href="#blog" data-route="blog">Вернуться в журнал</a>
+            <p class="eyebrow" data-article-kicker></p>
+            <h1 data-article-title></h1>
+            <div data-article-body></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="delivery" class="screen" data-screen="delivery" aria-labelledby="delivery-title">
+        <div class="article-page">
+          <h1 id="delivery-title">Доставка и оплата</h1>
+          <p>Минимальная доставка от 350 ₽. Точную стоимость, срок изготовления и способ оплаты подтверждаем после обработки заявки.</p>
+        </div>
+      </section>
+
+      <section id="policy" class="screen" data-screen="policy" aria-labelledby="policy-title">
+        <div class="article-page">
+          <h1 id="policy-title">Политика</h1>
+          <p>Данные из формы используются только для связи по заявке, расчёта печати и согласования доставки.</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="gallery-modal" data-gallery-modal hidden>
+      <button class="gallery-modal-scrim" type="button" data-gallery-close aria-label="Закрыть просмотр"></button>
+      <div class="gallery-modal-panel">
+        <button type="button" data-gallery-close aria-label="Закрыть"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg></button>
+        <img src="./assets/merchant/card-hunter.jpg" alt="Увеличенное изображение товара" data-gallery-modal-image loading="lazy" decoding="async" fetchpriority="low" />
+      </div>
+    </div>
+
+    <footer class="footer">
+      <nav aria-label="Нижнее меню">
+        <a href="#catalog" data-route="catalog">Каталог</a>
+        <a href="#stl" data-route="stl">Печать под заказ</a>
+        <a href="#home?scroll=order-flow" data-route="home" data-scroll-to="order-flow">Как заказать</a>
+        <a href="#blog" data-route="blog">Журнал лаборатории</a>
+        <a href="#delivery" data-route="delivery">Доставка и оплата</a>
+        <a href="https://vk.com/drprinticus" rel="noreferrer">VK</a>
+        <a href="https://t.me/drprinticus" rel="noreferrer">Telegram</a>
+        <a href="mailto:hello@drprinticus.ru">email</a>
+        <a href="#policy" data-route="policy">Политика</a>
+      </nav>
+      <p>Dr. Printicus · печать миниатюр, деталей, террейна и заявок под заказ с ручным подтверждением.</p>
+    </footer>
+
+    <script src="./assets/blog-articles.js?v=catalog-filters-16"></script>
+    <script src="./assets/app.js?v=audit-priority-01"></script>
+  </body>
+</html>
