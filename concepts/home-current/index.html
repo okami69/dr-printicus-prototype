@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dr. Printicus - варианты главной от текущего дизайна</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #071011;
+        --surface: #101a1c;
+        --surface-2: #162325;
+        --line: #284145;
+        --text: #eef7f4;
+        --muted: #9fb7b5;
+        --accent: #00c8b8;
+        --accent-soft: rgba(0, 200, 184, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Inter,
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(0, 200, 184, 0.1), transparent 34rem),
+          linear-gradient(180deg, #081314 0%, var(--bg) 100%);
+        color: var(--text);
+      }
+
+      main {
+        width: min(1180px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 28px 0 48px;
+      }
+
+      header {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 22px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        background: rgba(16, 26, 28, 0.82);
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.55rem, 4.6vw, 2.5rem);
+        letter-spacing: 0;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .grid {
+        display: grid;
+        gap: 22px;
+      }
+
+      article {
+        display: grid;
+        gap: 14px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(22, 35, 37, 0.92), rgba(10, 17, 18, 0.96));
+      }
+
+      article h2 {
+        font-size: clamp(1.05rem, 3.7vw, 1.35rem);
+        letter-spacing: 0;
+      }
+
+      .label {
+        width: fit-content;
+        padding: 5px 9px;
+        border: 1px solid rgba(0, 200, 184, 0.44);
+        color: var(--accent);
+        background: var(--accent-soft);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid rgba(120, 164, 166, 0.28);
+        background: var(--surface-2);
+      }
+
+      .open-image {
+        justify-self: start;
+        color: #041111;
+        background: var(--accent);
+        border: 0;
+        padding: 10px 13px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      @media (min-width: 900px) {
+        .grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          align-items: start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="label">home design preview</p>
+        <h1>Варианты главной от текущего дизайна</h1>
+        <p>
+          Это не новый арт-дирекшн, а более спокойные варианты: сохраняем текущий стиль Dr.
+          Printicus и меняем только ритм, высоту и насыщенность блоков ниже витрины.
+        </p>
+      </header>
+
+      <section class="grid" aria-label="Варианты">
+        <article>
+          <p class="label">вариант G</p>
+          <h2>Плотнее текущие секции</h2>
+          <p>Минимальная смена композиции: секции ниже витрины становятся крупнее и длиннее.</p>
+          <a href="./variant-g-current-density.png"><img src="./variant-g-current-density.png" alt="Вариант G: плотнее текущие секции" /></a>
+          <a class="open-image" href="./variant-g-current-density.png">Открыть картинку</a>
+        </article>
+
+        <article>
+          <p class="label">вариант H</p>
+          <h2>Больше процесса заказа</h2>
+          <p>Сохраняем стиль, но усиливаем блоки про заказ, STL, упаковку и контроль качества.</p>
+          <a href="./variant-h-current-process.png"><img src="./variant-h-current-process.png" alt="Вариант H: больше процесса заказа" /></a>
+          <a class="open-image" href="./variant-h-current-process.png">Открыть картинку</a>
+        </article>
+
+        <article>
+          <p class="label">вариант I</p>
+          <h2>Сбалансированная длинная главная</h2>
+          <p>Компромисс: текущая подача, но ниже витрины больше высоты, медиа и визуального веса.</p>
+          <a href="./variant-i-current-balanced.png"><img src="./variant-i-current-balanced.png" alt="Вариант I: сбалансированная длинная главная" /></a>
+          <a class="open-image" href="./variant-i-current-balanced.png">Открыть картинку</a>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
