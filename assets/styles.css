@@ -162,6 +162,7 @@ html[data-color-theme="light"] .product-media {
 
 html {
   min-width: 0;
+  overflow-x: clip;
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }
@@ -170,6 +171,7 @@ body {
   min-width: 0;
   margin: 0;
   padding-top: var(--header-height);
+  overflow-x: clip;
   background: linear-gradient(180deg, var(--color-page-bg-start) 0%, var(--color-page-bg) 42%, var(--color-page-bg-end) 100%);
   color: var(--color-text);
   font-family: var(--font-sans);
@@ -2149,6 +2151,10 @@ dd {
 }
 
 @media (max-width: 899px) {
+  html {
+    scrollbar-gutter: auto;
+  }
+
   :root {
     --shell: min(calc(100% - 20px), 860px);
     --header-height: 68px;
@@ -2194,7 +2200,7 @@ dd {
     inset: 0;
     z-index: 70;
     display: block;
-    overflow: hidden;
+    overflow: clip;
     pointer-events: none;
     visibility: hidden;
   }
@@ -2284,7 +2290,7 @@ dd {
   .hero-visual {
     --hero-carousel-size: min(320px, 84vw);
     --hero-visual-reveal-x: 14px;
-    overflow: visible;
+    overflow: clip;
     min-height: auto;
     padding: var(--space-2) var(--space-3) 0;
     opacity: 0;
