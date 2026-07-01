@@ -394,7 +394,6 @@ const filterCloseButtons = Array.from(document.querySelectorAll("[data-filter-cl
 const filterCloseResultsButton = document.querySelector("[data-filter-close-results]");
 const filterResetButton = document.querySelector("[data-filter-reset]");
 const featuredRail = document.querySelector("[data-featured-rail]");
-const showcaseScene = document.querySelector(".showcase-scene");
 const featuredTabs = Array.from(document.querySelectorAll("[data-featured-tab]"));
 const featuredRailButtons = Array.from(document.querySelectorAll("[data-featured-scroll]"));
 const sortControl = document.querySelector("[data-sort-control]");
@@ -404,10 +403,6 @@ const scrollRevealItems = Array.from(document.querySelectorAll(".scroll-reveal")
 const heroSlides = Array.from(document.querySelectorAll("[data-hero-slide]"));
 const HERO_CAROUSEL_INTERVAL_MS = 8500;
 const HERO_CAROUSEL_FIRST_DELAY_MS = 7500;
-const SHOWCASE_ORBIT_CENTER_DELAY_MS = 80;
-const SHOWCASE_ORBIT_SPREAD_DELAY_MS = 320;
-const SHOWCASE_ORBIT_CTA_READY_DELAY_MS = 1240;
-const SHOWCASE_ORBIT_CLEANUP_DELAY_MS = 1840;
 const drawer = document.querySelector("[data-mobile-drawer]");
 const drawerOpenButton = document.querySelector("[data-drawer-open]");
 const drawerCloseButtons = Array.from(document.querySelectorAll("[data-drawer-close]"));
@@ -478,10 +473,6 @@ let heroSlideStartTimer = 0;
 let activeScrollTarget = "";
 let scrollSpyFrame = 0;
 let hasAppliedRoute = false;
-let featuredOrbitIndex = 1;
-let currentFeaturedIds = [];
-let featuredOrbitIntroPlayed = false;
-let featuredOrbitStageTimers = [];
 
 const blogArticles = window.drPrinticusBlogArticles || {};
 
@@ -543,16 +534,6 @@ function getRouteKey() {
   return window.location.hash || "#home";
 }
 
-function getHashScrollTarget(hash = getRouteKey()) {
-  const raw = String(hash || "#home").replace(/^#/, "") || "home";
-  const [, query = ""] = raw.split("?");
-  return new URLSearchParams(query).get("scroll") || "";
-}
-
-function hasExplicitScrollTarget(hash = getRouteKey()) {
-  return Boolean(getHashScrollTarget(hash));
-}
-
 function getCurrentScrollY() {
   if ((document.body.classList.contains("drawer-open") || document.body.classList.contains("filter-open")) && document.body.style.top) {
     const lockedY = Number.parseFloat(document.body.style.top);
@@ -561,22 +542,8 @@ function getCurrentScrollY() {
   return window.scrollY;
 }
 
-function scrollWindowToY(top, smooth = false) {
-  const targetTop = Math.max(0, top);
-  if (smooth) {
-    window.scrollTo({ top: targetTop, behavior: "smooth" });
-    return;
-  }
-
-  const root = document.documentElement;
-  const previousScrollBehavior = root.style.scrollBehavior;
-  root.style.scrollBehavior = "auto";
-  window.scrollTo({ top: targetTop, behavior: "auto" });
-  root.style.scrollBehavior = previousScrollBehavior;
-}
-
 function rememberScrollPosition(key = currentRouteKey) {
-  if (!key || hasExplicitScrollTarget(key)) return;
+  if (!key) return;
   scrollPositions.set(key, getCurrentScrollY());
 }
 
@@ -592,32 +559,26 @@ function scrollToElementWithHeaderOffset(id, smooth = false) {
   const target = document.getElementById(id);
   if (!target) return;
   const top = target.getBoundingClientRect().top + window.scrollY - getHeaderScrollOffset();
-  scrollWindowToY(top, smooth);
-}
-
-function alignScrollTargetAfterRouteSettles(id, smooth = false) {
-  scrollToElementWithHeaderOffset(id, smooth);
-  requestAnimationFrame(() => scrollToElementWithHeaderOffset(id, false));
-  window.setTimeout(() => scrollToElementWithHeaderOffset(id, false), 180);
+  window.scrollTo({ top: Math.max(0, top), behavior: smooth ? "smooth" : "auto" });
 }
 
 function scrollToActiveScreenTop(smooth = false) {
   const activeScreen = document.querySelector(".screen.is-active");
   if (!activeScreen) return;
   const top = activeScreen.getBoundingClientRect().top + window.scrollY - getHeaderScrollOffset();
-  scrollWindowToY(top, smooth);
+  window.scrollTo({ top: Math.max(0, top), behavior: smooth ? "smooth" : "auto" });
 }
 
 function restoreRouteScroll({ manualNavigation, scrollTarget }) {
   requestAnimationFrame(() => {
     if (scrollTarget) {
-      alignScrollTargetAfterRouteSettles(scrollTarget, manualNavigation);
+      scrollToElementWithHeaderOffset(scrollTarget, manualNavigation);
       return;
     }
 
     const savedY = scrollPositions.get(getRouteKey());
     if (!manualNavigation && Number.isFinite(savedY)) {
-      scrollWindowToY(savedY);
+      window.scrollTo({ top: savedY, behavior: "auto" });
       return;
     }
 
@@ -626,7 +587,7 @@ function restoreRouteScroll({ manualNavigation, scrollTarget }) {
       return;
     }
 
-    scrollWindowToY(0, manualNavigation && activeScreenName !== "home");
+    window.scrollTo({ top: 0, behavior: manualNavigation && activeScreenName !== "home" ? "smooth" : "auto" });
   });
 }
 
@@ -906,12 +867,11 @@ function goToScreen(screenName, params = {}) {
 }
 
 function applyRoute() {
-  const { screenName, params } = parseHash();
-  const nextHash = getRouteKey();
-  const scrollTarget = params.get("scroll");
-  if (hasAppliedRoute && !hasExplicitScrollTarget(nextHash)) {
+  if (hasAppliedRoute) {
     rememberScrollPosition();
   }
+  const { screenName, params } = parseHash();
+  const nextHash = getRouteKey();
   const manualNavigation = manualNavigationHash === nextHash;
   manualNavigationHash = "";
 
@@ -949,6 +909,7 @@ function applyRoute() {
     if (metaDescription) metaDescription.setAttribute("content", defaultMetaDescription);
   }
 
+  const scrollTarget = params.get("scroll");
   currentRouteKey = nextHash;
   restoreRouteScroll({ manualNavigation, scrollTarget });
   hasAppliedRoute = true;
@@ -1444,97 +1405,29 @@ function renderArticleMarkdown(markdown) {
   return nodes;
 }
 
-function shouldAnimateFeaturedOrbitStage() {
-  return Boolean(
-    showcaseScene &&
-      featuredRail &&
-      isFeaturedOrbitDesktop() &&
-      !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
-}
-
-function clearFeaturedOrbitStageTimers() {
-  featuredOrbitStageTimers.forEach((timer) => window.clearTimeout(timer));
-  featuredOrbitStageTimers = [];
-}
-
-function finishFeaturedOrbitStage({ markIntroComplete = false } = {}) {
-  if (!showcaseScene) return;
-  showcaseScene.classList.remove(
-    "is-showcase-orbit-staging",
-    "is-showcase-orbit-center",
-    "is-showcase-orbit-spread",
-    "is-showcase-orbit-cta-ready",
-    "is-showcase-intro-staging",
-  );
-  if (markIntroComplete) {
-    showcaseScene.classList.add("has-showcase-intro-complete");
-  }
-  featuredOrbitStageTimers = [];
-}
-
-function primeFeaturedOrbitStage({ includeTabs = false } = {}) {
-  if (!shouldAnimateFeaturedOrbitStage()) return false;
-  clearFeaturedOrbitStageTimers();
-  showcaseScene.classList.add("is-showcase-orbit-staging");
-  showcaseScene.classList.remove("is-showcase-orbit-center", "is-showcase-orbit-spread", "is-showcase-orbit-cta-ready");
-  showcaseScene.classList.toggle("is-showcase-intro-staging", includeTabs);
-  return true;
-}
-
-function startFeaturedOrbitStage({ markIntroComplete = false } = {}) {
-  if (!showcaseScene?.classList.contains("is-showcase-orbit-staging")) {
-    if (markIntroComplete) showcaseScene?.classList.add("has-showcase-intro-complete");
-    return;
-  }
-
-  const queue = (delay, callback) => {
-    const timer = window.setTimeout(() => {
-      if (!showcaseScene?.classList.contains("is-showcase-orbit-staging")) return;
-      callback();
-    }, delay);
-    featuredOrbitStageTimers.push(timer);
-  };
-
-  window.requestAnimationFrame(() => {
-    queue(SHOWCASE_ORBIT_CENTER_DELAY_MS, () => {
-      showcaseScene.classList.add("is-showcase-orbit-center");
-    });
-    queue(SHOWCASE_ORBIT_SPREAD_DELAY_MS, () => {
-      showcaseScene.classList.add("is-showcase-orbit-spread");
-    });
-    queue(SHOWCASE_ORBIT_CTA_READY_DELAY_MS, () => {
-      showcaseScene.classList.add("is-showcase-orbit-cta-ready");
-    });
-    queue(SHOWCASE_ORBIT_CLEANUP_DELAY_MS, () => {
-      finishFeaturedOrbitStage({ markIntroComplete });
-    });
-  });
-}
-
-function renderFeaturedProducts({ stageOrbit = false } = {}) {
+function renderFeaturedProducts() {
   if (!featuredRail) return;
-  const shouldStageOrbit = stageOrbit && primeFeaturedOrbitStage();
   const idsByTab = {
     hits: ["champion", "hounds", "cursed", "hunter", "armor", "banner", "heads", "shoulders", "artifacts", "mechanics"],
     new: ["hunter", "armor", "banner", "mechanics", "artifacts", "champion", "heads", "shoulders", "cursed", "hounds"],
     value: ["hounds", "cursed", "mechanics", "artifacts", "banner", "armor", "champion", "hunter", "shoulders", "heads"],
-    promo: ["banner", "hounds", "heads", "cursed", "mechanics", "shoulders", "hunter", "armor", "artifacts", "champion"],
   };
-  currentFeaturedIds = idsByTab[currentFeaturedTab] || idsByTab.hits;
-  featuredOrbitIndex = Math.min(1, Math.max(0, currentFeaturedIds.length - 1));
-  featuredRail.innerHTML = currentFeaturedIds
+  featuredRail.innerHTML = idsByTab[currentFeaturedTab]
     .map((id) => {
       const product = products[id];
-      const featuredMeta = product.requiresMin ? `мин. заказ 250 ₽ · ${product.meta}` : product.meta;
-      const index = currentFeaturedIds.indexOf(id);
+      const badges = [
+        product.tags.includes("new") ? "новинка" : "",
+        product.tags.includes("hits") ? "хит" : "",
+        product.requiresMin ? "мин. заказ 250 ₽" : "",
+      ].filter(Boolean);
       return `
-        <article class="product-card" data-featured-card-index="${index}" data-open-product-card="${id}">
+        <article class="product-card">
           <button class="product-card-main" type="button" data-open-product="${id}">
             <span class="product-media"><img src="${product.image}" alt="${product.title}" loading="lazy" decoding="async" fetchpriority="low" /></span>
+            ${badges.length ? `<span class="product-badges">${badges.slice(0, 2).map((badge) => `<span>${badge}</span>`).join("")}</span>` : ""}
             <strong>${product.title}</strong>
             <small>${product.description}</small>
-            <span class="spec-row">${featuredMeta}</span>
+            <span class="spec-row">${product.meta}</span>
           </button>
           <div class="card-bottom"><span class="price">${money(product.price)}</span><button class="primary" type="button" data-cart-action="${id}">В корзину</button><div class="quantity-control" data-card-qty="${id}" hidden><button type="button" data-cart-minus="${id}">−</button><span data-card-count="${id}"></span><button type="button" data-cart-plus="${id}">+</button></div></div>
         </article>
@@ -1543,73 +1436,7 @@ function renderFeaturedProducts({ stageOrbit = false } = {}) {
     .join("");
   featuredRail.scrollLeft = 0;
   updateCardQuantities();
-  syncFeaturedOrbit();
-  if (shouldStageOrbit) {
-    startFeaturedOrbitStage();
-  }
   requestAnimationFrame(updateFeaturedRailControls);
-}
-
-function isFeaturedOrbitDesktop() {
-  return window.matchMedia("(min-width: 900px)").matches;
-}
-
-function wrapFeaturedOrbitIndex(index, length = currentFeaturedIds.length) {
-  if (!length) return 0;
-  return ((index % length) + length) % length;
-}
-
-function getFeaturedOrbitRelativePosition(index) {
-  const length = currentFeaturedIds.length;
-  if (!length) return 0;
-  let relative = index - featuredOrbitIndex;
-  const half = Math.floor(length / 2);
-  if (relative > half) relative -= length;
-  if (relative < -half) relative += length;
-  return relative;
-}
-
-function getFeaturedOrbitPositionName(relative) {
-  if (relative < -3) return "hidden";
-  if (relative === -3) return "far-left";
-  if (relative === -2) return "orbit-left";
-  if (relative === -1) return "center-left";
-  if (relative === 0) return "center";
-  if (relative === 1) return "center-right";
-  if (relative === 2) return "orbit-right";
-  if (relative === 3) return "far-right";
-  return "hidden";
-}
-
-function setFeaturedCardInteractive(card, interactive) {
-  card.classList.toggle("is-orbit-active", interactive);
-  card.setAttribute("aria-hidden", String(!interactive && isFeaturedOrbitDesktop()));
-  card.querySelectorAll(".product-card-main, .primary, .quantity-control button").forEach((control) => {
-    if (interactive || !isFeaturedOrbitDesktop()) {
-      control.removeAttribute("tabindex");
-      control.removeAttribute("aria-hidden");
-    } else {
-      control.setAttribute("tabindex", "-1");
-      control.setAttribute("aria-hidden", "true");
-    }
-  });
-}
-
-function syncFeaturedOrbit() {
-  if (!featuredRail) return;
-  const cards = Array.from(featuredRail.querySelectorAll(".product-card"));
-  cards.forEach((card) => {
-    const index = Number.parseInt(card.dataset.featuredCardIndex || "0", 10);
-    const relative = getFeaturedOrbitRelativePosition(index);
-    const position = getFeaturedOrbitPositionName(relative);
-    const visibleRelative = Math.max(-3, Math.min(3, relative));
-    const active = Math.abs(relative) <= 1;
-    card.dataset.orbitPosition = position;
-    card.style.setProperty("--orbit-offset", String(visibleRelative));
-    card.style.setProperty("--orbit-abs", String(Math.abs(visibleRelative)));
-    card.style.setProperty("--orbit-depth", String(Math.max(0, Math.abs(visibleRelative) - 1)));
-    setFeaturedCardInteractive(card, active);
-  });
 }
 
 function getFeaturedCardStep() {
@@ -1623,15 +1450,6 @@ function getFeaturedCardStep() {
 
 function scrollFeaturedRail(direction) {
   if (!featuredRail) return;
-  if (isFeaturedOrbitDesktop()) {
-    featuredOrbitIndex = wrapFeaturedOrbitIndex(featuredOrbitIndex + (direction === "next" ? 1 : -1));
-    featuredRail.classList.add("is-switching");
-    syncFeaturedOrbit();
-    window.setTimeout(() => featuredRail.classList.remove("is-switching"), 360);
-    updateFeaturedRailControls();
-    return;
-  }
-
   const scrollAmount = getFeaturedCardStep() * 3;
   featuredRail.classList.add("is-switching");
   featuredRail.scrollBy({
@@ -1644,12 +1462,6 @@ function scrollFeaturedRail(direction) {
 
 function updateFeaturedRailControls() {
   if (!featuredRail || featuredRailButtons.length === 0) return;
-  if (isFeaturedOrbitDesktop()) {
-    featuredRailButtons.forEach((button) => {
-      button.hidden = currentFeaturedIds.length <= 3;
-    });
-    return;
-  }
   const maxScroll = featuredRail.scrollWidth - featuredRail.clientWidth;
   const atStart = featuredRail.scrollLeft <= 4;
   const atEnd = featuredRail.scrollLeft >= maxScroll - 4;
@@ -1690,34 +1502,14 @@ function startHeroCarousel(delayMs = HERO_CAROUSEL_INTERVAL_MS) {
   begin();
 }
 
-function revealScrollItem(item) {
-  const isShowcaseScene = item === showcaseScene;
-  const shouldPlayShowcaseIntro = isShowcaseScene && !featuredOrbitIntroPlayed;
-  const shouldStageShowcaseIntro = shouldPlayShowcaseIntro && primeFeaturedOrbitStage({ includeTabs: true });
-
-  item.classList.add("is-revealed");
-
-  if (!isShowcaseScene) return;
-  featuredOrbitIntroPlayed = true;
-  if (shouldStageShowcaseIntro) {
-    startFeaturedOrbitStage({ markIntroComplete: true });
-  } else {
-    showcaseScene?.classList.add("has-showcase-intro-complete");
-  }
-}
-
 function setupScrollReveal() {
   if (scrollRevealItems.length === 0) return;
   scrollRevealItems.forEach((item, index) => {
     item.style.setProperty("--reveal-delay", `${Math.min((index % 4) * 60, 180)}ms`);
   });
 
-  if (showcaseScene && !featuredOrbitIntroPlayed) {
-    primeFeaturedOrbitStage({ includeTabs: true });
-  }
-
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
-    scrollRevealItems.forEach((item) => revealScrollItem(item));
+    scrollRevealItems.forEach((item) => item.classList.add("is-revealed"));
     return;
   }
 
@@ -1725,7 +1517,7 @@ function setupScrollReveal() {
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        revealScrollItem(entry.target);
+        entry.target.classList.add("is-revealed");
         observer.unobserve(entry.target);
       });
     },
@@ -2053,16 +1845,6 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const featuredCardProduct = event.target.closest(".showcase-scene .product-card.is-orbit-active[data-open-product-card]");
-  if (
-    featuredCardProduct &&
-    isFeaturedOrbitDesktop() &&
-    !event.target.closest("[data-cart-action], [data-cart-plus], [data-cart-minus], [data-card-qty]")
-  ) {
-    goToScreen("product", { product: featuredCardProduct.dataset.openProductCard || activeProductId });
-    return;
-  }
-
   const galleryScroll = event.target.closest("[data-gallery-scroll]");
   if (galleryScroll) {
     scrollGalleryRail(galleryScroll.dataset.galleryScroll);
@@ -2162,7 +1944,7 @@ featuredTabs.forEach((button) => {
   button.addEventListener("click", () => {
     currentFeaturedTab = button.dataset.featuredTab || "hits";
     featuredTabs.forEach((tab) => tab.classList.toggle("is-active", tab === button));
-    renderFeaturedProducts({ stageOrbit: true });
+    renderFeaturedProducts();
   });
 });
 
@@ -2212,10 +1994,7 @@ document.addEventListener("keydown", (event) => {
 window.addEventListener("hashchange", applyRoute);
 window.addEventListener("scroll", scheduleActiveScrollUpdate, { passive: true });
 window.addEventListener("resize", syncFilterPanelAccessibility);
-window.addEventListener("resize", () => {
-  syncFeaturedOrbit();
-  updateFeaturedRailControls();
-});
+window.addEventListener("resize", updateFeaturedRailControls);
 window.addEventListener("resize", updateGalleryControls);
 window.addEventListener("resize", scheduleActiveScrollUpdate);
 window.addEventListener("beforeunload", () => rememberScrollPosition());

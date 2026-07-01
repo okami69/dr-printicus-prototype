@@ -6,7 +6,7 @@
     <title>Dr. Printicus - прототип магазина</title>
     <meta name="description" content="Dr. Printicus печатает миниатюры, детали, террейн и STL-модели под заказ с аккуратной подготовкой к покраске." />
     <link rel="preload" as="image" href="./assets/merchant/hero-crimson-winged-jumppack.png" fetchpriority="high" />
-    <link rel="stylesheet" href="./assets/styles.css?v=home-scenes-09" />
+    <link rel="stylesheet" href="./assets/styles.css?v=hero-viewport-01" />
   </head>
   <body>
     <header class="topbar">
@@ -96,7 +96,7 @@
 
     <main id="prototype" class="shell">
       <section id="home" class="screen is-active" data-screen="home" aria-labelledby="home-title">
-        <section class="hero-section home-scene hero-scene">
+        <section class="hero-section">
           <div class="hero-copy">
             <p class="eyebrow hero-kicker">Dr. Printicus</p>
             <h1 id="home-title" class="hero-slogan" aria-label="Печатаем с хирургической точностью">
@@ -184,13 +184,16 @@
           </div>
         </section>
 
-        <section class="featured-products home-scene showcase-scene section-block scroll-reveal reveal-right" aria-label="Подборки товаров">
-          <div class="section-head compact showcase-head">
+        <section class="featured-products section-block scroll-reveal" aria-labelledby="featured-title">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">витрина</p>
+              <h2 id="featured-title">Популярное</h2>
+            </div>
             <div class="featured-tabs" role="tablist" aria-label="Подборки товаров">
               <button class="is-active" type="button" data-featured-tab="hits">Хиты</button>
               <button type="button" data-featured-tab="new">Новинки</button>
-              <button type="button" data-featured-tab="value">Наборы</button>
-              <button type="button" data-featured-tab="promo">Акции</button>
+              <button type="button" data-featured-tab="value">Выгодные наборы</button>
             </div>
           </div>
           <div class="featured-rail-frame">
@@ -202,49 +205,26 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
             </button>
           </div>
-          <div class="showcase-catalog-cta">
-            <a class="secondary showcase-catalog-link" href="#catalog" data-route="catalog">Все товары</a>
+        </section>
+
+        <section class="quality-section section-block scroll-reveal" aria-labelledby="quality-title">
+          <div class="section-head compact">
+            <p class="eyebrow">контроль качества</p>
+            <h2 id="quality-title">Печать без сюрпризов перед покрасом</h2>
+          </div>
+          <div class="quality-grid">
+            <article><strong>Детализация</strong><p>Смотрим читаемость лиц, брони, символов и мелкого рельефа в нужном масштабе.</p></article>
+            <article><strong>Подготовка</strong><p>Ориентируем модель, убираем явные следы поддержек и предупреждаем о хрупких местах.</p></article>
+            <article><strong>Коммерческие лицензии</strong><p>Витрину собираем из моделей, которые можно печатать и продавать легально.</p></article>
+            <article><strong>Надёжная упаковка</strong><p>Мелкие детали и тонкие элементы фиксируем отдельно, чтобы они доехали целыми.</p></article>
           </div>
         </section>
 
-        <section class="stl-promo home-scene custom-print-scene section-block scroll-reveal reveal-left" aria-label="Печать под заказ">
-          <div class="custom-print-copy">
-            <p class="eyebrow custom-print-kicker">Печать под заказ</p>
-            <p class="service-lead">Пришлите STL, OBJ, архив или ссылку на модель. Мы проверим файл, оценим масштаб, материал и риски, а затем согласуем расчёт перед печатью.</p>
-            <ol class="custom-print-steps custom-print-route" aria-label="Как проходит проверка модели перед печатью">
-              <li class="custom-print-step"><span>01</span><strong>Пришлите модель</strong><p>Файл, архив или ссылка на набор.</p></li>
-              <li class="custom-print-step"><span>02</span><strong>Проверим файл</strong><p>Масштаб, тонкие элементы, поддержки и печатные риски.</p></li>
-              <li class="custom-print-step"><span>03</span><strong>Рассчитаем заказ</strong><p>Подберём материал, оценим срок и стоимость.</p></li>
-              <li class="custom-print-step"><span>04</span><strong>Согласуем печать и доставку</strong><p>Запустим печать только после вашего подтверждения.</p></li>
-            </ol>
-            <div class="service-cta custom-print-cta">
-              <a class="primary" href="#stl" data-route="stl">Отправить на проверку</a>
-              <p class="custom-print-cta-note">Расчёт вручную после проверки файла.</p>
-            </div>
-          </div>
-        </section>
-
-        <section id="order-flow" class="order-flow home-scene order-scene section-block scroll-reveal reveal-right" aria-labelledby="order-flow-title">
-          <div class="section-head compact order-head">
+        <section id="order-flow" class="order-flow section-block scroll-reveal" aria-labelledby="order-flow-title">
+          <div class="section-head compact">
             <h2 id="order-flow-title">Как заказать</h2>
           </div>
-          <div class="order-route">
-            <ol class="order-main-path order-route-line" aria-label="&#1050;&#1072;&#1082; &#1086;&#1092;&#1086;&#1088;&#1084;&#1080;&#1090;&#1100; &#1079;&#1072;&#1082;&#1072;&#1079;">
-              <li class="order-stage"><span>01</span><strong>&#1042;&#1099;&#1073;&#1077;&#1088;&#1080;&#1090;&#1077; &#1090;&#1086;&#1074;&#1072;&#1088;</strong></li>
-              <li class="order-stage"><span>02</span><strong>&#1050;&#1086;&#1088;&#1079;&#1080;&#1085;&#1072;</strong></li>
-              <li class="order-stage"><span>03</span><strong>&#1047;&#1072;&#1103;&#1074;&#1082;&#1072;</strong></li>
-              <li class="order-stage"><span>04</span><strong>&#1055;&#1088;&#1086;&#1074;&#1077;&#1088;&#1082;&#1072;</strong></li>
-              <li class="order-stage"><span>05</span><strong>&#1055;&#1086;&#1076;&#1090;&#1074;&#1077;&#1088;&#1078;&#1076;&#1077;&#1085;&#1080;&#1077;</strong></li>
-              <li class="order-stage"><span>06</span><strong>&#1054;&#1087;&#1083;&#1072;&#1090;&#1072;</strong></li>
-            </ol>
-            <ol class="order-afterline order-route-line" aria-label="&#1055;&#1086;&#1089;&#1083;&#1077; &#1087;&#1086;&#1076;&#1090;&#1074;&#1077;&#1088;&#1078;&#1076;&#1077;&#1085;&#1080;&#1103;">
-              <li class="order-afterline-stage"><span>&#1076;&#1072;&#1083;&#1100;&#1096;&#1077;</span><strong>&#1055;&#1077;&#1095;&#1072;&#1090;&#1072;&#1077;&#1084;</strong></li>
-              <li class="order-afterline-stage" data-order-stage="final-processing"><span>&#1076;&#1077;&#1090;&#1072;&#1083;&#1080;</span><strong>&#1060;&#1080;&#1085;&#1080;&#1096;&#1085;&#1072;&#1103; &#1086;&#1073;&#1088;&#1072;&#1073;&#1086;&#1090;&#1082;&#1072;</strong></li>
-              <li class="order-afterline-stage"><span>&#1079;&#1072;&#1097;&#1080;&#1090;&#1072;</span><strong>&#1059;&#1087;&#1072;&#1082;&#1086;&#1074;&#1099;&#1074;&#1072;&#1077;&#1084;</strong></li>
-              <li class="order-afterline-stage"><span>&#1074; &#1087;&#1091;&#1090;&#1100;</span><strong>&#1054;&#1090;&#1087;&#1088;&#1072;&#1074;&#1083;&#1103;&#1077;&#1084;</strong></li>
-            </ol>
-          </div>
-          <ol class="step-grid legacy-order-grid" hidden aria-hidden="true">
+          <ol class="step-grid">
             <li><span>1</span><strong>Выберите товары</strong><p>Откройте каталог или нужную категорию.</p></li>
             <li><span>2</span><strong>Добавьте в корзину</strong><p>Количество можно менять до оформления.</p></li>
             <li><span>3</span><strong>Оставьте контакты</strong><p>Телефон, удобная связь, город и адрес.</p></li>
@@ -252,47 +232,41 @@
           </ol>
         </section>
 
-        <section class="quality-section home-scene quality-scene section-block scroll-reveal reveal-left" aria-labelledby="quality-title">
-          <div class="quality-proof-list" aria-label="Контроль качества печати">
-            <div class="quality-proof-point quality-proof-left quality-proof-title">
-              <p class="eyebrow">контроль качества</p>
-              <h2 id="quality-title">Печать без сюрпризов перед покрасом</h2>
-            </div>
-            <div class="quality-proof-point quality-proof-right">
-              <strong>Детализация</strong>
-              <p>Смотрим читаемость лиц, брони, символов и мелкого рельефа в нужном масштабе.</p>
-            </div>
-            <div class="quality-proof-point quality-proof-left">
-              <strong>Подготовка</strong>
-              <p>Ориентируем модель, убираем явные следы поддержек и предупреждаем о хрупких местах.</p>
-            </div>
-            <div class="quality-proof-point quality-proof-right">
-              <strong>Чистая поверхность</strong>
-              <p>Проверяем следы поддержек, тонкие элементы и места, которые будут видны после грунта.</p>
-            </div>
-            <div class="quality-proof-point quality-proof-left">
-              <strong>Упаковка</strong>
-              <p>Мелкие детали и тонкие элементы фиксируем отдельно, чтобы они доехали целыми.</p>
-            </div>
+        <section class="stl-promo section-block split-band scroll-reveal" aria-labelledby="home-stl-title">
+          <div>
+            <p class="eyebrow">дополнительная услуга</p>
+            <h2 id="home-stl-title">Печать под заказ</h2>
+            <p class="service-lead">Если у вас уже есть STL, OBJ или архив моделей, мы не гадаем цену на глаз: проверяем геометрию, масштаб, поддержку и риски печати, а потом возвращаем понятный ручной расчёт.</p>
+            <ul class="service-points" aria-label="Что входит в услугу печати под заказ">
+              <li><strong>Проверка файла</strong><span>толщина деталей, ошибки сетки, масштаб и ориентация</span></li>
+              <li><strong>Подбор материала</strong><span>смола для миниатюр, FDM для крупного террейна и утилитарных деталей</span></li>
+              <li><strong>Подготовка к печати</strong><span>раскладка, поддержки, оценка хрупких мест и следов после снятия</span></li>
+              <li><strong>Согласование перед стартом</strong><span>стоимость, срок, доставка и способ оплаты подтверждаются вручную</span></li>
+            </ul>
+            <p class="service-note">Автоматическую цену не обещаем: сложные модели считаем руками, чтобы не спрятать риски в мелком шрифте.</p>
+          </div>
+          <div class="service-cta">
+            <a class="primary" href="#stl" data-route="stl">Оставить заявку</a>
+            <span>STL / OBJ · смола и FDM · ответ после проверки модели</span>
           </div>
         </section>
 
-        <section class="lab-journal-preview home-scene journal-scene section-block scroll-reveal reveal-right" aria-labelledby="home-blog-title">
-          <div class="journal-layout">
-            <a class="journal-lead" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur">
-              <p class="eyebrow" id="home-blog-title">Журнал лаборатории</p>
-              <h2>Качественная 3D-печать миниатюр</h2>
-              <p>Как понять, что модель сохраняет детали, не превращает покрас в ремонт и готова к грунту без долгой зачистки...</p>
-            </a>
-            <div class="journal-secondary-list" aria-label="Другие материалы журнала">
-              <a class="blog-card" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati"><span>покраска</span><h3>Почему заготовка должна быть аккуратной</h3><p>Как печать влияет на грунтовку, проливки, высветления, сборку и итоговый вид.</p></a>
-              <a class="blog-card" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur"><span>смола</span><h3>Смоляная 3D-печать миниатюр</h3><p>Плюсы, ограничения, прочность, поддержки и требования к качеству процесса.</p></a>
-              <a class="secondary journal-all-link" href="#blog" data-route="blog">Все материалы</a>
+        <section class="lab-journal-preview section-block scroll-reveal" aria-labelledby="home-blog-title">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">журнал лаборатории</p>
+              <h2 id="home-blog-title">Разборы печати, подготовки и заказов</h2>
             </div>
+            <a class="secondary" href="#blog" data-route="blog">Все материалы</a>
+          </div>
+          <div class="blog-grid">
+            <a class="blog-card" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur"><span>качество печати</span><h3>Качественная 3D-печать миниатюр</h3><p>Как понять, что модель сохраняет детали и готова к грунту без долгого ремонта.</p></a>
+            <a class="blog-card" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati"><span>покраска</span><h3>Почему заготовка должна быть аккуратной</h3><p>Как печать влияет на грунтовку, проливки, высветления, сборку и итоговый вид.</p></a>
+            <a class="blog-card" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur"><span>смола</span><h3>Смоляная 3D-печать миниатюр</h3><p>Плюсы, ограничения, прочность, поддержки и требования к качеству процесса.</p></a>
           </div>
         </section>
 
-        <section class="about-studio home-scene about-scene section-block scroll-reveal reveal-left" aria-labelledby="about-title">
+        <section class="about-studio section-block" aria-labelledby="about-title">
           <p class="eyebrow">о студии</p>
           <h2 id="about-title">Dr. Printicus — маленькая лаборатория для больших столов</h2>
           <p>Мы печатаем миниатюры, детали и террейн партиями под заказ: без обещаний автоматической цены, зато с понятным составом, аккуратной подготовкой и честным подтверждением перед стартом.</p>
@@ -782,6 +756,6 @@
     </footer>
 
     <script src="./assets/blog-articles.js?v=catalog-filters-16"></script>
-    <script src="./assets/app.js?v=home-scenes-04"></script>
+    <script src="./assets/app.js?v=audit-priority-01"></script>
   </body>
 </html>
