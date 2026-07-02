@@ -2259,6 +2259,14 @@ html[data-color-theme="light"] .theme-toggle-sun {
   text-shadow: 0 0 32px color-mix(in srgb, var(--color-accent-2) 18%, transparent);
 }
 
+.about-title-dash {
+  display: inline-block;
+  margin-left: 0.12ch;
+  font-size: 0.62em;
+  line-height: 1;
+  vertical-align: 0.05em;
+}
+
 .about-title-brand + .about-title-slogan {
   margin-left: 0.25ch;
 }
@@ -4065,6 +4073,24 @@ dd {
     transition:
       opacity 420ms ease,
       transform 560ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .about-title-brand,
+  .about-title-slogan {
+    display: block;
+  }
+
+  .about-title-brand + .about-title-slogan {
+    margin-left: 0;
+  }
+
+  .about-title-break {
+    display: none;
+  }
+
+  .about-title-dash {
+    margin-left: 0.18ch;
+    vertical-align: 0.04em;
   }
 
   .about-scene.is-revealed .about-title-slogan {
