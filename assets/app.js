@@ -411,6 +411,7 @@ const SHOWCASE_ORBIT_CENTER_DELAY_MS = 80;
 const SHOWCASE_ORBIT_SPREAD_DELAY_MS = 320;
 const SHOWCASE_ORBIT_CTA_READY_DELAY_MS = 1240;
 const SHOWCASE_ORBIT_CLEANUP_DELAY_MS = 1840;
+const FEATURED_ORBIT_SWIPE_THRESHOLD_PX = 42;
 const SCROLL_REVEAL_ENTER_RATIO = 0.70;
 const SCROLL_REVEAL_EXIT_RATIO = 0.25;
 const drawer = document.querySelector("[data-mobile-drawer]");
@@ -486,6 +487,8 @@ let hasAppliedRoute = false;
 let featuredOrbitIndex = 1;
 let currentFeaturedIds = [];
 let featuredOrbitStageTimers = [];
+let featuredOrbitPointerState = null;
+let featuredOrbitSuppressClickUntil = 0;
 
 const blogArticles = window.drPrinticusBlogArticles || {};
 
@@ -1477,12 +1480,29 @@ function updateOrderInspector(step) {
   orderInspectorCopy.textContent = copy;
 }
 
+function setupOrderMobileDetails() {
+  orderSteps.forEach((step, index) => {
+    const parent = step.parentElement;
+    if (!parent || parent.querySelector(".order-stage-mobile-detail")) return;
+
+    const detail = document.createElement("p");
+    const stepId = step.dataset.orderStep || `step-${index + 1}`;
+    detail.id = `order-mobile-detail-${stepId}`;
+    detail.className = "order-stage-mobile-detail";
+    detail.textContent = step.dataset.orderStepCopy || "";
+    step.setAttribute("aria-controls", detail.id);
+    step.setAttribute("aria-expanded", String(step.classList.contains("is-active")));
+    parent.append(detail);
+  });
+}
+
 function setActiveOrderStep(step) {
   if (!step) return;
 
   orderSteps.forEach((item) => {
     const isActive = item === step;
     item.classList.toggle("is-active", isActive);
+    item.setAttribute("aria-expanded", String(isActive));
     if (isActive) {
       item.setAttribute("aria-current", "step");
     } else {
@@ -1496,6 +1516,7 @@ function setActiveOrderStep(step) {
 function setupOrderInspector() {
   if (orderSteps.length === 0) return;
 
+  setupOrderMobileDetails();
   const initialStep = orderSteps.find((step) => step.classList.contains("is-active")) || orderSteps[0];
   setActiveOrderStep(initialStep);
 
@@ -1732,9 +1753,15 @@ function scrollFeaturedRail(direction) {
 
 function updateFeaturedRailControls() {
   if (!featuredRail || featuredRailButtons.length === 0) return;
+  if (isFeaturedOrbitMobile()) {
+    featuredRailButtons.forEach((button) => {
+      button.hidden = true;
+    });
+    return;
+  }
   if (isFeaturedOrbitMode()) {
     featuredRailButtons.forEach((button) => {
-      button.hidden = currentFeaturedIds.length <= 1;
+      button.hidden = currentFeaturedIds.length <= 3;
     });
     return;
   }
@@ -1744,6 +1771,60 @@ function updateFeaturedRailControls() {
   featuredRailButtons.forEach((button) => {
     button.hidden = maxScroll <= 4 || (button.dataset.featuredScroll === "prev" ? atStart : atEnd);
   });
+}
+
+function resetFeaturedOrbitTouchScroll() {
+  featuredOrbitPointerState = null;
+  featuredRail?.classList.remove("is-touch-scrolling");
+}
+
+function setupFeaturedOrbitTouchScroll() {
+  if (!featuredRail || !window.PointerEvent) return;
+
+  featuredRail.addEventListener("pointerdown", (event) => {
+    if (!isFeaturedOrbitMobile() || currentFeaturedIds.length <= 1 || !event.isPrimary) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    featuredOrbitPointerState = {
+      id: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      dragging: false,
+    };
+    featuredRail.setPointerCapture?.(event.pointerId);
+  });
+
+  featuredRail.addEventListener("pointermove", (event) => {
+    if (!featuredOrbitPointerState || featuredOrbitPointerState.id !== event.pointerId) return;
+
+    const deltaX = event.clientX - featuredOrbitPointerState.startX;
+    const deltaY = event.clientY - featuredOrbitPointerState.startY;
+    if (!featuredOrbitPointerState.dragging && Math.abs(deltaX) > 14 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15) {
+      featuredOrbitPointerState.dragging = true;
+      featuredRail.classList.add("is-touch-scrolling");
+    }
+
+    if (featuredOrbitPointerState.dragging) {
+      event.preventDefault();
+    }
+  });
+
+  featuredRail.addEventListener("pointerup", (event) => {
+    if (!featuredOrbitPointerState || featuredOrbitPointerState.id !== event.pointerId) return;
+
+    const deltaX = event.clientX - featuredOrbitPointerState.startX;
+    const wasDragging = featuredOrbitPointerState.dragging;
+    resetFeaturedOrbitTouchScroll();
+
+    if (wasDragging) {
+      featuredOrbitSuppressClickUntil = Date.now() + 450;
+      if (Math.abs(deltaX) >= FEATURED_ORBIT_SWIPE_THRESHOLD_PX) {
+        scrollFeaturedRail(deltaX < 0 ? "next" : "prev");
+      }
+    }
+  });
+
+  featuredRail.addEventListener("pointercancel", resetFeaturedOrbitTouchScroll);
 }
 
 function showHeroSlide(index) {
@@ -2133,6 +2214,12 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  if (Date.now() < featuredOrbitSuppressClickUntil && event.target.closest(".showcase-scene .featured-rail")) {
+    event.preventDefault();
+    event.stopPropagation();
+    return;
+  }
+
   const cartAction = event.target.closest("[data-cart-action]");
   if (cartAction) {
     addToCart(cartAction.dataset.cartAction);
@@ -2338,6 +2425,7 @@ window.addEventListener("beforeunload", () => rememberScrollPosition());
 
 initTheme();
 renderFeaturedProducts();
+setupFeaturedOrbitTouchScroll();
 renderCart();
 updateCardQuantities();
 syncFilterPanelAccessibility();
