@@ -412,8 +412,8 @@ const SHOWCASE_ORBIT_SPREAD_DELAY_MS = 320;
 const SHOWCASE_ORBIT_CTA_READY_DELAY_MS = 1240;
 const SHOWCASE_ORBIT_CLEANUP_DELAY_MS = 1840;
 const FEATURED_ORBIT_SWIPE_THRESHOLD_PX = 42;
-const SCROLL_REVEAL_ENTER_RATIO = 0.70;
-const SCROLL_REVEAL_EXIT_RATIO = 0.25;
+const SCROLL_REVEAL_ENTER_RATIO = 0.42;
+const SCROLL_REVEAL_EXIT_RATIO = 0.12;
 const drawer = document.querySelector("[data-mobile-drawer]");
 const drawerOpenButton = document.querySelector("[data-drawer-open]");
 const drawerCloseButtons = Array.from(document.querySelectorAll("[data-drawer-close]"));
@@ -1888,7 +1888,7 @@ function isReplayableScrollRevealItem(item) {
 function setupScrollReveal() {
   if (scrollRevealItems.length === 0) return;
   scrollRevealItems.forEach((item, index) => {
-    item.style.setProperty("--reveal-delay", `${Math.min((index % 4) * 60, 180)}ms`);
+    item.style.setProperty("--reveal-delay", `${Math.min((index % 3) * 45, 90)}ms`);
   });
 
   if (showcaseScene) {

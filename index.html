@@ -6,7 +6,7 @@
     <title>Dr. Printicus - прототип магазина</title>
     <meta name="description" content="Dr. Printicus печатает миниатюры, детали, террейн и STL-модели под заказ с аккуратной подготовкой к покраске." />
     <link rel="preload" as="image" href="./assets/merchant/hero-crimson-winged-jumppack.png" fetchpriority="high" />
-    <link rel="stylesheet" href="./assets/styles.css?v=home-scenes-29" />
+    <link rel="stylesheet" href="./assets/styles.css?v=home-scenes-43" />
   </head>
   <body>
     <header class="topbar">
@@ -209,19 +209,19 @@
 
         <section class="stl-promo home-scene custom-print-scene section-block scroll-reveal reveal-left" aria-label="Печать под заказ">
           <div class="custom-print-copy">
-            <p class="eyebrow custom-print-kicker">Печать под заказ</p>
+            <p class="eyebrow scene-label custom-print-kicker">Печать под заказ</p>
             <p class="service-lead">Каталог — не предел. Присылайте файл, архив или ссылку на набор: проверим модель, оценим риски печати и рассчитаем цену со сроком.</p>
             <div class="service-cta custom-print-cta custom-print-cta-mobile">
               <a class="primary" href="#stl" data-route="stl">Отправить на проверку</a>
             </div>
             <ol class="custom-print-steps custom-print-route" aria-label="Как проходит проверка модели перед печатью">
-              <li class="custom-print-step"><span>01</span><strong>Пришлите модель</strong><p>Файл, архив или ссылка на набор.</p></li>
-              <li class="custom-print-step"><span>02</span><strong>Проверим файл</strong><p>Масштаб, тонкие элементы, поддержки и печатные риски.</p></li>
-              <li class="custom-print-step"><span>03</span><strong>Рассчитаем заказ</strong><p>Подберём материал, оценим срок и стоимость.</p></li>
+              <li class="custom-print-step"><span>01</span><strong>Пришлите модель</strong><p>Файл, архив или ссылка на набор.</p><figure class="custom-print-photo"><img src="./assets/custom-print/custom-print-adventurer.webp" alt="Серая 3D-печатная миниатюра искательницы на белом фоне" width="720" height="720" loading="lazy" decoding="async"></figure></li>
+              <li class="custom-print-step"><span>02</span><strong>Проверим файл</strong><p>Масштаб, тонкие элементы, поддержки и печатные риски.</p><figure class="custom-print-photo"><img src="./assets/custom-print/custom-print-walker.webp" alt="Серая 3D-печатная механическая модель на белом фоне" width="720" height="720" loading="lazy" decoding="async"></figure></li>
+              <li class="custom-print-step"><span>03</span><strong>Рассчитаем заказ</strong><p>Подберём материал, оценим срок и стоимость.</p><figure class="custom-print-photo"><img src="./assets/custom-print/custom-print-terrain.webp" alt="Серая 3D-печатная деталь террейна на белом фоне" width="720" height="720" loading="lazy" decoding="async"></figure></li>
+              <li class="custom-print-step"><span>04</span><strong>Печатаем и отдаём</strong><p>После согласования печатаем, обрабатываем и готовим к выдаче.</p><div class="service-cta custom-print-cta custom-print-cta-desktop">
+                <a class="primary" href="#stl" data-route="stl">Отправить на проверку</a>
+              </div></li>
             </ol>
-            <div class="service-cta custom-print-cta">
-              <a class="primary" href="#stl" data-route="stl">Отправить на проверку</a>
-            </div>
           </div>
         </section>
 
@@ -229,7 +229,7 @@
           <div class="order-layout">
             <div class="section-head compact order-head">
               <div>
-                <p class="eyebrow" id="order-flow-title">Как заказать</p>
+                <p class="eyebrow scene-label" id="order-flow-title">Как заказать</p>
                 <p class="order-lead">Вы легко соберете заказ под игру, армию, покрас или диораму: миниатюры, битцы, террейн и готовые наборы уже ждут в каталоге Dr. Printicus. Если нужной модели нет — не беда: оставьте заявку, и мы разберём, как напечатать её под заказ.</p>
               </div>
             </div>
@@ -305,36 +305,38 @@
 
         <section class="quality-section home-scene quality-scene section-block scroll-reveal reveal-left" aria-labelledby="quality-title">
           <div class="quality-proof-list" aria-label="Контроль качества печати">
-            <div class="quality-proof-point quality-proof-title">
-              <p class="eyebrow" id="quality-title">Контроль качества</p>
+            <div class="quality-proof-title">
+              <p class="eyebrow scene-label" id="quality-title">Контроль качества</p>
               <p class="quality-lead">Мы сами в этом хобби и знаем, как обидно получить миниатюру, которую вместо грунта и покраски сначала приходится чинить. Поэтому Dr. Printicus смотрит на заказ не как на «просто распечаталось», а как на будущую часть армии, диорамы или игрового стола.</p>
             </div>
-            <div class="quality-proof-point quality-proof-right">
-              <strong>Диагностика</strong>
-              <p>Смотрим читаемость лиц, брони, символов и мелкого рельефа в нужном масштабе.</p>
-            </div>
-            <div class="quality-proof-point quality-proof-left">
-              <strong>Подготовка</strong>
-              <p>Ориентируем модель, убираем явные следы поддержек и предупреждаем о хрупких местах.</p>
-            </div>
-            <div class="quality-proof-point quality-proof-right">
-              <strong>Обработка</strong>
-              <p>Проверяем следы поддержек, тонкие элементы и места, которые будут видны после грунта.</p>
-            </div>
-            <div class="quality-proof-point quality-proof-left">
-              <strong>Фиксация</strong>
-              <p>Мелкие детали и тонкие элементы упаковываем отдельно, чтобы они доехали целыми.</p>
+            <div class="quality-proof-grid" aria-label="Этапы контроля качества">
+              <div class="quality-proof-point">
+                <strong>Диагностика</strong>
+                <p>Смотрим читаемость лиц, брони, символов и мелкого рельефа в нужном масштабе.</p>
+              </div>
+              <div class="quality-proof-point">
+                <strong>Подготовка</strong>
+                <p>Ориентируем модель, убираем явные следы поддержек и предупреждаем о хрупких местах.</p>
+              </div>
+              <div class="quality-proof-point">
+                <strong>Обработка</strong>
+                <p>Проверяем следы поддержек, тонкие элементы и места, которые будут видны после грунта.</p>
+              </div>
+              <div class="quality-proof-point">
+                <strong>Фиксация</strong>
+                <p>Мелкие детали и тонкие элементы упаковываем отдельно, чтобы они доехали целыми.</p>
+              </div>
             </div>
           </div>
         </section>
 
         <section class="lab-journal-preview home-scene journal-scene section-block scroll-reveal reveal-right" aria-labelledby="home-blog-title">
+          <p class="scene-label journal-section-label" id="home-blog-title">Журнал лаборатории</p>
           <div class="journal-layout">
             <p class="eyebrow journal-mobile-kicker" aria-hidden="true">Журнал лаборатории</p>
             <a class="journal-feature journal-lead" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur">
-              <p class="eyebrow" id="home-blog-title">Журнал лаборатории</p>
               <h2>Качественная 3D-печать миниатюр</h2>
-              <p class="journal-preview-copy">3D-печать миниатюр давно перестала быть просто способом получить фигурку из смолы. Для варгеймов, настольных ролевых игр, коллекций и покраски важно не только наличие модели, но и то, насколько точно сохранены детали, аккуратно удалены поддержки и правильно выполнена постобработка. В Dr. Printicus мы рассматриваем печать как производственный процесс: хорошая миниатюра должна выглядеть так, чтобы её хотелось красить, а не долго шлифовать, шпаклевать и спасать после получения. На первый взгляд все смоляные миниатюры могут казаться похожими: файл загружают в слайсер, запускают принтер и получают физическую модель. На практике разница между стабильной технологией и случайным удачным запуском огромна. Плохая печать проявляется по-разному. У модели могут быть смазанные детали, заметная лесенка на поверхностях, грубые следы поддержек на лице или броне, искривлённое оружие, трещины, липкие участки, потерянные фрагменты и хрупкие тонкие элементы. Иногда фигурка выглядит целой издалека, но при рассмотрении оказывается, что цепи слились, текстура ткани пропала, пальцы превратились в комок, а лицо потеряло выражение. Для покраски это критично: грунт, проливки и высветления не маскируют дефекты, а часто подчёркивают их. Качественная миниатюра - это не просто модель без сломанных деталей. Нормальный результат должен позволять после короткого осмотра, сборки и минимальной зачистки перейти к грунтовке. Поэтому итог оценивают не по формальному наличию всех частей, а по сохранности ключевых зон: лица, оружия, символики, фактур кожи, ткани, меха, камня и брони. Детализация зависит не только от разрешения принтера. На результат влияют высота слоя, экспозиция, скорость подъёма, температура, ориентация модели, состояние расходников, состав смолы и корректность поддержек.</p>
+              <p class="journal-preview-copy">3D-печать миниатюр давно перестала быть просто способом получить фигурку из смолы. В Dr. Printicus мы смотрим на печать как на производственный процесс: детали должны пережить сборку, грунт и покрас без спасательных работ. В статье разбираем, где чаще всего появляются дефекты и почему качество видно не только на фото, но и под кистью.</p>
               <span class="journal-continue">Продолжить чтение</span>
             </a>
             <div class="journal-secondary-panel">
@@ -348,8 +350,8 @@
           </div>
         </section>
 
-        <section class="about-studio home-scene about-scene section-block scroll-reveal reveal-left" aria-labelledby="about-title">
-          <p class="eyebrow">О студии</p>
+        <section class="about-studio home-scene about-scene section-block scroll-reveal reveal-left" aria-labelledby="about-kicker about-title">
+          <p class="scene-label about-section-label" id="about-kicker">О студии</p>
           <h2 id="about-title"><span class="about-title-brand">Dr. Printicus <span class="about-title-dash">–</span></span> <span class="about-title-slogan about-title-slogan-primary">маленькая лаборатория</span><br class="about-title-break"> <span class="about-title-slogan about-title-slogan-line">для больших столов</span></h2>
           <p class="about-copy">Мы небольшая студия 3D-печати, которая с трепетом относится к своему делу. Печатаем аккуратно, проверяем внимательно и любим момент, когда миниатюра перестаёт быть просто распечаткой и становится частью вашей игры.</p>
         </section>
@@ -834,7 +836,6 @@
         <a href="mailto:hello@drprinticus.ru">email</a>
         <a href="#policy" data-route="policy">Политика</a>
       </nav>
-      <p>Dr. Printicus · печать миниатюр, деталей, террейна и заявок под заказ с ручным подтверждением.</p>
     </footer>
 
     <script src="./assets/blog-articles.js?v=catalog-filters-16"></script>
