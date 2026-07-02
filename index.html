@@ -6,7 +6,7 @@
     <title>Dr. Printicus - прототип магазина</title>
     <meta name="description" content="Dr. Printicus печатает миниатюры, детали, террейн и STL-модели под заказ с аккуратной подготовкой к покраске." />
     <link rel="preload" as="image" href="./assets/merchant/hero-crimson-winged-jumppack.png" fetchpriority="high" />
-    <link rel="stylesheet" href="./assets/styles.css?v=home-scenes-09" />
+    <link rel="stylesheet" href="./assets/styles.css?v=home-scenes-26" />
   </head>
   <body>
     <header class="topbar">
@@ -210,7 +210,7 @@
         <section class="stl-promo home-scene custom-print-scene section-block scroll-reveal reveal-left" aria-label="Печать под заказ">
           <div class="custom-print-copy">
             <p class="eyebrow custom-print-kicker">Печать под заказ</p>
-            <p class="service-lead">Пришлите STL, OBJ, архив или ссылку на модель. Мы проверим файл, оценим масштаб, материал и риски, а затем согласуем расчёт перед печатью.</p>
+            <p class="service-lead">Каталог — не предел. Мы можем напечатать ваши модели и наборы студий, которые ещё не представлены у Dr. Printicus. Оцениваем задачу и запускаем печать только после полного согласования: что печатаем, в каком масштабе, из какого материала, какая цена и к какому сроку.</p>
             <ol class="custom-print-steps custom-print-route" aria-label="Как проходит проверка модели перед печатью">
               <li class="custom-print-step"><span>01</span><strong>Пришлите модель</strong><p>Файл, архив или ссылка на набор.</p></li>
               <li class="custom-print-step"><span>02</span><strong>Проверим файл</strong><p>Масштаб, тонкие элементы, поддержки и печатные риски.</p></li>
@@ -219,47 +219,95 @@
             </ol>
             <div class="service-cta custom-print-cta">
               <a class="primary" href="#stl" data-route="stl">Отправить на проверку</a>
-              <p class="custom-print-cta-note">Расчёт вручную после проверки файла.</p>
             </div>
           </div>
         </section>
 
         <section id="order-flow" class="order-flow home-scene order-scene section-block scroll-reveal reveal-right" aria-labelledby="order-flow-title">
-          <div class="section-head compact order-head">
-            <h2 id="order-flow-title">Как заказать</h2>
-          </div>
-          <div class="order-route">
-            <ol class="order-main-path order-route-line" aria-label="&#1050;&#1072;&#1082; &#1086;&#1092;&#1086;&#1088;&#1084;&#1080;&#1090;&#1100; &#1079;&#1072;&#1082;&#1072;&#1079;">
-              <li class="order-stage"><span>01</span><strong>&#1042;&#1099;&#1073;&#1077;&#1088;&#1080;&#1090;&#1077; &#1090;&#1086;&#1074;&#1072;&#1088;</strong></li>
-              <li class="order-stage"><span>02</span><strong>&#1050;&#1086;&#1088;&#1079;&#1080;&#1085;&#1072;</strong></li>
-              <li class="order-stage"><span>03</span><strong>&#1047;&#1072;&#1103;&#1074;&#1082;&#1072;</strong></li>
-              <li class="order-stage"><span>04</span><strong>&#1055;&#1088;&#1086;&#1074;&#1077;&#1088;&#1082;&#1072;</strong></li>
-              <li class="order-stage"><span>05</span><strong>&#1055;&#1086;&#1076;&#1090;&#1074;&#1077;&#1088;&#1078;&#1076;&#1077;&#1085;&#1080;&#1077;</strong></li>
-              <li class="order-stage"><span>06</span><strong>&#1054;&#1087;&#1083;&#1072;&#1090;&#1072;</strong></li>
-            </ol>
-            <ol class="order-afterline order-route-line" aria-label="&#1055;&#1086;&#1089;&#1083;&#1077; &#1087;&#1086;&#1076;&#1090;&#1074;&#1077;&#1088;&#1078;&#1076;&#1077;&#1085;&#1080;&#1103;">
-              <li class="order-afterline-stage"><span>&#1076;&#1072;&#1083;&#1100;&#1096;&#1077;</span><strong>&#1055;&#1077;&#1095;&#1072;&#1090;&#1072;&#1077;&#1084;</strong></li>
-              <li class="order-afterline-stage" data-order-stage="final-processing"><span>&#1076;&#1077;&#1090;&#1072;&#1083;&#1080;</span><strong>&#1060;&#1080;&#1085;&#1080;&#1096;&#1085;&#1072;&#1103; &#1086;&#1073;&#1088;&#1072;&#1073;&#1086;&#1090;&#1082;&#1072;</strong></li>
-              <li class="order-afterline-stage"><span>&#1079;&#1072;&#1097;&#1080;&#1090;&#1072;</span><strong>&#1059;&#1087;&#1072;&#1082;&#1086;&#1074;&#1099;&#1074;&#1072;&#1077;&#1084;</strong></li>
-              <li class="order-afterline-stage"><span>&#1074; &#1087;&#1091;&#1090;&#1100;</span><strong>&#1054;&#1090;&#1087;&#1088;&#1072;&#1074;&#1083;&#1103;&#1077;&#1084;</strong></li>
-            </ol>
+          <div class="order-layout">
+            <div class="section-head compact order-head">
+              <div>
+                <p class="eyebrow" id="order-flow-title">Как заказать</p>
+                <p class="order-lead">Вы легко соберете заказ под игру, армию, покрас или диораму: миниатюры, битцы, террейн и готовые наборы уже ждут в каталоге Dr. Printicus. Если нужной модели нет — не беда: оставьте заявку, и мы разберём, как напечатать её под заказ.</p>
+              </div>
+            </div>
+            <div class="order-route" aria-describedby="order-inspector-title order-inspector-copy">
+              <ol class="order-main-path order-route-line" aria-label="Как оформить заказ">
+                <li class="order-stage">
+                  <button class="order-stage-trigger is-active" type="button" data-order-step="choose" data-order-step-title="Выберите товар" data-order-step-copy="Откройте каталог, выберите готовый лот или набор и проверьте масштаб, состав и минимальный заказ." aria-current="step">
+                    <span>01</span><strong>Выберите товар</strong><p class="order-stage-summary">Готовый лот или набор из каталога.</p>
+                  </button>
+                </li>
+                <li class="order-stage">
+                  <button class="order-stage-trigger" type="button" data-order-step="cart" data-order-step-title="Соберите позиции" data-order-step-copy="В корзине можно менять количество и состав до отправки.">
+                    <span>02</span><strong>Корзина</strong><p class="order-stage-summary">Количество и состав еще можно поправить.</p>
+                  </button>
+                </li>
+                <li class="order-stage">
+                  <button class="order-stage-trigger" type="button" data-order-step="request" data-order-step-title="Отправьте заявку" data-order-step-copy="Оставьте контакт, город и удобный способ связи — это нужно для проверки доставки и сроков.">
+                    <span>03</span><strong>Заявка</strong><p class="order-stage-summary">Контакты и город для расчета условий.</p>
+                  </button>
+                </li>
+                <li class="order-stage">
+                  <button class="order-stage-trigger" type="button" data-order-step="check" data-order-step-title="Мы проверим заказ" data-order-step-copy="Проверяем наличие, печатные риски, упаковку, срок и финальные условия.">
+                    <span>04</span><strong>Проверка</strong><p class="order-stage-summary">Срок, риски, доставка и наличие.</p>
+                  </button>
+                </li>
+                <li class="order-stage">
+                  <button class="order-stage-trigger" type="button" data-order-step="confirm" data-order-step-title="Согласуйте условия" data-order-step-copy="Уточним итоговый состав, цену, срок и доставку. Без подтверждения печать не стартует.">
+                    <span>05</span><strong>Согласование</strong><p class="order-stage-summary">Итоговая цена и срок перед оплатой.</p>
+                  </button>
+                </li>
+                <li class="order-stage">
+                  <button class="order-stage-trigger" type="button" data-order-step="pay" data-order-step-title="Оплатите после подтверждения" data-order-step-copy="Ссылка или реквизиты появляются после подтверждения заказа.">
+                    <span>06</span><strong>Оплата</strong><p class="order-stage-summary">После подтверждения условий.</p>
+                  </button>
+                </li>
+              </ol>
+              <ol class="order-afterline order-route-line" aria-label="После подтверждения">
+                <li class="order-afterline-stage">
+                  <button class="order-stage-trigger" type="button" data-order-step="print" data-order-step-title="Печатаем" data-order-step-copy="После оплаты запускаем печать по согласованному составу.">
+                    <span>07</span><strong>Печатаем</strong><p class="order-stage-summary">Стартуем по согласованному составу.</p>
+                  </button>
+                </li>
+                <li class="order-afterline-stage" data-order-stage="final-processing">
+                  <button class="order-stage-trigger" type="button" data-order-step="finish" data-order-step-title="Обрабатываем" data-order-step-copy="Убираем явные следы поддержек, проверяем хрупкие элементы и готовность к покрасу.">
+                    <span>08</span><strong>Обрабатываем</strong><p class="order-stage-summary">Готовим модель к покрасу.</p>
+                  </button>
+                </li>
+                <li class="order-afterline-stage">
+                  <button class="order-stage-trigger" type="button" data-order-step="pack" data-order-step-title="Упаковываем" data-order-step-copy="Мелкие и тонкие детали фиксируем отдельно, чтобы они доехали целыми.">
+                    <span>09</span><strong>Упаковываем</strong><p class="order-stage-summary">Фиксируем тонкие и мелкие детали.</p>
+                  </button>
+                </li>
+                <li class="order-afterline-stage">
+                  <button class="order-stage-trigger" type="button" data-order-step="ship" data-order-step-title="Отправляем" data-order-step-copy="Передаем заказ выбранным способом и присылаем статус или трек в переписку.">
+                    <span>10</span><strong>Отправляем</strong><p class="order-stage-summary">Статус или трек приходит в переписку.</p>
+                  </button>
+                </li>
+              </ol>
+            </div>
+            <aside class="order-step-inspector" aria-live="polite" aria-labelledby="order-inspector-title">
+              <strong id="order-inspector-title" data-order-inspector-title>Выберите товар</strong>
+              <p id="order-inspector-copy" data-order-inspector-copy>Откройте каталог, выберите готовый лот или набор и проверьте масштаб, состав и минимальный заказ.</p>
+            </aside>
           </div>
           <ol class="step-grid legacy-order-grid" hidden aria-hidden="true">
             <li><span>1</span><strong>Выберите товары</strong><p>Откройте каталог или нужную категорию.</p></li>
             <li><span>2</span><strong>Добавьте в корзину</strong><p>Количество можно менять до оформления.</p></li>
             <li><span>3</span><strong>Оставьте контакты</strong><p>Телефон, удобная связь, город и адрес.</p></li>
-            <li><span>4</span><strong>Мы подтвердим доставку, срок и оплату</strong><p>Финальные условия согласуем вручную после обработки.</p></li>
+            <li><span>4</span><strong>Мы подтвердим доставку, срок и оплату</strong><p>Финальные условия уточняем после обработки.</p></li>
           </ol>
         </section>
 
         <section class="quality-section home-scene quality-scene section-block scroll-reveal reveal-left" aria-labelledby="quality-title">
           <div class="quality-proof-list" aria-label="Контроль качества печати">
-            <div class="quality-proof-point quality-proof-left quality-proof-title">
-              <p class="eyebrow">контроль качества</p>
-              <h2 id="quality-title">Печать без сюрпризов перед покрасом</h2>
+            <div class="quality-proof-point quality-proof-title">
+              <p class="eyebrow" id="quality-title">Контроль качества</p>
+              <p class="quality-lead">Мы сами в этом хобби и знаем, как обидно получить миниатюру, которую вместо грунта и покраски сначала приходится чинить. Поэтому Dr. Printicus смотрит на заказ не как на «просто распечаталось», а как на будущую часть армии, диорамы или игрового стола.</p>
             </div>
             <div class="quality-proof-point quality-proof-right">
-              <strong>Детализация</strong>
+              <strong>Диагностика</strong>
               <p>Смотрим читаемость лиц, брони, символов и мелкого рельефа в нужном масштабе.</p>
             </div>
             <div class="quality-proof-point quality-proof-left">
@@ -267,35 +315,39 @@
               <p>Ориентируем модель, убираем явные следы поддержек и предупреждаем о хрупких местах.</p>
             </div>
             <div class="quality-proof-point quality-proof-right">
-              <strong>Чистая поверхность</strong>
+              <strong>Обработка</strong>
               <p>Проверяем следы поддержек, тонкие элементы и места, которые будут видны после грунта.</p>
             </div>
             <div class="quality-proof-point quality-proof-left">
-              <strong>Упаковка</strong>
-              <p>Мелкие детали и тонкие элементы фиксируем отдельно, чтобы они доехали целыми.</p>
+              <strong>Фиксация</strong>
+              <p>Мелкие детали и тонкие элементы упаковываем отдельно, чтобы они доехали целыми.</p>
             </div>
           </div>
         </section>
 
         <section class="lab-journal-preview home-scene journal-scene section-block scroll-reveal reveal-right" aria-labelledby="home-blog-title">
           <div class="journal-layout">
-            <a class="journal-lead" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur">
+            <a class="journal-feature journal-lead" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur">
               <p class="eyebrow" id="home-blog-title">Журнал лаборатории</p>
               <h2>Качественная 3D-печать миниатюр</h2>
-              <p>Как понять, что модель сохраняет детали, не превращает покрас в ремонт и готова к грунту без долгой зачистки...</p>
+              <p class="journal-preview-copy">3D-печать миниатюр давно перестала быть просто способом получить фигурку из смолы. Для варгеймов, настольных ролевых игр, коллекций и покраски важно не только наличие модели, но и то, насколько точно сохранены детали, аккуратно удалены поддержки и правильно выполнена постобработка. В Dr. Printicus мы рассматриваем печать как производственный процесс: хорошая миниатюра должна выглядеть так, чтобы её хотелось красить, а не долго шлифовать, шпаклевать и спасать после получения. На первый взгляд все смоляные миниатюры могут казаться похожими: файл загружают в слайсер, запускают принтер и получают физическую модель. На практике разница между стабильной технологией и случайным удачным запуском огромна. Плохая печать проявляется по-разному. У модели могут быть смазанные детали, заметная лесенка на поверхностях, грубые следы поддержек на лице или броне, искривлённое оружие, трещины, липкие участки, потерянные фрагменты и хрупкие тонкие элементы. Иногда фигурка выглядит целой издалека, но при рассмотрении оказывается, что цепи слились, текстура ткани пропала, пальцы превратились в комок, а лицо потеряло выражение. Для покраски это критично: грунт, проливки и высветления не маскируют дефекты, а часто подчёркивают их. Качественная миниатюра - это не просто модель без сломанных деталей. Нормальный результат должен позволять после короткого осмотра, сборки и минимальной зачистки перейти к грунтовке. Поэтому итог оценивают не по формальному наличию всех частей, а по сохранности ключевых зон: лица, оружия, символики, фактур кожи, ткани, меха, камня и брони. Детализация зависит не только от разрешения принтера. На результат влияют высота слоя, экспозиция, скорость подъёма, температура, ориентация модели, состояние расходников, состав смолы и корректность поддержек.</p>
+              <span class="journal-continue">Продолжить чтение</span>
             </a>
-            <div class="journal-secondary-list" aria-label="Другие материалы журнала">
-              <a class="blog-card" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati"><span>покраска</span><h3>Почему заготовка должна быть аккуратной</h3><p>Как печать влияет на грунтовку, проливки, высветления, сборку и итоговый вид.</p></a>
-              <a class="blog-card" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur"><span>смола</span><h3>Смоляная 3D-печать миниатюр</h3><p>Плюсы, ограничения, прочность, поддержки и требования к качеству процесса.</p></a>
+            <div class="journal-secondary-panel">
+              <div class="journal-secondary-list" aria-label="Другие материалы журнала">
+                <a class="blog-card journal-secondary-card" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati"><span>покраска</span><h3>Почему миниатюры для покраски должны быть напечатаны аккуратно</h3><p>Как печать влияет на грунтовку, проливки, высветления, сборку и итоговый вид.</p></a>
+                <a class="blog-card journal-secondary-card" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur"><span>смола</span><h3>Смоляная 3D-печать миниатюр</h3><p>Плюсы, ограничения, прочность, поддержки и требования к качеству процесса.</p></a>
+                <a class="blog-card journal-secondary-card" href="#blog?article=licenzionnaya-3d-pechat-miniatyur" data-route="blog" data-article-route="licenzionnaya-3d-pechat-miniatyur"><span>лицензии</span><h3>Лицензионная 3D-печать миниатюр</h3><p>Почему происхождение модели важно для устойчивого каталога и поддержки авторов.</p></a>
+              </div>
               <a class="secondary journal-all-link" href="#blog" data-route="blog">Все материалы</a>
             </div>
           </div>
         </section>
 
         <section class="about-studio home-scene about-scene section-block scroll-reveal reveal-left" aria-labelledby="about-title">
-          <p class="eyebrow">о студии</p>
-          <h2 id="about-title">Dr. Printicus — маленькая лаборатория для больших столов</h2>
-          <p>Мы печатаем миниатюры, детали и террейн партиями под заказ: без обещаний автоматической цены, зато с понятным составом, аккуратной подготовкой и честным подтверждением перед стартом.</p>
+          <p class="eyebrow">О студии</p>
+          <h2 id="about-title"><span class="about-title-brand">Dr. Printicus</span><span class="about-title-slogan">— маленькая лаборатория</span><br><span class="about-title-slogan about-title-slogan-line">для больших столов</span></h2>
+          <p class="about-copy">Мы небольшая студия 3D-печати, которая с трепетом относится к своему делу. Печатаем аккуратно, проверяем внимательно и любим момент, когда миниатюра перестаёт быть просто распечаткой и становится частью вашей игры.</p>
         </section>
       </section>
 
@@ -782,6 +834,6 @@
     </footer>
 
     <script src="./assets/blog-articles.js?v=catalog-filters-16"></script>
-    <script src="./assets/app.js?v=home-scenes-04"></script>
+    <script src="./assets/app.js?v=home-scenes-08"></script>
   </body>
 </html>

@@ -397,6 +397,9 @@ const featuredRail = document.querySelector("[data-featured-rail]");
 const showcaseScene = document.querySelector(".showcase-scene");
 const featuredTabs = Array.from(document.querySelectorAll("[data-featured-tab]"));
 const featuredRailButtons = Array.from(document.querySelectorAll("[data-featured-scroll]"));
+const orderSteps = Array.from(document.querySelectorAll("[data-order-step]"));
+const orderInspectorTitle = document.querySelector("[data-order-inspector-title]");
+const orderInspectorCopy = document.querySelector("[data-order-inspector-copy]");
 const sortControl = document.querySelector("[data-sort-control]");
 const loadMoreButton = document.querySelector("[data-load-more]");
 const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
@@ -408,6 +411,8 @@ const SHOWCASE_ORBIT_CENTER_DELAY_MS = 80;
 const SHOWCASE_ORBIT_SPREAD_DELAY_MS = 320;
 const SHOWCASE_ORBIT_CTA_READY_DELAY_MS = 1240;
 const SHOWCASE_ORBIT_CLEANUP_DELAY_MS = 1840;
+const SCROLL_REVEAL_ENTER_RATIO = 0.70;
+const SCROLL_REVEAL_EXIT_RATIO = 0.25;
 const drawer = document.querySelector("[data-mobile-drawer]");
 const drawerOpenButton = document.querySelector("[data-drawer-open]");
 const drawerCloseButtons = Array.from(document.querySelectorAll("[data-drawer-close]"));
@@ -480,7 +485,6 @@ let scrollSpyFrame = 0;
 let hasAppliedRoute = false;
 let featuredOrbitIndex = 1;
 let currentFeaturedIds = [];
-let featuredOrbitIntroPlayed = false;
 let featuredOrbitStageTimers = [];
 
 const blogArticles = window.drPrinticusBlogArticles || {};
@@ -1444,6 +1448,50 @@ function renderArticleMarkdown(markdown) {
   return nodes;
 }
 
+function updateOrderInspector(step) {
+  if (!step || !orderInspectorTitle || !orderInspectorCopy) return;
+
+  const fallbackTitle = step.querySelector("strong")?.textContent?.trim() || "";
+  const title = step.dataset.orderStepTitle || fallbackTitle;
+  const copy = step.dataset.orderStepCopy || "";
+
+  orderInspectorTitle.textContent = title;
+  orderInspectorCopy.textContent = copy;
+}
+
+function setActiveOrderStep(step) {
+  if (!step) return;
+
+  orderSteps.forEach((item) => {
+    const isActive = item === step;
+    item.classList.toggle("is-active", isActive);
+    if (isActive) {
+      item.setAttribute("aria-current", "step");
+    } else {
+      item.removeAttribute("aria-current");
+    }
+  });
+
+  updateOrderInspector(step);
+}
+
+function setupOrderInspector() {
+  if (orderSteps.length === 0) return;
+
+  const initialStep = orderSteps.find((step) => step.classList.contains("is-active")) || orderSteps[0];
+  setActiveOrderStep(initialStep);
+
+  orderSteps.forEach((step) => {
+    step.addEventListener("pointerenter", () => setActiveOrderStep(step));
+    step.addEventListener("focus", () => setActiveOrderStep(step));
+    step.addEventListener("click", () => setActiveOrderStep(step));
+    step.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      setActiveOrderStep(step);
+    });
+  });
+}
+
 function shouldAnimateFeaturedOrbitStage() {
   return Boolean(
     showcaseScene &&
@@ -1510,6 +1558,20 @@ function startFeaturedOrbitStage({ markIntroComplete = false } = {}) {
       finishFeaturedOrbitStage({ markIntroComplete });
     });
   });
+}
+
+function resetFeaturedOrbitIntro() {
+  if (!showcaseScene) return;
+  clearFeaturedOrbitStageTimers();
+  showcaseScene.classList.remove(
+    "is-showcase-orbit-staging",
+    "is-showcase-orbit-center",
+    "is-showcase-orbit-spread",
+    "is-showcase-orbit-cta-ready",
+    "is-showcase-intro-staging",
+    "has-showcase-intro-complete",
+  );
+  primeFeaturedOrbitStage({ includeTabs: true });
 }
 
 function renderFeaturedProducts({ stageOrbit = false } = {}) {
@@ -1691,19 +1753,29 @@ function startHeroCarousel(delayMs = HERO_CAROUSEL_INTERVAL_MS) {
 }
 
 function revealScrollItem(item) {
+  if (item.classList.contains("is-revealed")) return;
   const isShowcaseScene = item === showcaseScene;
-  const shouldPlayShowcaseIntro = isShowcaseScene && !featuredOrbitIntroPlayed;
-  const shouldStageShowcaseIntro = shouldPlayShowcaseIntro && primeFeaturedOrbitStage({ includeTabs: true });
+  const shouldStageShowcaseIntro = isShowcaseScene && primeFeaturedOrbitStage({ includeTabs: true });
 
   item.classList.add("is-revealed");
 
   if (!isShowcaseScene) return;
-  featuredOrbitIntroPlayed = true;
   if (shouldStageShowcaseIntro) {
     startFeaturedOrbitStage({ markIntroComplete: true });
   } else {
     showcaseScene?.classList.add("has-showcase-intro-complete");
   }
+}
+
+function resetScrollItem(item) {
+  item.classList.remove("is-revealed");
+  if (item === showcaseScene) {
+    resetFeaturedOrbitIntro();
+  }
+}
+
+function isReplayableScrollRevealItem(item) {
+  return item.classList.contains("home-scene");
 }
 
 function setupScrollReveal() {
@@ -1712,7 +1784,7 @@ function setupScrollReveal() {
     item.style.setProperty("--reveal-delay", `${Math.min((index % 4) * 60, 180)}ms`);
   });
 
-  if (showcaseScene && !featuredOrbitIntroPlayed) {
+  if (showcaseScene) {
     primeFeaturedOrbitStage({ includeTabs: true });
   }
 
@@ -1724,14 +1796,24 @@ function setupScrollReveal() {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        revealScrollItem(entry.target);
-        observer.unobserve(entry.target);
+        const item = entry.target;
+        if (isReplayableScrollRevealItem(item)) {
+          if (entry.intersectionRatio >= SCROLL_REVEAL_ENTER_RATIO) {
+            revealScrollItem(item);
+          } else if (entry.intersectionRatio <= SCROLL_REVEAL_EXIT_RATIO) {
+            resetScrollItem(item);
+          }
+          return;
+        }
+
+        if (entry.isIntersecting) {
+          revealScrollItem(item);
+        }
       });
     },
     {
-      rootMargin: "0px 0px -10% 0px",
-      threshold: 0.14,
+      rootMargin: "0px",
+      threshold: [0, SCROLL_REVEAL_EXIT_RATIO, SCROLL_REVEAL_ENTER_RATIO, 1],
     },
   );
 
@@ -2225,6 +2307,7 @@ renderFeaturedProducts();
 renderCart();
 updateCardQuantities();
 syncFilterPanelAccessibility();
+setupOrderInspector();
 setupScrollReveal();
 showHeroSlide(0);
 startHeroCarousel(HERO_CAROUSEL_FIRST_DELAY_MS);
