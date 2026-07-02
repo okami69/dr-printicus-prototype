@@ -557,6 +557,23 @@ function hasExplicitScrollTarget(hash = getRouteKey()) {
   return Boolean(getHashScrollTarget(hash));
 }
 
+function isMobileHomeSceneReveal() {
+  return window.matchMedia("(max-width: 899px)").matches;
+}
+
+function getScrollRevealTargetForId(id) {
+  const target = document.getElementById(id);
+  if (!target) return null;
+  return target.classList.contains("scroll-reveal") ? target : target.closest(".scroll-reveal");
+}
+
+function revealScrollTargetNow(id) {
+  const target = getScrollRevealTargetForId(id);
+  if (target) {
+    revealScrollItem(target);
+  }
+}
+
 function getCurrentScrollY() {
   if ((document.body.classList.contains("drawer-open") || document.body.classList.contains("filter-open")) && document.body.style.top) {
     const lockedY = Number.parseFloat(document.body.style.top);
@@ -615,6 +632,7 @@ function scrollToActiveScreenTop(smooth = false) {
 function restoreRouteScroll({ manualNavigation, scrollTarget }) {
   requestAnimationFrame(() => {
     if (scrollTarget) {
+      revealScrollTargetNow(scrollTarget);
       alignScrollTargetAfterRouteSettles(scrollTarget, manualNavigation);
       return;
     }
@@ -1584,7 +1602,7 @@ function renderFeaturedProducts({ stageOrbit = false } = {}) {
     promo: ["banner", "hounds", "heads", "cursed", "mechanics", "shoulders", "hunter", "armor", "artifacts", "champion"],
   };
   currentFeaturedIds = idsByTab[currentFeaturedTab] || idsByTab.hits;
-  featuredOrbitIndex = Math.min(1, Math.max(0, currentFeaturedIds.length - 1));
+  featuredOrbitIndex = isFeaturedOrbitMobile() ? 0 : Math.min(1, Math.max(0, currentFeaturedIds.length - 1));
   featuredRail.innerHTML = currentFeaturedIds
     .map((id) => {
       const product = products[id];
@@ -1616,6 +1634,14 @@ function isFeaturedOrbitDesktop() {
   return window.matchMedia("(min-width: 900px)").matches;
 }
 
+function isFeaturedOrbitMobile() {
+  return window.matchMedia("(max-width: 899px)").matches;
+}
+
+function isFeaturedOrbitMode() {
+  return isFeaturedOrbitDesktop() || isFeaturedOrbitMobile();
+}
+
 function wrapFeaturedOrbitIndex(index, length = currentFeaturedIds.length) {
   if (!length) return 0;
   return ((index % length) + length) % length;
@@ -1645,9 +1671,9 @@ function getFeaturedOrbitPositionName(relative) {
 
 function setFeaturedCardInteractive(card, interactive) {
   card.classList.toggle("is-orbit-active", interactive);
-  card.setAttribute("aria-hidden", String(!interactive && isFeaturedOrbitDesktop()));
+  card.setAttribute("aria-hidden", String(!interactive && isFeaturedOrbitMode()));
   card.querySelectorAll(".product-card-main, .primary, .quantity-control button").forEach((control) => {
-    if (interactive || !isFeaturedOrbitDesktop()) {
+    if (interactive || !isFeaturedOrbitMode()) {
       control.removeAttribute("tabindex");
       control.removeAttribute("aria-hidden");
     } else {
@@ -1665,7 +1691,7 @@ function syncFeaturedOrbit() {
     const relative = getFeaturedOrbitRelativePosition(index);
     const position = getFeaturedOrbitPositionName(relative);
     const visibleRelative = Math.max(-3, Math.min(3, relative));
-    const active = Math.abs(relative) <= 1;
+    const active = isFeaturedOrbitMobile() ? relative === 0 : Math.abs(relative) <= 1;
     card.dataset.orbitPosition = position;
     card.style.setProperty("--orbit-offset", String(visibleRelative));
     card.style.setProperty("--orbit-abs", String(Math.abs(visibleRelative)));
@@ -1685,7 +1711,7 @@ function getFeaturedCardStep() {
 
 function scrollFeaturedRail(direction) {
   if (!featuredRail) return;
-  if (isFeaturedOrbitDesktop()) {
+  if (isFeaturedOrbitMode()) {
     featuredOrbitIndex = wrapFeaturedOrbitIndex(featuredOrbitIndex + (direction === "next" ? 1 : -1));
     featuredRail.classList.add("is-switching");
     syncFeaturedOrbit();
@@ -1706,9 +1732,9 @@ function scrollFeaturedRail(direction) {
 
 function updateFeaturedRailControls() {
   if (!featuredRail || featuredRailButtons.length === 0) return;
-  if (isFeaturedOrbitDesktop()) {
+  if (isFeaturedOrbitMode()) {
     featuredRailButtons.forEach((button) => {
-      button.hidden = currentFeaturedIds.length <= 3;
+      button.hidden = currentFeaturedIds.length <= 1;
     });
     return;
   }
@@ -1775,7 +1801,7 @@ function resetScrollItem(item) {
 }
 
 function isReplayableScrollRevealItem(item) {
-  return item.classList.contains("home-scene");
+  return item.classList.contains("home-scene") && !isMobileHomeSceneReveal();
 }
 
 function setupScrollReveal() {
@@ -1797,6 +1823,14 @@ function setupScrollReveal() {
     (entries) => {
       entries.forEach((entry) => {
         const item = entry.target;
+        if (isMobileHomeSceneReveal() && item.classList.contains("home-scene")) {
+          if (entry.isIntersecting) {
+            revealScrollItem(item);
+            observer.unobserve(item);
+          }
+          return;
+        }
+
         if (isReplayableScrollRevealItem(item)) {
           if (entry.intersectionRatio >= SCROLL_REVEAL_ENTER_RATIO) {
             revealScrollItem(item);
