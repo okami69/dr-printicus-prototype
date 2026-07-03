@@ -2152,12 +2152,55 @@ function closeGallery() {
   }
 }
 
+function getFormStateFields(form) {
+  return Array.from(form.querySelectorAll("input, select, textarea"));
+}
+
+function setFormInvalidState(form) {
+  getFormStateFields(form).forEach((field) => {
+    field.toggleAttribute("aria-invalid", !field.validity.valid);
+  });
+}
+
+function clearFormInvalidState(form) {
+  getFormStateFields(form).forEach((field) => {
+    field.removeAttribute("aria-invalid");
+  });
+}
+
+function clearFieldInvalidState(field) {
+  if (field?.validity.valid) {
+    field.removeAttribute("aria-invalid");
+  }
+}
+
+function bindFormInvalidState(form, errorNode) {
+  if (!form) return;
+
+  form.addEventListener("invalid", (event) => {
+    const field = event.target.closest("input, select, textarea");
+    if (!field) return;
+    field.setAttribute("aria-invalid", "true");
+    if (errorNode) {
+      errorNode.hidden = false;
+    }
+  }, true);
+
+  ["input", "change"].forEach((eventName) => {
+    form.addEventListener(eventName, (event) => {
+      clearFieldInvalidState(event.target.closest("input, select, textarea"));
+    });
+  });
+}
+
 function validateForm(form, errorNode) {
   if (!form.checkValidity()) {
+    setFormInvalidState(form);
     errorNode.hidden = false;
     form.reportValidity();
     return false;
   }
+  clearFormInvalidState(form);
   errorNode.hidden = true;
   return true;
 }
@@ -2404,6 +2447,9 @@ stlForm?.addEventListener("submit", (event) => {
   event.preventDefault();
   handleSubmit(stlForm, stlSubmit, stlError, "stl-success");
 });
+
+bindFormInvalidState(checkoutForm, checkoutError);
+bindFormInvalidState(stlForm, stlError);
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
