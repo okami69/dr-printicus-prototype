@@ -412,6 +412,8 @@ const SHOWCASE_ORBIT_SPREAD_DELAY_MS = 320;
 const SHOWCASE_ORBIT_CTA_READY_DELAY_MS = 1240;
 const SHOWCASE_ORBIT_CLEANUP_DELAY_MS = 1840;
 const FEATURED_ORBIT_SWIPE_THRESHOLD_PX = 42;
+const FEATURED_ORBIT_WHEEL_THRESHOLD_PX = 52;
+const FEATURED_ORBIT_WHEEL_COOLDOWN_MS = 420;
 const SCROLL_REVEAL_ENTER_RATIO = 0.42;
 const SCROLL_REVEAL_EXIT_RATIO = 0.12;
 const drawer = document.querySelector("[data-mobile-drawer]");
@@ -489,6 +491,8 @@ let currentFeaturedIds = [];
 let featuredOrbitStageTimers = [];
 let featuredOrbitPointerState = null;
 let featuredOrbitSuppressClickUntil = 0;
+let featuredOrbitWheelDeltaX = 0;
+let featuredOrbitWheelCooldownUntil = 0;
 
 const blogArticles = window.drPrinticusBlogArticles || {};
 
@@ -1782,8 +1786,8 @@ function setupFeaturedOrbitTouchScroll() {
   if (!featuredRail || !window.PointerEvent) return;
 
   featuredRail.addEventListener("pointerdown", (event) => {
-    if (!isFeaturedOrbitMobile() || currentFeaturedIds.length <= 1 || !event.isPrimary) return;
-    if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (!isFeaturedOrbitMode() || currentFeaturedIds.length <= 1 || !event.isPrimary) return;
+    if (event.pointerType === "mouse") return;
 
     featuredOrbitPointerState = {
       id: event.pointerId,
@@ -1825,6 +1829,35 @@ function setupFeaturedOrbitTouchScroll() {
   });
 
   featuredRail.addEventListener("pointercancel", resetFeaturedOrbitTouchScroll);
+}
+
+function setupFeaturedOrbitWheelScroll() {
+  if (!featuredRail) return;
+
+  featuredRail.addEventListener(
+    "wheel",
+    (event) => {
+      if (!isFeaturedOrbitMode() || currentFeaturedIds.length <= 1) return;
+
+      const absX = Math.abs(event.deltaX);
+      const absY = Math.abs(event.deltaY);
+      if (absX < 2 || absX <= absY * 1.25) return;
+
+      event.preventDefault();
+      featuredOrbitWheelDeltaX += event.deltaX;
+
+      const now = Date.now();
+      if (now < featuredOrbitWheelCooldownUntil) return;
+
+      if (Math.abs(featuredOrbitWheelDeltaX) >= FEATURED_ORBIT_WHEEL_THRESHOLD_PX) {
+        scrollFeaturedRail(featuredOrbitWheelDeltaX > 0 ? "next" : "prev");
+        featuredOrbitWheelDeltaX = 0;
+        featuredOrbitWheelCooldownUntil = now + FEATURED_ORBIT_WHEEL_COOLDOWN_MS;
+        featuredOrbitSuppressClickUntil = now + 450;
+      }
+    },
+    { passive: false },
+  );
 }
 
 function showHeroSlide(index) {
@@ -2302,7 +2335,7 @@ document.addEventListener("click", (event) => {
   const featuredCardProduct = event.target.closest(".showcase-scene .product-card.is-orbit-active[data-open-product-card]");
   if (
     featuredCardProduct &&
-    isFeaturedOrbitDesktop() &&
+    isFeaturedOrbitMode() &&
     !event.target.closest("[data-cart-action], [data-cart-plus], [data-cart-minus], [data-card-qty]")
   ) {
     goToScreen("product", { product: featuredCardProduct.dataset.openProductCard || activeProductId });
@@ -2472,6 +2505,7 @@ window.addEventListener("beforeunload", () => rememberScrollPosition());
 initTheme();
 renderFeaturedProducts();
 setupFeaturedOrbitTouchScroll();
+setupFeaturedOrbitWheelScroll();
 renderCart();
 updateCardQuantities();
 syncFilterPanelAccessibility();

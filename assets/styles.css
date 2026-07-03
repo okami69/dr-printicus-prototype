@@ -1180,6 +1180,7 @@ html[data-color-theme="light"] .theme-toggle-sun {
   max-width: 100%;
   overflow: clip;
   overflow-clip-margin: 56px;
+  touch-action: pan-y;
 }
 
 .featured-rail-frame::before,
@@ -4767,7 +4768,7 @@ dd {
     scroll-padding: 0;
     scroll-snap-type: none;
     transform-style: preserve-3d;
-    cursor: grab;
+    cursor: default;
     user-select: none;
   }
 
@@ -4811,6 +4812,7 @@ dd {
   }
 
   .showcase-scene .featured-rail .product-card.is-orbit-active {
+    cursor: pointer;
     pointer-events: auto;
   }
 
@@ -5527,6 +5529,22 @@ dd {
 
   .product-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 899px) {
+  .screen[data-screen="home"] > .hero-section.home-scene {
+    min-height: auto;
+    padding-bottom: var(--space-4);
+  }
+
+  .screen[data-screen="home"] > .hero-section.home-scene .hero-visual {
+    display: none;
+  }
+
+  .screen[data-screen="home"] > .hero-section.home-scene + .showcase-scene.section-block.home-scene {
+    margin-top: 0;
+    padding-top: var(--space-4);
   }
 }
 
