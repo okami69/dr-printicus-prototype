@@ -3,6 +3,14 @@ const DEFAULT_COLOR_THEME = "dark";
 const COLOR_THEMES = new Set(["dark", "light"]);
 const MIN_ORDER_AMOUNT = 250;
 const MIN_DELIVERY_PRICE = 350;
+const FOCUSABLE_SELECTOR = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(", ");
 
 const products = {
   champion: {
@@ -2136,6 +2144,7 @@ function syncFilterPanelAccessibility() {
   const isOpen = filterPanel.classList.contains("is-open");
   filterPanel.toggleAttribute("inert", isMobile && !isOpen);
   filterPanel.setAttribute("aria-hidden", String(isMobile && !isOpen));
+  filterPanel.setAttribute("aria-modal", String(isMobile && isOpen));
   document.body.classList.toggle("filter-open", isMobile && isOpen);
 }
 
@@ -2149,7 +2158,7 @@ function openFilterPanel() {
   filterPanel.classList.add("is-open");
   filterToggle?.setAttribute("aria-expanded", "true");
   syncFilterPanelAccessibility();
-  requestAnimationFrame(() => filterPanel.focus());
+  requestAnimationFrame(() => filterPanel.querySelector(".filter-panel-head button, [data-filter-close-results]")?.focus());
 }
 
 function closeFilterPanel({ restoreScroll = true } = {}) {
@@ -2174,7 +2183,7 @@ function openGallery() {
   if (!galleryModal) return;
   lastFocusedElement = document.activeElement;
   galleryModal.hidden = false;
-  requestAnimationFrame(() => galleryModal.querySelector("button")?.focus());
+  requestAnimationFrame(() => galleryModal.querySelector(".gallery-modal-panel button")?.focus());
 }
 
 function closeGallery() {
@@ -2185,26 +2194,125 @@ function closeGallery() {
   }
 }
 
+function getFocusableElements(container) {
+  if (!container) return [];
+  return Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR)).filter((element) => {
+    if (element.disabled || element.hidden) return false;
+    if (element.closest("[hidden], [aria-hidden=\"true\"]")) return false;
+    return true;
+  });
+}
+
+function trapFocusWithin(container, event) {
+  if (event.key !== "Tab" || !container) return;
+  const focusable = getFocusableElements(container);
+  if (focusable.length === 0) {
+    event.preventDefault();
+    container.focus?.();
+    return;
+  }
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  const active = document.activeElement;
+
+  if (event.shiftKey && (active === first || !container.contains(active))) {
+    event.preventDefault();
+    last.focus();
+    return;
+  }
+
+  if (!event.shiftKey && active === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
 function getFormStateFields(form) {
   return Array.from(form.querySelectorAll("input, select, textarea"));
 }
 
+function setFieldDescribedBy(field, descriptionId, enabled) {
+  if (!field || !descriptionId) return;
+  const values = new Set((field.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean));
+  if (enabled) {
+    values.add(descriptionId);
+  } else {
+    values.delete(descriptionId);
+  }
+
+  if (values.size) {
+    field.setAttribute("aria-describedby", Array.from(values).join(" "));
+  } else {
+    field.removeAttribute("aria-describedby");
+  }
+}
+
 function setFormInvalidState(form) {
+  const descriptionId = form.getAttribute("aria-describedby");
   getFormStateFields(form).forEach((field) => {
-    field.toggleAttribute("aria-invalid", !field.validity.valid);
+    if (field.validity.valid) {
+      field.removeAttribute("aria-invalid");
+      setFieldDescribedBy(field, descriptionId, false);
+    } else {
+      field.setAttribute("aria-invalid", "true");
+      setFieldDescribedBy(field, descriptionId, true);
+    }
   });
 }
 
 function clearFormInvalidState(form) {
+  const descriptionId = form.getAttribute("aria-describedby");
   getFormStateFields(form).forEach((field) => {
     field.removeAttribute("aria-invalid");
+    setFieldDescribedBy(field, descriptionId, false);
   });
 }
 
 function clearFieldInvalidState(field) {
   if (field?.validity.valid) {
     field.removeAttribute("aria-invalid");
+    setFieldDescribedBy(field, field.closest("form")?.getAttribute("aria-describedby"), false);
   }
+}
+
+function getInvalidFields(form) {
+  return getFormStateFields(form).filter((field) => !field.validity.valid);
+}
+
+function getFieldLabel(field) {
+  const label = field.closest("label");
+  if (!label) return field.name || "поле";
+  const labelText = Array.from(label.childNodes)
+    .filter((node) => node.nodeType === Node.TEXT_NODE)
+    .map((node) => node.textContent.trim())
+    .join(" ")
+    .trim();
+  return labelText || label.querySelector("span")?.textContent?.trim() || field.name || "поле";
+}
+
+function getFieldErrorMessage(field) {
+  if (field.dataset.errorMessage) return field.dataset.errorMessage;
+  if (field.validity.valueMissing) return `Заполните поле «${getFieldLabel(field)}».`;
+  if (field.validity.typeMismatch && field.type === "email") return "Проверьте email: нужен формат name@example.ru.";
+  if (field.validity.rangeUnderflow && field.min) return `Укажите «${getFieldLabel(field)}» не меньше ${field.min}.`;
+  return `Проверьте поле «${getFieldLabel(field)}».`;
+}
+
+function renderFormErrorSummary(form, errorNode, invalidFields) {
+  if (!errorNode) return;
+  const messages = invalidFields.map(getFieldErrorMessage);
+  errorNode.textContent = messages.length === 1
+    ? messages[0]
+    : `Проверьте поля: ${messages.slice(0, 3).join(" ")}`;
+  errorNode.hidden = false;
+  const descriptionId = errorNode.id || form.getAttribute("aria-describedby");
+  invalidFields.forEach((field) => setFieldDescribedBy(field, descriptionId, true));
+}
+
+function focusFirstInvalidField(invalidFields) {
+  invalidFields[0]?.scrollIntoView({ block: "center", behavior: "smooth" });
+  invalidFields[0]?.focus({ preventScroll: true });
 }
 
 function bindFormInvalidState(form, errorNode) {
@@ -2214,8 +2322,9 @@ function bindFormInvalidState(form, errorNode) {
     const field = event.target.closest("input, select, textarea");
     if (!field) return;
     field.setAttribute("aria-invalid", "true");
+    setFieldDescribedBy(field, errorNode?.id || form.getAttribute("aria-describedby"), true);
     if (errorNode) {
-      errorNode.hidden = false;
+      renderFormErrorSummary(form, errorNode, getInvalidFields(form));
     }
   }, true);
 
@@ -2227,14 +2336,17 @@ function bindFormInvalidState(form, errorNode) {
 }
 
 function validateForm(form, errorNode) {
-  if (!form.checkValidity()) {
+  const invalidFields = getInvalidFields(form);
+  if (invalidFields.length) {
     setFormInvalidState(form);
-    errorNode.hidden = false;
-    form.reportValidity();
+    renderFormErrorSummary(form, errorNode, invalidFields);
+    focusFirstInvalidField(invalidFields);
     return false;
   }
   clearFormInvalidState(form);
-  errorNode.hidden = true;
+  if (errorNode) {
+    errorNode.hidden = true;
+  }
   return true;
 }
 
@@ -2250,12 +2362,13 @@ function handleSubmit(form, button, errorNode, targetScreen) {
   }
   isSubmitting = true;
   button.disabled = true;
-  button.textContent = "Отправляем...";
+  const loadingLabel = button.dataset.loadingLabel || (targetScreen === "success" ? "Заявка отправляется" : "Расчёт отправляется");
+  button.textContent = loadingLabel;
   pendingSubmitTimer = window.setTimeout(() => {
     pendingSubmitTimer = 0;
     isSubmitting = false;
     button.disabled = false;
-    button.textContent = targetScreen === "success" ? "Отправить заявку" : "Получить расчёт";
+    button.textContent = button.dataset.submitLabel || "Отправить";
     if (targetScreen === "success") {
       renderSuccessReceipt();
       checkoutSubmitted = true;
@@ -2485,6 +2598,21 @@ bindFormInvalidState(checkoutForm, checkoutError);
 bindFormInvalidState(stlForm, stlError);
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Tab") {
+    if (galleryModal && !galleryModal.hidden) {
+      trapFocusWithin(galleryModal, event);
+      return;
+    }
+    if (filterPanel?.classList.contains("is-open") && isMobileFilterPanel()) {
+      trapFocusWithin(filterPanel, event);
+      return;
+    }
+    if (drawer?.classList.contains("is-open")) {
+      trapFocusWithin(drawer, event);
+    }
+    return;
+  }
+
   if (event.key !== "Escape") return;
   closeDrawer({ restoreScroll: false });
   closeFilterPanel({ restoreScroll: false });

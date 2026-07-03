@@ -6,7 +6,7 @@
     <title>Dr. Printicus - прототип магазина</title>
     <meta name="description" content="Dr. Printicus печатает миниатюры, детали, террейн и STL-модели под заказ с аккуратной подготовкой к покраске." />
     <link rel="preload" as="image" href="./assets/merchant/hero-crimson-winged-jumppack.png" fetchpriority="high" />
-    <link rel="stylesheet" href="./assets/styles.css?v=home-rail-gesture-02" />
+    <link rel="stylesheet" href="./assets/styles.css?v=form-dialog-accessibility-01" />
   </head>
   <body>
     <header class="topbar">
@@ -390,9 +390,9 @@
 
           <div class="catalog-layout">
             <button class="filter-scrim" type="button" data-filter-close aria-label="Закрыть фильтры"></button>
-            <aside class="catalog-sidebar" id="catalog-filters" data-filter-panel aria-hidden="true" tabindex="-1">
+            <aside class="catalog-sidebar" id="catalog-filters" data-filter-panel aria-hidden="true" tabindex="-1" role="dialog" aria-modal="false" aria-labelledby="catalog-filters-title">
               <div class="filter-panel-head">
-                <strong>Фильтры</strong>
+                <strong id="catalog-filters-title">Фильтры</strong>
                 <button type="button" data-filter-close aria-label="Закрыть фильтры">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
                 </button>
@@ -692,18 +692,18 @@
       <section id="checkout" class="screen" data-screen="checkout" aria-labelledby="checkout-title">
         <div class="screen-head"><div><p class="eyebrow">оформление заявки</p><h1 id="checkout-title">Контакты и доставка</h1></div></div>
         <div class="checkout-layout">
-          <form class="request-form" data-checkout-form>
-            <label>Имя <input required placeholder="Ваше имя" /></label>
-            <label>Телефон <input required placeholder="+7..." /></label>
-            <label>Удобный способ связи <select required><option>Telegram</option><option>VK</option><option>Телефон</option><option>Email</option></select></label>
-            <label>Email <input type="email" placeholder="name@mail.ru" /></label>
-            <label>Город <input required placeholder="Город" /></label>
-            <label>Адрес или пункт выдачи <input required placeholder="Адрес или пункт выдачи" /></label>
+          <form class="request-form" data-checkout-form novalidate aria-describedby="checkout-form-error">
+            <label>Имя <input required placeholder="Ваше имя" data-error-message="Укажите имя для заявки." /></label>
+            <label>Телефон <input required placeholder="+7..." data-error-message="Укажите телефон для связи." /></label>
+            <label>Удобный способ связи <select required data-error-message="Выберите удобный способ связи."><option>Telegram</option><option>VK</option><option>Телефон</option><option>Email</option></select></label>
+            <label>Email <input type="email" placeholder="name@mail.ru" data-error-message="Проверьте email: нужен формат name@example.ru." /></label>
+            <label>Город <input required placeholder="Город" data-error-message="Укажите город доставки или получения." /></label>
+            <label>Адрес или пункт выдачи <input required placeholder="Адрес или пункт выдачи" data-error-message="Укажите адрес или пункт выдачи." /></label>
             <label>Комментарий <textarea placeholder="Пожелания к упаковке, срокам или составу"></textarea></label>
             <label>Промокод <input placeholder="Если есть" /></label>
-            <label class="check-row"><input type="checkbox" required /> <span>Согласие на обработку персональных данных</span></label>
-            <p class="form-error" data-checkout-error hidden>Заполните обязательные поля и подтвердите согласие.</p>
-            <button class="primary wide" type="submit" data-checkout-submit>Отправить заявку</button>
+            <label class="check-row"><input type="checkbox" required data-error-message="Подтвердите согласие на обработку персональных данных." /> <span>Согласие на обработку персональных данных</span></label>
+            <p class="form-error" id="checkout-form-error" data-checkout-error hidden aria-live="polite">Проверьте обязательные поля и согласие.</p>
+            <button class="primary wide" type="submit" data-checkout-submit data-submit-label="Отправить заявку" data-loading-label="Заявка отправляется">Отправить заявку</button>
           </form>
           <aside class="summary-panel">
             <h2>Состав заявки</h2>
@@ -749,29 +749,29 @@
               <p>Принимаем STL, OBJ и архивы с несколькими файлами. Ориентир ответа по заявке — до 1 рабочего дня после получения ссылки.</p>
             </div>
           </div>
-          <form class="request-form stl-form" data-stl-form>
+          <form class="request-form stl-form" data-stl-form novalidate aria-describedby="stl-form-error">
             <div class="form-section">
               <h2>Контакты</h2>
               <div class="form-row">
-                <label>Имя <input required placeholder="Ваше имя" /></label>
-                <label>Email <input type="email" placeholder="name@mail.ru" /></label>
+                <label>Имя <input required placeholder="Ваше имя" data-error-message="Укажите имя для расчёта." /></label>
+                <label>Email <input type="email" placeholder="name@mail.ru" data-error-message="Проверьте email: нужен формат name@example.ru." /></label>
               </div>
-              <label>Удобный способ связи <select required><option>Telegram</option><option>VK</option><option>WhatsApp</option><option>Телефон</option><option>Email</option></select></label>
-              <label>Контакт для связи <input required placeholder="@username, телефон, VK или email" /></label>
+              <label>Удобный способ связи <select required data-error-message="Выберите удобный способ связи."><option>Telegram</option><option>VK</option><option>WhatsApp</option><option>Телефон</option><option>Email</option></select></label>
+              <label>Контакт для связи <input required placeholder="@username, телефон, VK или email" data-error-message="Укажите контакт: Telegram, телефон, VK или email." /></label>
             </div>
             <div class="form-section">
               <h2>Файлы и задача</h2>
-              <label>Ссылка на облако с файлами <input required placeholder="https://..." /></label>
+              <label>Ссылка на облако с файлами <input required placeholder="https://..." data-error-message="Добавьте ссылку на облако с файлами." /></label>
               <div class="form-row">
-                <label>Масштаб <input required placeholder="Например, 32 мм" /></label>
-                <label>Количество <input type="number" min="1" value="1" required /></label>
+                <label>Масштаб <input required placeholder="Например, 32 мм" data-error-message="Укажите масштаб или ориентир размера." /></label>
+                <label>Количество <input type="number" min="1" value="1" required data-error-message="Укажите количество не меньше 1." /></label>
               </div>
               <label>Комментарий <textarea placeholder="Пожелания к сборке, деталям и упаковке"></textarea></label>
             </div>
-            <label class="check-row"><input type="checkbox" required data-stl-rights /> <span>Подтверждаю, что у меня есть право передать модель в печать</span></label>
-            <label class="check-row"><input type="checkbox" required /> <span>Согласие на обработку персональных данных</span></label>
-            <p class="form-error" data-stl-error hidden>Заполните обязательные поля и подтвердите согласие.</p>
-            <button class="primary wide" type="submit" data-stl-submit>Получить расчёт</button>
+            <label class="check-row"><input type="checkbox" required data-stl-rights data-error-message="Подтвердите право передать модель в печать." /> <span>Подтверждаю, что у меня есть право передать модель в печать</span></label>
+            <label class="check-row"><input type="checkbox" required data-error-message="Подтвердите согласие на обработку персональных данных." /> <span>Согласие на обработку персональных данных</span></label>
+            <p class="form-error" id="stl-form-error" data-stl-error hidden aria-live="polite">Проверьте обязательные поля, ссылку на файлы и согласия.</p>
+            <button class="primary wide" type="submit" data-stl-submit data-submit-label="Получить расчёт" data-loading-label="Расчёт отправляется">Получить расчёт</button>
           </form>
         </div>
       </section>
@@ -780,7 +780,7 @@
         <div class="success-state stl-success">
           <p class="eyebrow">заявка на печать</p>
           <h1 id="stl-success-title">Заявка на печать принята</h1>
-          <p>Мы проверим модель, объём, материал и поддержку, затем вернём расчёт до запуска печати.</p>
+          <p>Мы проверим модель, объём, материал и поддержку, затем вернём расчёт до 1 рабочего дня. Оплата только после согласования.</p>
           <a class="primary" href="#catalog" data-route="catalog">Посмотреть готовые лоты</a>
         </div>
       </section>
@@ -822,9 +822,10 @@
       </section>
     </main>
 
-    <div class="gallery-modal" data-gallery-modal hidden>
+    <div class="gallery-modal" data-gallery-modal hidden role="dialog" aria-modal="true" aria-labelledby="gallery-modal-title">
       <button class="gallery-modal-scrim" type="button" data-gallery-close aria-label="Закрыть просмотр"></button>
       <div class="gallery-modal-panel">
+        <h2 class="visually-hidden" id="gallery-modal-title">Просмотр изображения товара</h2>
         <button type="button" data-gallery-close aria-label="Закрыть"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg></button>
         <img src="./assets/merchant/card-hunter.jpg" alt="Увеличенное изображение товара" data-gallery-modal-image loading="lazy" decoding="async" fetchpriority="low" />
       </div>
@@ -853,6 +854,6 @@
       }
     </script>
     <script type="module" src="./assets/quality-model-viewer.js?v=home-quality-3d-07"></script>
-    <script src="./assets/app.js?v=home-rail-gesture-02"></script>
+    <script src="./assets/app.js?v=form-dialog-accessibility-01"></script>
   </body>
 </html>
