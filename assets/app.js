@@ -3,6 +3,8 @@ const DEFAULT_COLOR_THEME = "dark";
 const COLOR_THEMES = new Set(["dark", "light"]);
 const MIN_ORDER_AMOUNT = 250;
 const MIN_DELIVERY_PRICE = 350;
+const FILTER_MENU_GAP = 7;
+const FILTER_MOBILE_ACTION_GAP = 8;
 const FOCUSABLE_SELECTOR = [
   'a[href]',
   'button:not([disabled])',
@@ -333,20 +335,20 @@ const filterQueryKeys = {
 
 const legacyCategoryMap = {
   all: {},
-  miniatures: { productKind: "model" },
-  bits: { productKind: "all" },
-  terrain: { productKind: "terrain" },
-  rpg: { universe: "nri" },
-  bundles: { productKind: "bundle" },
+  miniatures: { productKind: ["model"] },
+  bits: { productKind: ["bits"] },
+  terrain: { productKind: ["terrain"] },
+  rpg: { universe: ["nri"] },
+  bundles: { productKind: ["bundle"] },
 };
 
 const defaultCatalogFilters = {
-  productKind: "all",
-  universe: "",
-  faction: "",
-  unitType: "",
-  partType: "",
-  baseSize: "",
+  productKind: [],
+  universe: [],
+  faction: [],
+  unitType: [],
+  partType: [],
+  baseSize: [],
 };
 
 const filterTriggerIdleLabels = {
@@ -393,22 +395,25 @@ const minOrderWarning = document.querySelector("[data-min-order-warning]");
 const checkoutLink = document.querySelector("[data-checkout-link]");
 const cartClearButton = document.querySelector("[data-cart-clear]");
 const catalogSearch = document.querySelector("[data-catalog-search]");
-const resultCount = document.querySelector("[data-result-count]");
-const catalogTitle = document.querySelector("[data-catalog-title]");
-const activeFilterChips = document.querySelector("[data-active-filter-chips]");
 const filterToggle = document.querySelector("[data-filter-toggle]");
 const filterPanel = document.querySelector("[data-filter-panel]");
 const filterCloseButtons = Array.from(document.querySelectorAll("[data-filter-close]"));
-const filterCloseResultsButton = document.querySelector("[data-filter-close-results]");
+const filterApplyButton = document.querySelector("[data-filter-apply]");
 const filterResetButton = document.querySelector("[data-filter-reset]");
+const filterDraftSummary = document.querySelector("[data-filter-draft-summary]");
 const featuredRail = document.querySelector("[data-featured-rail]");
 const showcaseScene = document.querySelector(".showcase-scene");
 const featuredTabs = Array.from(document.querySelectorAll("[data-featured-tab]"));
 const featuredRailButtons = Array.from(document.querySelectorAll("[data-featured-scroll]"));
 const orderSteps = Array.from(document.querySelectorAll("[data-order-step]"));
+const orderStages = Array.from(document.querySelectorAll("[data-order-primary-stage]"));
 const orderInspectorTitle = document.querySelector("[data-order-inspector-title]");
 const orderInspectorCopy = document.querySelector("[data-order-inspector-copy]");
-const sortControl = document.querySelector("[data-sort-control]");
+const sortRoot = document.querySelector("[data-sort-root]");
+const sortButton = document.querySelector("[data-sort-button]");
+const sortCurrent = document.querySelector("[data-sort-current]");
+const sortMenu = document.querySelector("[data-sort-menu]");
+const sortOptions = Array.from(document.querySelectorAll("[data-sort-option]"));
 const loadMoreButton = document.querySelector("[data-load-more]");
 const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
 const scrollRevealItems = Array.from(document.querySelectorAll(".scroll-reveal"));
@@ -468,7 +473,8 @@ const detailNodes = {
 const modalImage = document.querySelector("[data-gallery-modal-image]");
 
 let activeScreenName = "home";
-let catalogFilters = { ...defaultCatalogFilters };
+let catalogFilters = cloneCatalogFilters(defaultCatalogFilters);
+let draftCatalogFilters = cloneCatalogFilters(catalogFilters);
 const expandedFilterGroups = new Set();
 let activeSearch = "";
 let currentFeaturedTab = "hits";
@@ -686,6 +692,13 @@ function isCheckoutBlocked() {
 
 function getProductList() {
   const list = Object.values(products);
+  if (activeSort === "new") {
+    return [...list].sort((a, b) => {
+      const aNew = (a.tags || []).includes("new") ? 1 : 0;
+      const bNew = (b.tags || []).includes("new") ? 1 : 0;
+      return bNew - aNew;
+    });
+  }
   if (activeSort === "price-asc") {
     return [...list].sort((a, b) => a.price - b.price);
   }
@@ -996,7 +1009,8 @@ function applyRoute() {
 }
 
 function resetCatalogFilters() {
-  catalogFilters = { ...defaultCatalogFilters };
+  catalogFilters = cloneCatalogFilters(defaultCatalogFilters);
+  draftCatalogFilters = cloneCatalogFilters(catalogFilters);
 }
 
 function isKnownFilterValue(group, value) {
@@ -1004,28 +1018,54 @@ function isKnownFilterValue(group, value) {
   return Boolean(filterLabels[group]?.[value]);
 }
 
-function normalizeCatalogFilters(filters) {
-  const next = { ...defaultCatalogFilters };
-  Object.entries(filterQueryKeys).forEach(([group]) => {
-    const value = filters[group] || "";
-    if (value && isKnownFilterValue(group, value)) next[group] = value;
+function getFilterValues(filters, group) {
+  const value = filters?.[group];
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === "string") return value.split(",").map((item) => item.trim()).filter(Boolean);
+  return [];
+}
+
+function hasFilterValue(filters, group, value) {
+  return getFilterValues(filters, group).includes(value);
+}
+
+function addFilterValue(filters, group, value) {
+  if (hasFilterValue(filters, group, value)) return;
+  filters[group] = [...getFilterValues(filters, group), value];
+}
+
+function removeFilterValue(filters, group, value) {
+  filters[group] = getFilterValues(filters, group).filter((item) => item !== value);
+}
+
+function cloneCatalogFilters(filters = defaultCatalogFilters) {
+  const next = {};
+  Object.keys(filterQueryKeys).forEach((group) => {
+    next[group] = [...getFilterValues(filters, group)];
   });
-  if (next.partType) next.productKind = "all";
-  if (next.baseSize) next.productKind = "all";
-  if (next.faction || next.unitType) next.universe = "warhammer";
-  if (next.universe !== "warhammer") {
-    next.faction = "";
-    next.unitType = "";
+  return next;
+}
+
+function normalizeCatalogFilters(filters) {
+  const next = cloneCatalogFilters(defaultCatalogFilters);
+  Object.entries(filterQueryKeys).forEach(([group]) => {
+    next[group] = Array.from(new Set(getFilterValues(filters, group).filter((value) => value !== "all" && isKnownFilterValue(group, value))));
+  });
+  if ((next.faction.length || next.unitType.length) && !next.universe.includes("warhammer")) {
+    next.universe.push("warhammer");
+  }
+  if (next.universe.length && !next.universe.includes("warhammer")) {
+    next.faction = [];
+    next.unitType = [];
   }
   return next;
 }
 
-function getCatalogRouteParams() {
+function getCatalogRouteParams(filters = catalogFilters) {
   const params = {};
   Object.entries(filterQueryKeys).forEach(([group, key]) => {
-    const value = catalogFilters[group];
-    if (group === "productKind" && value === "all") return;
-    if (value) params[key] = value;
+    const values = getFilterValues(filters, group);
+    if (values.length) params[key] = values.join(",");
   });
   return params;
 }
@@ -1041,22 +1081,14 @@ function getFilterLabel(group, value) {
   return filterLabels[group]?.[value] || value;
 }
 
-function getFilterTriggerSelection(group) {
-  if (group === "bases" && catalogFilters.productKind === "base" && !catalogFilters.baseSize) {
-    return ["productKind", "base"];
-  }
+function getFilterTriggerSelection(group, filters = draftCatalogFilters) {
+  if (group === "bases" && (hasFilterValue(filters, "productKind", "base") || getFilterValues(filters, "baseSize").length)) return ["bases"];
   const valueGroup = filterTriggerValueGroups[group];
-  const value = valueGroup ? catalogFilters[valueGroup] : "";
-  return value ? [valueGroup, value] : null;
+  return valueGroup && getFilterValues(filters, valueGroup).length ? [valueGroup] : null;
 }
 
-function getFilterTriggerLabel(group) {
-  const selection = getFilterTriggerSelection(group);
-  if (!selection) return filterTriggerIdleLabels[group] || group;
-  const [valueGroup, value] = selection;
-  if (group === "bases" && valueGroup === "productKind") return "Базы: все";
-  const label = filterTriggerActiveLabels[group] || filterTriggerIdleLabels[group] || group;
-  return `${label} ${getFilterLabel(valueGroup, value)}`;
+function getFilterTriggerLabel(group, filters = draftCatalogFilters) {
+  return filterTriggerIdleLabels[group] || group;
 }
 
 function closeOtherFilterGroups(activeGroup) {
@@ -1081,43 +1113,36 @@ function toggleFilterGroup(group) {
 function updateFilterTriggerLabels() {
   filterGroupToggles.forEach((toggle) => {
     const group = toggle.dataset.filterToggleGroup;
-    const selected = Boolean(getFilterTriggerSelection(group));
-    toggle.textContent = getFilterTriggerLabel(group);
+    const selected = Boolean(getFilterTriggerSelection(group, draftCatalogFilters));
+    toggle.textContent = getFilterTriggerLabel(group, draftCatalogFilters);
     toggle.classList.toggle("is-active", selected);
   });
 }
 
-function getSelectedFilterEntries() {
+function getSelectedFilterEntries(filters = draftCatalogFilters) {
   const entries = [];
-  if (catalogFilters.productKind !== "all") entries.push(["productKind", catalogFilters.productKind]);
-  if (catalogFilters.universe) entries.push(["universe", catalogFilters.universe]);
-  if (catalogFilters.faction) entries.push(["faction", catalogFilters.faction]);
-  if (catalogFilters.unitType) entries.push(["unitType", catalogFilters.unitType]);
-  if (catalogFilters.partType) entries.push(["partType", catalogFilters.partType]);
-  if (catalogFilters.baseSize) entries.push(["baseSize", catalogFilters.baseSize]);
+  Object.keys(filterQueryKeys).forEach((group) => {
+    getFilterValues(filters, group).forEach((value) => entries.push([group, value]));
+  });
   return entries;
 }
 
-function getCatalogTitle() {
-  if (catalogFilters.partType) return `Детали: ${getFilterLabel("partType", catalogFilters.partType)}`;
-  if (catalogFilters.baseSize) return `Базы: ${getFilterLabel("baseSize", catalogFilters.baseSize)}`;
-  if (catalogFilters.unitType) return getFilterLabel("unitType", catalogFilters.unitType);
-  if (catalogFilters.faction) return getFilterLabel("faction", catalogFilters.faction);
-  if (catalogFilters.universe) return getFilterLabel("universe", catalogFilters.universe);
-  if (catalogFilters.productKind !== "all") return getFilterLabel("productKind", catalogFilters.productKind);
-  return "Все товары";
-}
-
-function productMatchesCatalogFilters(product) {
+function productMatchesCatalogFilters(product, filters = catalogFilters) {
   if (!product) return false;
-  if (catalogFilters.productKind !== "all" && product.productKind !== catalogFilters.productKind) return false;
-  if (catalogFilters.universe && product.universe !== catalogFilters.universe) return false;
-  if (catalogFilters.faction && product.faction !== catalogFilters.faction) return false;
-  if (catalogFilters.unitType && product.unitType !== catalogFilters.unitType) return false;
-  if (catalogFilters.partType) {
-    if (product.productKind !== "bits" || product.partType !== catalogFilters.partType) return false;
+  const productKinds = getFilterValues(filters, "productKind");
+  if (productKinds.length && !productKinds.includes(product.productKind)) return false;
+  const universes = getFilterValues(filters, "universe");
+  if (universes.length && !universes.includes(product.universe)) return false;
+  const factions = getFilterValues(filters, "faction");
+  if (factions.length && !factions.includes(product.faction)) return false;
+  const unitTypes = getFilterValues(filters, "unitType");
+  if (unitTypes.length && !unitTypes.includes(product.unitType)) return false;
+  const partTypes = getFilterValues(filters, "partType");
+  if (partTypes.length) {
+    if (product.productKind !== "bits" || !partTypes.includes(product.partType)) return false;
   }
-  if (catalogFilters.baseSize && product.baseSize !== catalogFilters.baseSize) return false;
+  const baseSizes = getFilterValues(filters, "baseSize");
+  if (baseSizes.length && !baseSizes.includes(product.baseSize)) return false;
   return true;
 }
 
@@ -1142,27 +1167,30 @@ function getProductSearchText(product) {
 
 function applyCatalogRoute(params = new URLSearchParams()) {
   const routeParams = typeof params === "string" ? new URLSearchParams({ category: params }) : params;
-  const next = { ...defaultCatalogFilters };
+  const next = cloneCatalogFilters(defaultCatalogFilters);
   const legacyCategory = routeParams.get("category");
   if (legacyCategory && legacyCategoryMap[legacyCategory]) {
     Object.assign(next, legacyCategoryMap[legacyCategory]);
   }
   Object.entries(filterQueryKeys).forEach(([group, key]) => {
     const value = routeParams.get(key);
-    if (value) next[group] = value;
+    if (value) next[group] = value.split(",");
   });
   catalogFilters = normalizeCatalogFilters(next);
+  draftCatalogFilters = cloneCatalogFilters(catalogFilters);
   expandedFilterGroups.clear();
   filterCatalog();
 }
 
-function getAvailableFilterOptions(group) {
+function getAvailableFilterOptions(group, filters = draftCatalogFilters) {
   const seen = new Set();
+  const selectedFactions = getFilterValues(filters, "faction");
+  const selectedUniverses = getFilterValues(filters, "universe");
   getProductList().forEach((product) => {
     if (group === "faction" && product.universe !== "warhammer") return;
     if (group === "unitType") {
-      if (catalogFilters.faction && product.faction !== catalogFilters.faction) return;
-      if (!catalogFilters.faction && catalogFilters.universe && product.universe !== catalogFilters.universe) return;
+      if (selectedFactions.length && !selectedFactions.includes(product.faction)) return;
+      if (!selectedFactions.length && selectedUniverses.length && !selectedUniverses.includes(product.universe)) return;
     }
     const value = product[group];
     if (value && filterLabels[group]?.[value]) seen.add(value);
@@ -1181,7 +1209,7 @@ function createFilterControl(group, value) {
 }
 
 function renderGeneratedFilterPanel(panel, group) {
-  const options = getAvailableFilterOptions(group);
+  const options = getAvailableFilterOptions(group, draftCatalogFilters);
   panel.replaceChildren();
   if (!options.length) {
     panel.hidden = true;
@@ -1195,9 +1223,59 @@ function shouldShowDependentFilter(name) {
 }
 
 function shouldShowGeneratedFilterGroup(name, hasOptions) {
-  if (name === "faction") return hasOptions && (catalogFilters.universe === "warhammer" || Boolean(catalogFilters.faction));
-  if (name === "unitType") return hasOptions && Boolean(catalogFilters.faction || catalogFilters.unitType);
+  if (name === "faction") return hasOptions && (hasFilterValue(draftCatalogFilters, "universe", "warhammer") || Boolean(getFilterValues(draftCatalogFilters, "faction").length));
+  if (name === "unitType") return hasOptions && Boolean(getFilterValues(draftCatalogFilters, "faction").length || getFilterValues(draftCatalogFilters, "unitType").length);
   return true;
+}
+
+function getFilterToggleForGroup(group) {
+  return document.querySelector(`[data-filter-toggle-group="${group}"]`);
+}
+
+function clearFilterDropdownPosition(panel) {
+  panel.style.removeProperty("--filter-menu-left");
+  panel.style.removeProperty("--filter-menu-top");
+  panel.style.removeProperty("--filter-menu-width");
+}
+
+function getFilterFixedOffset(panel) {
+  const container = panel.closest("[data-filter-panel]");
+  if (!container) return { left: 0, top: 0 };
+  const containerStyle = getComputedStyle(container);
+  if (containerStyle.transform === "none") return { left: 0, top: 0 };
+  const containerRect = container.getBoundingClientRect();
+  return { left: containerRect.left, top: containerRect.top };
+}
+
+function positionFilterDropdown(panel, group) {
+  const toggle = getFilterToggleForGroup(group);
+  if (!toggle) return;
+  const rect = toggle.getBoundingClientRect();
+  const offset = getFilterFixedOffset(panel);
+  panel.style.setProperty("--filter-menu-left", `${rect.left - offset.left}px`);
+  panel.style.setProperty("--filter-menu-top", `${rect.bottom + FILTER_MENU_GAP - offset.top}px`);
+  panel.style.setProperty("--filter-menu-width", `${rect.width}px`);
+}
+
+function positionOpenFilterDropdowns() {
+  dependentFilterPanels.forEach((panel) => {
+    if (panel.hidden) return;
+    positionFilterDropdown(panel, panel.dataset.dependentFilter);
+  });
+}
+
+function positionMobileFilterApplyAction() {
+  const actions = filterApplyButton?.closest(".filter-sheet-actions");
+  if (!filterPanel || !actions) return;
+  actions.style.removeProperty("--filter-apply-top");
+  if (!window.matchMedia("(max-width: 899px)").matches || !filterPanel.classList.contains("is-open")) return;
+  const top = filterPanel.scrollTop + filterPanel.clientHeight - actions.offsetHeight - FILTER_MOBILE_ACTION_GAP;
+  actions.style.setProperty("--filter-apply-top", `${Math.max(0, top)}px`);
+}
+
+function syncMobileFilterLayout() {
+  positionMobileFilterApplyAction();
+  positionOpenFilterDropdowns();
 }
 
 function renderDependentFilters() {
@@ -1222,6 +1300,11 @@ function renderDependentFilters() {
     const panelVisible = groupVisible && shouldShowDependentFilter(name) && hasOptions;
     panel.hidden = !panelVisible;
     panel.classList.toggle("is-visible", panelVisible);
+    if (panelVisible) {
+      positionFilterDropdown(panel, name);
+    } else {
+      clearFilterDropdownPosition(panel);
+    }
   });
 
   filterGroupToggles.forEach((toggle) => {
@@ -1231,78 +1314,190 @@ function renderDependentFilters() {
   updateFilterTriggerLabels();
 }
 
-function isAllProductsControlActive() {
-  return catalogFilters.productKind === "all" && getSelectedFilterEntries().length === 0;
+function isAllProductsControlActive(filters = draftCatalogFilters) {
+  return getSelectedFilterEntries(filters).length === 0;
 }
 
 function syncFilterControls() {
   document.querySelectorAll("[data-filter-group][data-filter-value]").forEach((button) => {
     const group = button.dataset.filterGroup;
     const value = button.dataset.filterValue;
-    const pressed = group === "productKind" && value === "all" ? isAllProductsControlActive() : catalogFilters[group] === value;
+    const pressed = group === "productKind" && value === "all" ? isAllProductsControlActive(draftCatalogFilters) : hasFilterValue(draftCatalogFilters, group, value);
     button.classList.toggle("is-active", pressed);
     button.setAttribute("aria-pressed", String(pressed));
   });
 }
 
-function setCatalogFilter(group, value) {
+function setDraftCatalogFilter(group, value) {
   if (!isKnownFilterValue(group, value)) return;
+  const next = cloneCatalogFilters(draftCatalogFilters);
+  if (hasFilterValue(next, group, value)) return;
 
   if (group === "productKind") {
     if (value === "all") {
-      resetCatalogFilters();
+      draftCatalogFilters = cloneCatalogFilters(defaultCatalogFilters);
       expandedFilterGroups.clear();
       return;
     }
-    if (catalogFilters.productKind === value) {
-      catalogFilters.productKind = "all";
-      if (value === "base") catalogFilters.baseSize = "";
-      return;
-    }
-    catalogFilters.productKind = value;
-    catalogFilters.partType = "";
-    catalogFilters.baseSize = "";
+    addFilterValue(next, "productKind", value);
+    draftCatalogFilters = normalizeCatalogFilters(next);
     return;
   }
 
   if (group === "universe") {
-    if (catalogFilters.universe === value) {
-      catalogFilters.universe = "";
-      catalogFilters.faction = "";
-      catalogFilters.unitType = "";
-      return;
-    }
-    const changed = catalogFilters.universe !== value;
-    catalogFilters.universe = value;
-    if (changed) {
-      catalogFilters.faction = "";
-      catalogFilters.unitType = "";
-    }
+    addFilterValue(next, "universe", value);
+    draftCatalogFilters = normalizeCatalogFilters(next);
     return;
   }
 
   if (group === "faction") {
-    catalogFilters.universe = "warhammer";
-    catalogFilters.faction = catalogFilters.faction === value ? "" : value;
-    catalogFilters.unitType = "";
+    addFilterValue(next, "universe", "warhammer");
+    addFilterValue(next, "faction", value);
+    draftCatalogFilters = normalizeCatalogFilters(next);
     return;
   }
 
   if (group === "unitType") {
-    catalogFilters.unitType = catalogFilters.unitType === value ? "" : value;
+    addFilterValue(next, "unitType", value);
+    draftCatalogFilters = normalizeCatalogFilters(next);
     return;
   }
 
   if (group === "partType") {
-    catalogFilters.productKind = "all";
-    catalogFilters.partType = catalogFilters.partType === value ? "" : value;
+    addFilterValue(next, "partType", value);
+    draftCatalogFilters = normalizeCatalogFilters(next);
     return;
   }
 
   if (group === "baseSize") {
-    catalogFilters.productKind = "all";
-    catalogFilters.baseSize = catalogFilters.baseSize === value ? "" : value;
+    addFilterValue(next, "baseSize", value);
+    draftCatalogFilters = normalizeCatalogFilters(next);
   }
+}
+
+function getFilterGroupLabel(group) {
+  return {
+    productKind: "Категории",
+    universe: "Вселенная",
+    faction: "Фракция",
+    unitType: "Тип отряда",
+    partType: "Детали",
+    baseSize: "База",
+  }[group] || group;
+}
+
+function getProductWord(count) {
+  return count === 1 ? "товар" : count > 1 && count < 5 ? "товара" : "товаров";
+}
+
+function getCatalogMatchCount(filters = catalogFilters) {
+  const query = (catalogSearch?.value || "").trim().toLowerCase();
+  return getProductList().reduce((count, product) => {
+    const haystack = getProductSearchText(product);
+    const matchesFilter = productMatchesCatalogFilters(product, filters);
+    const matchesSearch = !query || haystack.includes(query);
+    return matchesFilter && matchesSearch ? count + 1 : count;
+  }, 0);
+}
+
+function updateFilterApplyButton() {
+  if (!filterApplyButton) return;
+  const count = getCatalogMatchCount(draftCatalogFilters);
+  filterApplyButton.textContent = `Показать ${count} ${getProductWord(count)}`;
+}
+
+function renderFilterDraftSummary() {
+  if (!filterDraftSummary) return;
+  filterDraftSummary.replaceChildren();
+  getSelectedFilterEntries(draftCatalogFilters).forEach(([group, value]) => {
+    const row = document.createElement("div");
+    row.className = "filter-draft-row";
+    const label = document.createElement("span");
+    label.textContent = `${getFilterGroupLabel(group)}: ${getFilterLabel(group, value)}`;
+    const clear = document.createElement("button");
+    clear.className = "filter-draft-clear";
+    clear.type = "button";
+    clear.setAttribute("data-filter-clear-group", group);
+    clear.setAttribute("data-filter-clear-value", value);
+    clear.setAttribute("aria-label", `Сбросить ${getFilterGroupLabel(group).toLowerCase()}`);
+    clear.textContent = "×";
+    row.append(label, clear);
+    filterDraftSummary.appendChild(row);
+  });
+}
+
+function syncFilterResetVisibility() {
+  if (!filterResetButton) return;
+  filterResetButton.hidden = getSelectedFilterEntries(draftCatalogFilters).length === 0;
+}
+
+function refreshDraftFilterUi() {
+  renderFilterDraftSummary();
+  syncFilterResetVisibility();
+  renderDependentFilters();
+  syncFilterControls();
+  updateFilterApplyButton();
+  syncMobileFilterLayout();
+}
+
+function clearDraftFilterGroup(group, value = "") {
+  const next = cloneCatalogFilters(draftCatalogFilters);
+  if (value) {
+    removeFilterValue(next, group, value);
+  } else if (Object.hasOwn(next, group)) {
+    next[group] = [];
+  }
+  draftCatalogFilters = normalizeCatalogFilters(next);
+  refreshDraftFilterUi();
+}
+
+function applyDraftCatalogFilters() {
+  catalogFilters = normalizeCatalogFilters(draftCatalogFilters);
+  visibleProductLimit = 8;
+  replaceCatalogRouteWithoutNavigation();
+  filterCatalog();
+  closeFilterPanel({ restoreScroll: false });
+}
+
+function applyAllProductsFilter() {
+  draftCatalogFilters = cloneCatalogFilters(defaultCatalogFilters);
+  catalogFilters = cloneCatalogFilters(defaultCatalogFilters);
+  expandedFilterGroups.clear();
+  visibleProductLimit = 8;
+  replaceCatalogRouteWithoutNavigation();
+  filterCatalog();
+  refreshDraftFilterUi();
+  closeFilterPanel({ restoreScroll: false });
+}
+
+function resetAllCatalogFilters({ clearSearch = false, navigate = true } = {}) {
+  resetCatalogFilters();
+  expandedFilterGroups.clear();
+  visibleProductLimit = 8;
+  if (clearSearch && catalogSearch) catalogSearch.value = "";
+  if (navigate) {
+    goToScreen("catalog");
+  } else {
+    replaceCatalogRouteWithoutNavigation();
+    filterCatalog();
+  }
+  refreshDraftFilterUi();
+}
+
+function setSortMenuOpen(open) {
+  if (!sortRoot || !sortButton || !sortMenu) return;
+  sortRoot.classList.toggle("is-open", open);
+  sortButton.setAttribute("aria-expanded", String(open));
+  sortMenu.hidden = !open;
+}
+
+function syncSortControl() {
+  sortOptions.forEach((option) => {
+    const selected = option.dataset.sortOption === activeSort;
+    option.classList.toggle("is-active", selected);
+    option.setAttribute("aria-selected", String(selected));
+    if (selected && sortCurrent) sortCurrent.textContent = option.textContent.trim();
+  });
 }
 
 function filterCatalog() {
@@ -1336,42 +1531,14 @@ function filterCatalog() {
 
   renderDependentFilters();
   syncFilterControls();
+  renderFilterDraftSummary();
+  syncFilterResetVisibility();
+  updateFilterApplyButton();
 
-  if (catalogTitle) catalogTitle.textContent = getCatalogTitle();
-  if (resultCount) resultCount.textContent = `${visibleCount} ${visibleCount === 1 ? "позиция" : visibleCount > 1 && visibleCount < 5 ? "позиции" : "позиций"}`;
   const emptyState = document.querySelector("[data-catalog-empty]");
   if (emptyState) emptyState.hidden = visibleCount > 0;
   if (loadMoreButton) {
     loadMoreButton.hidden = visibleCount <= visibleProductLimit;
-  }
-  if (filterCloseResultsButton) {
-    filterCloseResultsButton.textContent = `Показать ${visibleCount} ${visibleCount === 1 ? "товар" : visibleCount > 1 && visibleCount < 5 ? "товара" : "товаров"}`;
-  }
-
-  renderActiveFilterChips();
-}
-
-function renderActiveFilterChips() {
-  if (!activeFilterChips) return;
-  activeFilterChips.replaceChildren();
-  const chips = getSelectedFilterEntries().map(([group, value]) => {
-    if (group === "partType") return `Детали: ${getFilterLabel(group, value)}`;
-    if (group === "baseSize") return `Базы: ${getFilterLabel(group, value)}`;
-    return getFilterLabel(group, value);
-  });
-  if (activeSearch) chips.push(`Поиск: ${activeSearch}`);
-  chips.forEach((chip) => {
-    const chipNode = document.createElement("span");
-    chipNode.textContent = chip;
-    activeFilterChips.appendChild(chipNode);
-  });
-  if (chips.length) {
-    const reset = document.createElement("button");
-    reset.className = "secondary";
-    reset.type = "button";
-    reset.dataset.filterReset = "";
-    reset.textContent = "Сбросить фильтры";
-    activeFilterChips.appendChild(reset);
   }
 }
 
@@ -1492,29 +1659,32 @@ function updateOrderInspector(step) {
   orderInspectorCopy.textContent = copy;
 }
 
-function setupOrderMobileDetails() {
-  orderSteps.forEach((step, index) => {
-    const parent = step.parentElement;
-    if (!parent || parent.querySelector(".order-stage-mobile-detail")) return;
+function setOrderStageOpen(stage, isOpen) {
+  if (!stage) return;
 
-    const detail = document.createElement("p");
-    const stepId = step.dataset.orderStep || `step-${index + 1}`;
-    detail.id = `order-mobile-detail-${stepId}`;
-    detail.className = "order-stage-mobile-detail";
-    detail.textContent = step.dataset.orderStepCopy || "";
-    step.setAttribute("aria-controls", detail.id);
-    step.setAttribute("aria-expanded", String(step.classList.contains("is-active")));
-    parent.append(detail);
-  });
+  stage.classList.toggle("is-open", isOpen);
+  const trigger = stage.querySelector(".order-stage-trigger");
+  const branch = stage.querySelector(".order-branch");
+  trigger?.setAttribute("aria-expanded", String(isOpen));
+  branch?.toggleAttribute("inert", !isOpen);
+  branch?.setAttribute("aria-hidden", String(!isOpen));
 }
 
 function setActiveOrderStep(step) {
   if (!step) return;
 
+  const activeStage = step.closest(".order-stage");
+  orderStages.forEach((stage) => {
+    setOrderStageOpen(stage, stage === activeStage);
+  });
+
   orderSteps.forEach((item) => {
     const isActive = item === step;
+    const isStageTriggerInActiveStage = item.classList.contains("order-stage-trigger") && item.closest(".order-stage") === activeStage;
     item.classList.toggle("is-active", isActive);
-    item.setAttribute("aria-expanded", String(isActive));
+    if (item.classList.contains("order-stage-trigger")) {
+      item.classList.toggle("is-active", isStageTriggerInActiveStage);
+    }
     if (isActive) {
       item.setAttribute("aria-current", "step");
     } else {
@@ -1525,12 +1695,26 @@ function setActiveOrderStep(step) {
   updateOrderInspector(step);
 }
 
+function clearActiveOrderStep(stage) {
+  if (stage) {
+    setOrderStageOpen(stage, false);
+  } else {
+    orderStages.forEach((item) => setOrderStageOpen(item, false));
+  }
+
+  const scopedSteps = stage ? Array.from(stage.querySelectorAll("[data-order-step]")) : orderSteps;
+  scopedSteps.forEach((item) => {
+    item.classList.remove("is-active");
+    item.removeAttribute("aria-current");
+  });
+}
+
 function setupOrderInspector() {
   if (orderSteps.length === 0) return;
 
-  setupOrderMobileDetails();
   const initialStep = orderSteps.find((step) => step.classList.contains("is-active")) || orderSteps[0];
-  setActiveOrderStep(initialStep);
+  orderStages.forEach((stage) => setOrderStageOpen(stage, false));
+  updateOrderInspector(initialStep);
 
   orderSteps.forEach((step) => {
     step.addEventListener("pointerenter", () => setActiveOrderStep(step));
@@ -1539,6 +1723,19 @@ function setupOrderInspector() {
     step.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" && event.key !== " ") return;
       setActiveOrderStep(step);
+    });
+  });
+
+  orderStages.forEach((stage) => {
+    stage.addEventListener("pointerleave", () => {
+      if (stage.matches(":focus-within")) return;
+      clearActiveOrderStep(stage);
+    });
+    stage.addEventListener("focusout", () => {
+      window.setTimeout(() => {
+        if (stage.matches(":focus-within")) return;
+        clearActiveOrderStep(stage);
+      }, 0);
     });
   });
 }
@@ -2158,7 +2355,8 @@ function openFilterPanel() {
   filterPanel.classList.add("is-open");
   filterToggle?.setAttribute("aria-expanded", "true");
   syncFilterPanelAccessibility();
-  requestAnimationFrame(() => filterPanel.querySelector(".filter-panel-head button, [data-filter-close-results]")?.focus());
+  syncMobileFilterLayout();
+  requestAnimationFrame(() => filterPanel.querySelector(".filter-panel-head button, [data-filter-apply]")?.focus());
 }
 
 function closeFilterPanel({ restoreScroll = true } = {}) {
@@ -2381,6 +2579,10 @@ function handleSubmit(form, button, errorNode, targetScreen) {
 }
 
 document.addEventListener("click", (event) => {
+  if (sortRoot && !sortRoot.contains(event.target)) {
+    setSortMenuOpen(false);
+  }
+
   const route = event.target.closest("[data-route]");
   if (route) {
     if (route.getAttribute("aria-disabled") === "true") {
@@ -2487,17 +2689,19 @@ document.addEventListener("click", (event) => {
 
   const reset = event.target.closest("[data-filter-reset]");
   if (reset) {
-    resetCatalogFilters();
-    expandedFilterGroups.clear();
-    visibleProductLimit = 8;
-    if (catalogSearch) catalogSearch.value = "";
-    goToScreen("catalog");
+    resetAllCatalogFilters();
   }
 });
 
 filterPanel?.addEventListener("click", (event) => {
   const toggle = event.target.closest("[data-filter-toggle-group]");
   const control = event.target.closest("[data-filter-group][data-filter-value]");
+  const clearGroup = event.target.closest("[data-filter-clear-group]");
+
+  if (clearGroup) {
+    clearDraftFilterGroup(clearGroup.getAttribute("data-filter-clear-group"), clearGroup.getAttribute("data-filter-clear-value"));
+    return;
+  }
 
   if (toggle && !control) {
     const group = toggle.dataset.filterToggleGroup;
@@ -2507,30 +2711,20 @@ filterPanel?.addEventListener("click", (event) => {
   }
 
   if (!control) return;
-  const parentFilterPanel = control.closest("[data-dependent-filter]");
-  const parentFilterGroup = parentFilterPanel?.dataset.dependentFilter;
-  setCatalogFilter(control.dataset.filterGroup, control.dataset.filterValue);
-  catalogFilters = normalizeCatalogFilters(catalogFilters);
-  if (parentFilterGroup) {
-    collapseFilterGroup(parentFilterGroup);
-  } else {
-    expandedFilterGroups.clear();
-  }
-  visibleProductLimit = 8;
-  if (filterPanel.classList.contains("is-open") && isMobileFilterPanel()) {
-    replaceCatalogRouteWithoutNavigation();
-    filterCatalog();
+  if (control.dataset.filterGroup === "productKind" && control.dataset.filterValue === "all") {
+    applyAllProductsFilter();
     return;
   }
-  goToScreen("catalog", getCatalogRouteParams());
+  const parentFilterPanel = control.closest("[data-dependent-filter]");
+  const parentFilterGroup = parentFilterPanel?.dataset.dependentFilter;
+  setDraftCatalogFilter(control.dataset.filterGroup, control.dataset.filterValue);
+  if (!parentFilterGroup) {
+    expandedFilterGroups.clear();
+  }
+  refreshDraftFilterUi();
 });
 
 catalogSearch?.addEventListener("input", () => {
-  visibleProductLimit = 8;
-  filterCatalog();
-});
-sortControl?.addEventListener("change", () => {
-  activeSort = sortControl.value || "popular";
   visibleProductLimit = 8;
   filterCatalog();
 });
@@ -2540,14 +2734,32 @@ loadMoreButton?.addEventListener("click", () => {
 });
 filterToggle?.addEventListener("click", openFilterPanel);
 filterCloseButtons.forEach((button) => button.addEventListener("click", () => closeFilterPanel()));
-filterCloseResultsButton?.addEventListener("click", () => closeFilterPanel({ restoreScroll: false }));
+filterApplyButton?.addEventListener("click", applyDraftCatalogFilters);
 filterResetButton?.addEventListener("click", (event) => {
   event.stopPropagation();
-  resetCatalogFilters();
-  expandedFilterGroups.clear();
-  visibleProductLimit = 8;
-  if (catalogSearch) catalogSearch.value = "";
-  goToScreen("catalog");
+  resetAllCatalogFilters();
+});
+window.addEventListener("resize", syncMobileFilterLayout);
+window.addEventListener("scroll", syncMobileFilterLayout, true);
+
+sortButton?.addEventListener("click", () => {
+  setSortMenuOpen(Boolean(sortMenu?.hidden));
+});
+
+sortOptions.forEach((option) => {
+  option.addEventListener("click", () => {
+    activeSort = option.dataset.sortOption || "popular";
+    visibleProductLimit = 8;
+    syncSortControl();
+    setSortMenuOpen(false);
+    filterCatalog();
+  });
+});
+
+sortRoot?.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  setSortMenuOpen(false);
+  sortButton?.focus();
 });
 
 featuredTabs.forEach((button) => {
@@ -2641,6 +2853,7 @@ setupOrderInspector();
 setupScrollReveal();
 showHeroSlide(0);
 startHeroCarousel(HERO_CAROUSEL_FIRST_DELAY_MS);
+syncSortControl();
 applyRoute();
 filterCatalog();
 document.documentElement.dataset.appScript = "loaded";

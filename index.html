@@ -6,7 +6,7 @@
     <title>Dr. Printicus - прототип магазина</title>
     <meta name="description" content="Dr. Printicus печатает миниатюры, детали, террейн и STL-модели под заказ с аккуратной подготовкой к покраске." />
     <link rel="preload" as="image" href="./assets/merchant/hero-crimson-winged-jumppack.png" fetchpriority="high" />
-    <link rel="stylesheet" href="./assets/styles.css?v=form-dialog-accessibility-01" />
+    <link rel="stylesheet" href="./assets/styles.css?v=order-flow-catalog-filters-08" />
   </head>
   <body>
     <header class="topbar">
@@ -235,72 +235,64 @@
             </div>
             <div class="order-route" aria-describedby="order-inspector-title order-inspector-copy">
               <ol class="order-main-path order-route-line" aria-label="Как оформить заказ">
-                <li class="order-stage">
-                  <button class="order-stage-trigger is-active" type="button" data-order-step="choose" data-order-step-title="Выберите товар" data-order-step-copy="Откройте каталог, выберите готовый лот или набор и проверьте масштаб, состав и минимальный заказ." aria-current="step">
-                    <span>01</span><strong>Выберите товар</strong><p class="order-stage-summary">Готовый лот или набор из каталога.</p>
+                <li class="order-stage" data-order-primary-stage="choose">
+                  <button class="order-stage-trigger" type="button" data-order-step="choose" data-order-step-title="Выбрать" data-order-step-copy="Начните с готового товара в каталоге или с печати под заказ, затем соберите корзину и отправьте заявку.">
+                    <span>01</span><strong>Выбрать</strong>
                   </button>
+                  <ol class="order-branch" data-order-branch="choose" aria-label="Что входит в этап Выбрать">
+                    <li><a class="order-substep order-substep-action" href="#catalog" data-route="catalog" data-order-action="catalog" data-order-step="catalog" data-order-step-title="Каталог" data-order-step-copy="Готовые лоты, наборы, детали, базы и террейн можно добавить в корзину сразу из каталога.">Каталог</a></li>
+                    <li><a class="order-substep order-substep-action" href="#stl" data-route="stl" data-order-action="custom-print" data-order-step="custom-print" data-order-step-title="Под заказ" data-order-step-copy="Если нужной позиции нет в каталоге, отправьте задачу на печать под заказ через форму.">Под заказ</a></li>
+                    <li><button class="order-substep" type="button" data-order-step="cart" data-order-step-title="Корзина" data-order-step-copy="В корзине можно проверить позиции, количество и состав перед отправкой заявки.">Корзина</button></li>
+                    <li><button class="order-substep" type="button" data-order-step="request" data-order-step-title="Заявка" data-order-step-copy="Заявка передает нам состав заказа, город и удобный способ связи для дальнейшего согласования.">Заявка</button></li>
+                  </ol>
                 </li>
-                <li class="order-stage">
-                  <button class="order-stage-trigger" type="button" data-order-step="cart" data-order-step-title="Соберите позиции" data-order-step-copy="В корзине можно менять количество и состав до отправки.">
-                    <span>02</span><strong>Корзина</strong><p class="order-stage-summary">Количество и состав еще можно поправить.</p>
+                <li class="order-stage" data-order-primary-stage="agree">
+                  <button class="order-stage-trigger" type="button" data-order-step="agree" data-order-step-title="Согласовать" data-order-step-copy="Мы проверяем заказ, уточняем срок, доставку, цену и оплату до запуска печати.">
+                    <span>02</span><strong>Согласовать</strong>
                   </button>
+                  <ol class="order-branch" data-order-branch="agree" aria-label="Что входит в этап Согласовать">
+                    <li><button class="order-substep" type="button" data-order-step="check" data-order-step-title="Проверка" data-order-step-copy="Проверяем наличие, печатные риски, состав заказа и детали, которые нужно уточнить.">Проверка</button></li>
+                    <li><button class="order-substep" type="button" data-order-step="deadline" data-order-step-title="Срок" data-order-step-copy="Срок зависит от очереди, объема печати, обработки и сложности модели.">Срок</button></li>
+                    <li><button class="order-substep" type="button" data-order-step="delivery" data-order-step-title="Доставка" data-order-step-copy="Подбираем способ отправки и учитываем город, упаковку и габариты заказа.">Доставка</button></li>
+                    <li><button class="order-substep" type="button" data-order-step="price" data-order-step-title="Цена" data-order-step-copy="Финальная цена учитывает состав, материал, подготовку, упаковку и согласованный способ доставки.">Цена</button></li>
+                    <li><button class="order-substep" type="button" data-order-step="pay" data-order-step-title="Оплата" data-order-step-copy="Оплата происходит после подтверждения условий, чтобы печать стартовала по согласованному заказу.">Оплата</button></li>
+                  </ol>
                 </li>
-                <li class="order-stage">
-                  <button class="order-stage-trigger" type="button" data-order-step="request" data-order-step-title="Отправьте заявку" data-order-step-copy="Оставьте контакт, город и удобный способ связи — это нужно для проверки доставки и сроков.">
-                    <span>03</span><strong>Заявка</strong><p class="order-stage-summary">Контакты и город для расчета условий.</p>
+                <li class="order-stage" data-order-primary-stage="receive">
+                  <button class="order-stage-trigger" type="button" data-order-step="receive" data-order-step-title="Получить" data-order-step-copy="После оплаты мы печатаем, обрабатываем, упаковываем и отправляем заказ.">
+                    <span>03</span><strong>Получить</strong>
                   </button>
-                </li>
-                <li class="order-stage">
-                  <button class="order-stage-trigger" type="button" data-order-step="check" data-order-step-title="Мы проверим заказ" data-order-step-copy="Проверяем наличие, печатные риски, упаковку, срок и финальные условия.">
-                    <span>04</span><strong>Проверка</strong><p class="order-stage-summary">Срок, риски, доставка и наличие.</p>
-                  </button>
-                </li>
-                <li class="order-stage">
-                  <button class="order-stage-trigger" type="button" data-order-step="confirm" data-order-step-title="Согласуйте условия" data-order-step-copy="Уточним итоговый состав, цену, срок и доставку. Без подтверждения печать не стартует.">
-                    <span>05</span><strong>Согласование</strong><p class="order-stage-summary">Итоговая цена и срок перед оплатой.</p>
-                  </button>
-                </li>
-              </ol>
-              <ol class="order-afterline order-route-line" aria-label="После подтверждения">
-                <li class="order-afterline-stage">
-                  <button class="order-stage-trigger" type="button" data-order-step="pay" data-order-step-title="Оплатите после подтверждения" data-order-step-copy="Ссылка или реквизиты появляются после подтверждения заказа.">
-                    <span>06</span><strong>Оплата</strong><p class="order-stage-summary">После подтверждения условий.</p>
-                  </button>
-                </li>
-                <li class="order-afterline-stage">
-                  <button class="order-stage-trigger" type="button" data-order-step="print" data-order-step-title="Печатаем" data-order-step-copy="После оплаты запускаем печать по согласованному составу.">
-                    <span>07</span><strong>Печатаем</strong><p class="order-stage-summary">Стартуем по согласованному составу.</p>
-                  </button>
-                </li>
-                <li class="order-afterline-stage" data-order-stage="final-processing">
-                  <button class="order-stage-trigger" type="button" data-order-step="finish" data-order-step-title="Обрабатываем" data-order-step-copy="Убираем явные следы поддержек, проверяем хрупкие элементы и готовность к покрасу.">
-                    <span>08</span><strong>Обрабатываем</strong><p class="order-stage-summary">Готовим модель к покрасу.</p>
-                  </button>
-                </li>
-                <li class="order-afterline-stage">
-                  <button class="order-stage-trigger" type="button" data-order-step="pack" data-order-step-title="Упаковываем" data-order-step-copy="Мелкие и тонкие детали фиксируем отдельно, чтобы они доехали целыми.">
-                    <span>09</span><strong>Упаковываем</strong><p class="order-stage-summary">Фиксируем тонкие и мелкие детали.</p>
-                  </button>
-                </li>
-                <li class="order-afterline-stage">
-                  <button class="order-stage-trigger" type="button" data-order-step="ship" data-order-step-title="Отправляем" data-order-step-copy="Передаем заказ выбранным способом и присылаем статус или трек в переписку.">
-                    <span>10</span><strong>Отправляем</strong><p class="order-stage-summary">Статус или трек приходит в переписку.</p>
-                  </button>
+                  <ol class="order-branch" data-order-branch="receive" aria-label="Что входит в этап Получить">
+                    <li><button class="order-substep" type="button" data-order-step="print" data-order-step-title="Печатаем" data-order-step-copy="Запускаем печать по согласованному составу и масштабу.">Печатаем</button></li>
+                    <li><button class="order-substep" type="button" data-order-step="finish" data-order-step-title="Обрабатываем" data-order-step-copy="Убираем явные следы поддержек и проверяем хрупкие элементы перед упаковкой.">Обрабатываем</button></li>
+                    <li><button class="order-substep" type="button" data-order-step="pack" data-order-step-title="Упаковываем" data-order-step-copy="Фиксируем тонкие и мелкие детали отдельно, чтобы они доехали целыми.">Упаковываем</button></li>
+                    <li><button class="order-substep" type="button" data-order-step="ship" data-order-step-title="Отправляем" data-order-step-copy="Передаем заказ выбранной службе и присылаем статус или трек в переписку.">Отправляем</button></li>
+                  </ol>
                 </li>
               </ol>
-              <p class="order-afterline-mobile-summary">После подтверждения: оплата, печатаем, обрабатываем, упаковываем и отправляем.</p>
             </div>
             <aside class="order-step-inspector" aria-live="polite" aria-labelledby="order-inspector-title">
-              <strong id="order-inspector-title" data-order-inspector-title>Выберите товар</strong>
-              <p id="order-inspector-copy" data-order-inspector-copy>Откройте каталог, выберите готовый лот или набор и проверьте масштаб, состав и минимальный заказ.</p>
+              <strong id="order-inspector-title" data-order-inspector-title>Выбрать</strong>
+              <p id="order-inspector-copy" data-order-inspector-copy>Начните с готового товара в каталоге или с печати под заказ, затем соберите корзину и отправьте заявку.</p>
             </aside>
+            <div class="order-mobile-panels" data-order-mobile-panels aria-label="Как заказать">
+              <details class="order-mobile-panel">
+                <summary><span>01</span><strong>Выбрать</strong><i aria-hidden="true"></i></summary>
+                <p>Каталог или печать под заказ, затем корзина и заявка.</p>
+                <div class="order-mobile-badges"><span>Каталог</span><span>Под заказ</span><span>Корзина</span><span>Заявка</span></div>
+              </details>
+              <details class="order-mobile-panel">
+                <summary><span>02</span><strong>Согласовать</strong><i aria-hidden="true"></i></summary>
+                <p>Проверяем заказ, срок, доставку, цену и оплату.</p>
+                <div class="order-mobile-badges"><span>Проверка</span><span>Срок</span><span>Доставка</span><span>Цена</span><span>Оплата</span></div>
+              </details>
+              <details class="order-mobile-panel">
+                <summary><span>03</span><strong>Получить</strong><i aria-hidden="true"></i></summary>
+                <p>Печатаем, обрабатываем, упаковываем и отправляем.</p>
+                <div class="order-mobile-badges"><span>Печатаем</span><span>Обрабатываем</span><span>Упаковываем</span><span>Отправляем</span></div>
+              </details>
+            </div>
           </div>
-          <ol class="step-grid legacy-order-grid" hidden aria-hidden="true">
-            <li><span>1</span><strong>Выберите товары</strong><p>Откройте каталог или нужную категорию.</p></li>
-            <li><span>2</span><strong>Добавьте в корзину</strong><p>Количество можно менять до оформления.</p></li>
-            <li><span>3</span><strong>Оставьте контакты</strong><p>Телефон, удобная связь, город и адрес.</p></li>
-            <li><span>4</span><strong>Мы подтвердим доставку, срок и оплату</strong><p>Финальные условия уточняем после обработки.</p></li>
-          </ol>
         </section>
 
         <section class="quality-section home-scene quality-scene section-block scroll-reveal reveal-left" aria-labelledby="quality-title">
@@ -365,27 +357,25 @@
 
       <section id="catalog" class="screen" data-screen="catalog" aria-labelledby="catalog-title">
         <div class="catalog-page">
+          <h1 id="catalog-title" class="visually-hidden">Каталог</h1>
           <div class="catalog-toolbar">
             <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><span>Каталог</span></nav>
-            <div class="catalog-title-row">
-              <div>
-                <p class="eyebrow">каталог</p>
-                <h1 id="catalog-title" data-catalog-title>Все товары</h1>
-              </div>
-              <span class="catalog-result-count" data-result-count></span>
-            </div>
             <div class="catalog-tools">
-              <label class="catalog-search">Поиск <input type="search" placeholder="Статуя, битсы, террейн..." data-catalog-search /></label>
-              <label class="sort-control">Сортировка
-                <select data-sort-control>
-                  <option value="popular">Популярные</option>
-                  <option value="price-asc">Сначала дешевле</option>
-                  <option value="price-desc">Сначала дороже</option>
-                </select>
-              </label>
+              <label class="catalog-search"><span class="visually-hidden">Поиск</span><input class="catalog-search-field" type="search" placeholder="Поиск" data-catalog-search /><span class="catalog-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 4 4"></path></svg></span></label>
+              <div class="sort-control" data-sort-root>
+                <span class="visually-hidden">Сортировка</span>
+                <button class="sort-button" type="button" data-sort-button aria-haspopup="listbox" aria-expanded="false">
+                  <span data-sort-current>Популярные</span>
+                </button>
+                <div class="sort-menu" data-sort-menu role="listbox" aria-label="Сортировка" hidden>
+                  <button class="sort-option is-active" type="button" role="option" aria-selected="true" data-sort-option="popular">Популярные</button>
+                  <button class="sort-option" type="button" role="option" aria-selected="false" data-sort-option="new">Новые</button>
+                  <button class="sort-option" type="button" role="option" aria-selected="false" data-sort-option="price-asc">Дешевле</button>
+                  <button class="sort-option" type="button" role="option" aria-selected="false" data-sort-option="price-desc">Дороже</button>
+                </div>
+              </div>
               <button class="filter-toggle" type="button" data-filter-toggle aria-expanded="false" aria-controls="catalog-filters">Фильтры</button>
             </div>
-            <div class="active-filter-chips" data-active-filter-chips></div>
           </div>
 
           <div class="catalog-layout">
@@ -445,8 +435,11 @@
                 <button class="chip" type="button" data-filter-group="productKind" data-filter-value="terrain">Террейн</button>
               </div>
               <div class="filter-sheet-actions">
-                <button class="primary" type="button" data-filter-close-results>Показать товары</button>
-                <button class="secondary" type="button" data-filter-reset>Сбросить фильтры</button>
+                <button class="primary" type="button" data-filter-apply>Показать товары</button>
+              </div>
+              <div class="filter-draft-actions">
+                <div class="filter-draft-summary" data-filter-draft-summary aria-live="polite"></div>
+                <button class="secondary" type="button" data-filter-reset hidden>Сбросить всё</button>
               </div>
             </aside>
 
@@ -854,6 +847,6 @@
       }
     </script>
     <script type="module" src="./assets/quality-model-viewer.js?v=home-quality-3d-07"></script>
-    <script src="./assets/app.js?v=form-dialog-accessibility-01"></script>
+    <script src="./assets/app.js?v=order-flow-catalog-filters-08"></script>
   </body>
 </html>
