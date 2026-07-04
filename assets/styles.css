@@ -1002,6 +1002,10 @@ html[data-color-theme="light"] .theme-toggle-sun {
     min-width: 0;
   }
 
+  .screen[data-screen="home"] > .order-scene.section-block.home-scene {
+    min-height: clamp(620px, 78svh, 820px);
+  }
+
   .screen[data-screen="home"] > .section-block.home-scene + .section-block.home-scene {
     margin-top: 0;
   }
@@ -1105,6 +1109,7 @@ html[data-color-theme="light"] .theme-toggle-sun {
   grid-auto-columns: var(--featured-tab-width);
   width: min(100%, calc((var(--featured-tab-width) * 4) + (var(--space-2) * 3)));
   max-width: 100%;
+  overflow: visible;
 }
 
 .featured-tabs button,
