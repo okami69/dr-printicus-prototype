@@ -3,8 +3,6 @@ const DEFAULT_COLOR_THEME = "dark";
 const COLOR_THEMES = new Set(["dark", "light"]);
 const MIN_ORDER_AMOUNT = 250;
 const MIN_DELIVERY_PRICE = 350;
-const FILTER_MENU_GAP = 7;
-const FILTER_MOBILE_ACTION_GAP = 8;
 const FOCUSABLE_SELECTOR = [
   'a[href]',
   'button:not([disabled])',
@@ -400,6 +398,9 @@ const filterPanel = document.querySelector("[data-filter-panel]");
 const filterCloseButtons = Array.from(document.querySelectorAll("[data-filter-close]"));
 const filterApplyButton = document.querySelector("[data-filter-apply]");
 const filterResetButton = document.querySelector("[data-filter-reset]");
+const filterResetMenu = document.querySelector("[data-filter-reset-menu]");
+const filterResetDropdown = document.querySelector("[data-filter-reset-dropdown]");
+const filterResetAllButton = document.querySelector("[data-filter-reset-all]");
 const filterDraftSummary = document.querySelector("[data-filter-draft-summary]");
 const featuredRail = document.querySelector("[data-featured-rail]");
 const showcaseScene = document.querySelector(".showcase-scene");
@@ -439,9 +440,9 @@ const galleryThumbs = document.querySelector("[data-gallery-thumbs]");
 const checkoutForm = document.querySelector("[data-checkout-form]");
 const checkoutSubmit = document.querySelector("[data-checkout-submit]");
 const checkoutError = document.querySelector("[data-checkout-error]");
-const stlForm = document.querySelector("[data-stl-form]");
-const stlSubmit = document.querySelector("[data-stl-submit]");
-const stlError = document.querySelector("[data-stl-error]");
+const customModelForm = document.querySelector("[data-custom-model-form]");
+const customModelSubmit = document.querySelector("[data-custom-model-submit]");
+const customModelError = document.querySelector("[data-custom-model-error]");
 const successItems = document.querySelector("[data-success-items]");
 const successContact = document.querySelector("[data-success-contact]");
 const successNumber = document.querySelector("[data-success-number]");
@@ -449,7 +450,16 @@ const blogList = document.querySelector("[data-blog-list]");
 const articleView = document.querySelector("[data-article-view]");
 const articleKicker = document.querySelector("[data-article-kicker]");
 const articleTitle = document.querySelector("[data-article-title]");
+const articleBreadcrumb = document.querySelector("[data-article-breadcrumb]");
 const articleBody = document.querySelector("[data-article-body]");
+const journalFeature = document.querySelector("[data-journal-feature]");
+const journalFeatureTitle = document.querySelector("[data-journal-feature-title]");
+const journalFeatureCopy = document.querySelector("[data-journal-feature-copy]");
+const journalNotes = Array.from(document.querySelectorAll("[data-journal-note]"));
+const journalPageFeature = document.querySelector("[data-journal-page-feature]");
+const journalPageFeatureTitle = document.querySelector("[data-journal-page-feature-title]");
+const journalPageFeatureCopy = document.querySelector("[data-journal-page-feature-copy]");
+const journalPageNotes = Array.from(document.querySelectorAll("[data-journal-page-note]"));
 const metaDescription = document.querySelector('meta[name="description"]');
 const defaultDocumentTitle = document.title;
 const defaultMetaDescription = metaDescription?.content || "";
@@ -493,7 +503,7 @@ let filterScrollY = 0;
 let isSubmitting = false;
 let pendingSubmitTimer = 0;
 let checkoutSubmitted = false;
-let stlSubmitted = false;
+let custom3dPrintSubmitted = false;
 let heroSlideIndex = 0;
 let heroSlideTimer = 0;
 let heroSlideStartTimer = 0;
@@ -507,8 +517,175 @@ let featuredOrbitPointerState = null;
 let featuredOrbitSuppressClickUntil = 0;
 let featuredOrbitWheelDeltaX = 0;
 let featuredOrbitWheelCooldownUntil = 0;
+let journalPreviewSwitchTimer = 0;
+let journalPagePreviewSwitchTimer = 0;
 
 const blogArticles = window.drPrinticusBlogArticles || {};
+
+function isDesktopJournalPreview() {
+  return window.matchMedia("(min-width: 900px)").matches;
+}
+
+function normalizeJournalPreviewBlock(block) {
+  return block
+    .replace(/^#+\s+/gm, "")
+    .replace(/^\s*-\s+/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getJournalPreviewBlocks(article, { targetLength = 660, minCut = 520 } = {}) {
+  const source = article?.body || article?.teaser || "";
+  const rawBlocks = source
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter((block) => block && !/^##\s+/.test(block));
+  const blocks = [];
+  let totalLength = 0;
+  let truncated = false;
+
+  for (const rawBlock of rawBlocks) {
+    const block = normalizeJournalPreviewBlock(rawBlock);
+    if (!block) continue;
+
+    const separatorLength = blocks.length > 0 ? 2 : 0;
+    const nextLength = totalLength + separatorLength + block.length;
+    if (nextLength <= targetLength) {
+      blocks.push(block);
+      totalLength = nextLength;
+      continue;
+    }
+
+    const remainingLength = targetLength - totalLength - separatorLength;
+    const cutTarget = Math.max(remainingLength, blocks.length === 0 ? minCut : 0);
+    const softCut = block.lastIndexOf(" ", cutTarget);
+    const cutAt = softCut > Math.min(minCut, cutTarget) ? softCut : cutTarget;
+    const cutBlock = block.slice(0, Math.max(0, cutAt)).trim();
+    if (cutBlock) blocks.push(cutBlock);
+    truncated = true;
+    break;
+  }
+
+  if (blocks.length === 0 && article?.teaser) {
+    blocks.push(normalizeJournalPreviewBlock(article.teaser));
+  }
+
+  if (truncated && blocks.length > 0) {
+    blocks[blocks.length - 1] = `${blocks[blocks.length - 1].replace(/\.+$/, "")}...`;
+  }
+
+  return blocks;
+}
+
+function getJournalPreviewExcerpt(article, { targetLength = 660, minCut = 520 } = {}) {
+  return getJournalPreviewBlocks(article, { targetLength, minCut }).join("\n\n");
+}
+
+function setJournalPreviewArticle(articleId, { animate = true } = {}) {
+  if (!journalFeature || !journalFeatureTitle || !journalFeatureCopy || !articleId) return;
+  const article = blogArticles[articleId];
+  const activeNote = journalNotes.find((note) => note.dataset.journalNote === articleId);
+  const title = activeNote?.dataset.journalTitle || article?.title || activeNote?.querySelector("h3")?.textContent || "";
+  const excerpt = getJournalPreviewExcerpt(article);
+
+  const applyArticle = () => {
+    journalFeature.href = `#blog?article=${articleId}`;
+    journalFeature.dataset.articleRoute = articleId;
+    journalFeature.setAttribute("aria-label", title);
+    journalFeatureTitle.textContent = title;
+    journalFeatureCopy.textContent = excerpt;
+
+    journalNotes.forEach((note) => {
+      const isActive = note.dataset.journalNote === articleId;
+      note.classList.toggle("is-active", isActive);
+      if (isActive) {
+        note.setAttribute("aria-current", "true");
+      } else {
+        note.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  window.clearTimeout(journalPreviewSwitchTimer);
+  if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    journalFeature.classList.add("is-switching");
+    journalPreviewSwitchTimer = window.setTimeout(() => {
+      applyArticle();
+      window.requestAnimationFrame(() => journalFeature.classList.remove("is-switching"));
+    }, 140);
+    return;
+  }
+
+  applyArticle();
+  journalFeature.classList.remove("is-switching");
+}
+
+function setupJournalPreview() {
+  if (!journalFeature || journalNotes.length === 0) return;
+  const initialArticleId = journalNotes.find((note) => note.classList.contains("is-active"))?.dataset.journalNote || journalNotes[0].dataset.journalNote;
+  setJournalPreviewArticle(initialArticleId, { animate: false });
+
+  journalNotes.forEach((note) => {
+    note.addEventListener("click", (event) => {
+      if (!isDesktopJournalPreview()) return;
+      event.preventDefault();
+      event.stopPropagation();
+      setJournalPreviewArticle(note.dataset.journalNote);
+    });
+  });
+}
+
+function setJournalPageArticle(articleId, { animate = true } = {}) {
+  if (!journalPageFeature || !journalPageFeatureTitle || !journalPageFeatureCopy || !articleId) return;
+  const article = blogArticles[articleId];
+  const activeNote = journalPageNotes.find((note) => note.dataset.journalPageNote === articleId);
+  const title = activeNote?.dataset.journalTitle || journalPageFeature.dataset.journalTitle || article?.title || activeNote?.querySelector("h2")?.textContent || "";
+  const excerpt = getJournalPreviewExcerpt(article, { targetLength: 1160, minCut: 900 });
+
+  const applyArticle = () => {
+    journalPageFeature.href = `#blog?article=${articleId}`;
+    journalPageFeature.dataset.articleRoute = articleId;
+    journalPageFeature.setAttribute("aria-label", title);
+    journalPageFeatureTitle.textContent = title;
+    journalPageFeatureCopy.textContent = excerpt;
+
+    journalPageNotes.forEach((note) => {
+      const isActive = note.dataset.journalPageNote === articleId;
+      note.classList.toggle("is-active", isActive);
+      if (isActive) {
+        note.setAttribute("aria-current", "true");
+      } else {
+        note.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  window.clearTimeout(journalPagePreviewSwitchTimer);
+  if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    journalPageFeature.classList.add("is-switching");
+    journalPagePreviewSwitchTimer = window.setTimeout(() => {
+      applyArticle();
+      window.requestAnimationFrame(() => journalPageFeature.classList.remove("is-switching"));
+    }, 140);
+    return;
+  }
+
+  applyArticle();
+  journalPageFeature.classList.remove("is-switching");
+}
+
+function setupJournalPagePreview() {
+  if (!journalPageFeature || journalPageNotes.length === 0) return;
+  setJournalPageArticle(journalPageFeature.dataset.articleRoute, { animate: false });
+
+  journalPageNotes.forEach((note) => {
+    note.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setJournalPageArticle(note.dataset.journalPageNote);
+    });
+  });
+}
 
 function getStoredTheme() {
   try {
@@ -933,9 +1110,9 @@ function goToScreen(screenName, params = {}) {
       checkoutSubmit.disabled = false;
       checkoutSubmit.textContent = "Отправить заявку";
     }
-    if (stlSubmit) {
-      stlSubmit.disabled = false;
-      stlSubmit.textContent = "Получить расчёт";
+    if (customModelSubmit) {
+      customModelSubmit.disabled = false;
+      customModelSubmit.textContent = "Получить расчёт";
     }
   }
   if (screenName === "checkout" && isCheckoutBlocked()) {
@@ -977,8 +1154,8 @@ function applyRoute() {
     goToScreen(cartItems.length === 0 ? "cart-empty" : isCheckoutBlocked() ? "cart-blocked" : "checkout");
     return;
   }
-  if (screenName === "stl-success" && !stlSubmitted) {
-    goToScreen("stl");
+  if (screenName === "custom-3d-print-success" && !custom3dPrintSubmitted) {
+    goToScreen("custom-3d-print");
     return;
   }
 
@@ -1004,6 +1181,7 @@ function applyRoute() {
   hasAppliedRoute = true;
   scheduleActiveScrollUpdate();
 
+  setSortMenuOpen(false, { closeCompeting: false });
   closeDrawer({ restoreScroll: false });
   closeFilterPanel({ restoreScroll: false });
 }
@@ -1087,6 +1265,14 @@ function getFilterTriggerSelection(group, filters = draftCatalogFilters) {
   return valueGroup && getFilterValues(filters, valueGroup).length ? [valueGroup] : null;
 }
 
+function getFilterTriggerSelectionCount(group, filters = draftCatalogFilters) {
+  if (group === "bases") {
+    return (hasFilterValue(filters, "productKind", "base") ? 1 : 0) + getFilterValues(filters, "baseSize").length;
+  }
+  const valueGroup = filterTriggerValueGroups[group];
+  return valueGroup ? getFilterValues(filters, valueGroup).length : 0;
+}
+
 function getFilterTriggerLabel(group, filters = draftCatalogFilters) {
   return filterTriggerIdleLabels[group] || group;
 }
@@ -1113,9 +1299,16 @@ function toggleFilterGroup(group) {
 function updateFilterTriggerLabels() {
   filterGroupToggles.forEach((toggle) => {
     const group = toggle.dataset.filterToggleGroup;
-    const selected = Boolean(getFilterTriggerSelection(group, draftCatalogFilters));
-    toggle.textContent = getFilterTriggerLabel(group, draftCatalogFilters);
-    toggle.classList.toggle("is-active", selected);
+    const selectedCount = getFilterTriggerSelectionCount(group, draftCatalogFilters);
+    const label = document.createElement("span");
+    label.className = "filter-toggle-label";
+    label.textContent = getFilterTriggerLabel(group, draftCatalogFilters);
+    const count = document.createElement("span");
+    count.className = "filter-toggle-count";
+    count.setAttribute("aria-hidden", "true");
+    count.textContent = selectedCount > 0 ? String(selectedCount) : "";
+    toggle.replaceChildren(label, count);
+    toggle.classList.toggle("is-active", selectedCount > 0);
   });
 }
 
@@ -1200,7 +1393,7 @@ function getAvailableFilterOptions(group, filters = draftCatalogFilters) {
 
 function createFilterControl(group, value) {
   const button = document.createElement("button");
-  button.className = "chip";
+  button.className = "chip filter-chip";
   button.type = "button";
   button.dataset.filterGroup = group;
   button.dataset.filterValue = value;
@@ -1232,52 +1425,6 @@ function getFilterToggleForGroup(group) {
   return document.querySelector(`[data-filter-toggle-group="${group}"]`);
 }
 
-function clearFilterDropdownPosition(panel) {
-  panel.style.removeProperty("--filter-menu-left");
-  panel.style.removeProperty("--filter-menu-top");
-  panel.style.removeProperty("--filter-menu-width");
-}
-
-function getFilterFixedOffset(panel) {
-  const container = panel.closest("[data-filter-panel]");
-  if (!container) return { left: 0, top: 0 };
-  const containerStyle = getComputedStyle(container);
-  if (containerStyle.transform === "none") return { left: 0, top: 0 };
-  const containerRect = container.getBoundingClientRect();
-  return { left: containerRect.left, top: containerRect.top };
-}
-
-function positionFilterDropdown(panel, group) {
-  const toggle = getFilterToggleForGroup(group);
-  if (!toggle) return;
-  const rect = toggle.getBoundingClientRect();
-  const offset = getFilterFixedOffset(panel);
-  panel.style.setProperty("--filter-menu-left", `${rect.left - offset.left}px`);
-  panel.style.setProperty("--filter-menu-top", `${rect.bottom + FILTER_MENU_GAP - offset.top}px`);
-  panel.style.setProperty("--filter-menu-width", `${rect.width}px`);
-}
-
-function positionOpenFilterDropdowns() {
-  dependentFilterPanels.forEach((panel) => {
-    if (panel.hidden) return;
-    positionFilterDropdown(panel, panel.dataset.dependentFilter);
-  });
-}
-
-function positionMobileFilterApplyAction() {
-  const actions = filterApplyButton?.closest(".filter-sheet-actions");
-  if (!filterPanel || !actions) return;
-  actions.style.removeProperty("--filter-apply-top");
-  if (!window.matchMedia("(max-width: 899px)").matches || !filterPanel.classList.contains("is-open")) return;
-  const top = filterPanel.scrollTop + filterPanel.clientHeight - actions.offsetHeight - FILTER_MOBILE_ACTION_GAP;
-  actions.style.setProperty("--filter-apply-top", `${Math.max(0, top)}px`);
-}
-
-function syncMobileFilterLayout() {
-  positionMobileFilterApplyAction();
-  positionOpenFilterDropdowns();
-}
-
 function renderDependentFilters() {
   dependentFilterPanels.forEach((panel) => {
     const name = panel.dataset.dependentFilter;
@@ -1300,11 +1447,6 @@ function renderDependentFilters() {
     const panelVisible = groupVisible && shouldShowDependentFilter(name) && hasOptions;
     panel.hidden = !panelVisible;
     panel.classList.toggle("is-visible", panelVisible);
-    if (panelVisible) {
-      positionFilterDropdown(panel, name);
-    } else {
-      clearFilterDropdownPosition(panel);
-    }
   });
 
   filterGroupToggles.forEach((toggle) => {
@@ -1324,21 +1466,30 @@ function syncFilterControls() {
     const value = button.dataset.filterValue;
     const pressed = group === "productKind" && value === "all" ? isAllProductsControlActive(draftCatalogFilters) : hasFilterValue(draftCatalogFilters, group, value);
     button.classList.toggle("is-active", pressed);
+    button.classList.toggle("selected-chip", pressed);
     button.setAttribute("aria-pressed", String(pressed));
   });
 }
 
 function setDraftCatalogFilter(group, value) {
   if (!isKnownFilterValue(group, value)) return;
+  if (group === "productKind" && value === "all") {
+    draftCatalogFilters = cloneCatalogFilters(defaultCatalogFilters);
+    expandedFilterGroups.clear();
+    return;
+  }
   const next = cloneCatalogFilters(draftCatalogFilters);
-  if (hasFilterValue(next, group, value)) return;
+  if (hasFilterValue(next, group, value)) {
+    removeFilterValue(next, group, value);
+    if (group === "universe" && value === "warhammer") {
+      next.faction = [];
+      next.unitType = [];
+    }
+    draftCatalogFilters = normalizeCatalogFilters(next);
+    return;
+  }
 
   if (group === "productKind") {
-    if (value === "all") {
-      draftCatalogFilters = cloneCatalogFilters(defaultCatalogFilters);
-      expandedFilterGroups.clear();
-      return;
-    }
     addFilterValue(next, "productKind", value);
     draftCatalogFilters = normalizeCatalogFilters(next);
     return;
@@ -1390,6 +1541,14 @@ function getProductWord(count) {
   return count === 1 ? "товар" : count > 1 && count < 5 ? "товара" : "товаров";
 }
 
+function getFilterWord(count) {
+  const mod10 = Math.abs(count) % 10;
+  const mod100 = Math.abs(count) % 100;
+  if (mod10 === 1 && mod100 !== 11) return "фильтр";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "фильтра";
+  return "фильтров";
+}
+
 function getCatalogMatchCount(filters = catalogFilters) {
   const query = (catalogSearch?.value || "").trim().toLowerCase();
   return getProductList().reduce((count, product) => {
@@ -1404,6 +1563,27 @@ function updateFilterApplyButton() {
   if (!filterApplyButton) return;
   const count = getCatalogMatchCount(draftCatalogFilters);
   filterApplyButton.textContent = `Показать ${count} ${getProductWord(count)}`;
+}
+
+function setFilterResetMenuOpen(open) {
+  if (!filterResetMenu || !filterResetButton || !filterResetDropdown) return;
+  if (open && filterResetButton.disabled) open = false;
+  filterResetMenu.classList.toggle("is-open", open);
+  filterResetButton.setAttribute("aria-expanded", String(open));
+  filterResetDropdown.hidden = !open;
+}
+
+function toggleFilterResetMenu() {
+  if (getSelectedFilterEntries(draftCatalogFilters).length === 0) {
+    setFilterResetMenuOpen(false);
+    return;
+  }
+  const open = !filterResetMenu?.classList.contains("is-open");
+  if (open) {
+    expandedFilterGroups.clear();
+    renderDependentFilters();
+  }
+  setFilterResetMenuOpen(open);
 }
 
 function renderFilterDraftSummary() {
@@ -1426,18 +1606,23 @@ function renderFilterDraftSummary() {
   });
 }
 
-function syncFilterResetVisibility() {
+function syncFilterResetMenu() {
   if (!filterResetButton) return;
-  filterResetButton.hidden = getSelectedFilterEntries(draftCatalogFilters).length === 0;
+  const selectedCount = getSelectedFilterEntries(draftCatalogFilters).length;
+  filterResetButton.textContent = `Сбросить ${selectedCount} ${getFilterWord(selectedCount)}`;
+  filterResetButton.disabled = selectedCount === 0;
+  if (selectedCount === 0) {
+    setFilterResetMenuOpen(false);
+  }
+  if (filterResetAllButton) filterResetAllButton.hidden = selectedCount === 0;
 }
 
 function refreshDraftFilterUi() {
   renderFilterDraftSummary();
-  syncFilterResetVisibility();
+  syncFilterResetMenu();
   renderDependentFilters();
   syncFilterControls();
   updateFilterApplyButton();
-  syncMobileFilterLayout();
 }
 
 function clearDraftFilterGroup(group, value = "") {
@@ -1456,6 +1641,7 @@ function applyDraftCatalogFilters() {
   visibleProductLimit = 8;
   replaceCatalogRouteWithoutNavigation();
   filterCatalog();
+  setFilterResetMenuOpen(false);
   closeFilterPanel({ restoreScroll: false });
 }
 
@@ -1467,6 +1653,7 @@ function applyAllProductsFilter() {
   replaceCatalogRouteWithoutNavigation();
   filterCatalog();
   refreshDraftFilterUi();
+  setFilterResetMenuOpen(false);
   closeFilterPanel({ restoreScroll: false });
 }
 
@@ -1484,8 +1671,9 @@ function resetAllCatalogFilters({ clearSearch = false, navigate = true } = {}) {
   refreshDraftFilterUi();
 }
 
-function setSortMenuOpen(open) {
+function setSortMenuOpen(open, { closeCompeting = true } = {}) {
   if (!sortRoot || !sortButton || !sortMenu) return;
+  if (open && closeCompeting) closeCompetingPopups("sort");
   sortRoot.classList.toggle("is-open", open);
   sortButton.setAttribute("aria-expanded", String(open));
   sortMenu.hidden = !open;
@@ -1532,7 +1720,7 @@ function filterCatalog() {
   renderDependentFilters();
   syncFilterControls();
   renderFilterDraftSummary();
-  syncFilterResetVisibility();
+  syncFilterResetMenu();
   updateFilterApplyButton();
 
   const emptyState = document.querySelector("[data-catalog-empty]");
@@ -1547,6 +1735,7 @@ function renderBlogArticle(articleId) {
   if (blogList) blogList.hidden = Boolean(article);
   if (articleView) articleView.hidden = !article;
   if (!article) {
+    if (articleBreadcrumb) articleBreadcrumb.textContent = "Материал";
     document.title = defaultDocumentTitle;
     if (metaDescription) metaDescription.setAttribute("content", defaultMetaDescription);
     return;
@@ -1557,6 +1746,7 @@ function renderBlogArticle(articleId) {
 
   if (articleKicker) articleKicker.textContent = article.kicker;
   if (articleTitle) articleTitle.textContent = article.title;
+  if (articleBreadcrumb) articleBreadcrumb.textContent = article.title;
   if (articleBody) {
     articleBody.replaceChildren();
     const lead = document.createElement("div");
@@ -2306,6 +2496,7 @@ function renderSuccessReceipt() {
 
 function openDrawer() {
   if (!drawer || !drawerOpenButton) return;
+  closeCompetingPopups("drawer");
   drawerScrollY = window.scrollY;
   lastFocusedElement = document.activeElement;
   drawer.classList.add("is-open");
@@ -2316,7 +2507,7 @@ function openDrawer() {
   requestAnimationFrame(() => drawer.querySelector(".drawer-panel a, .drawer-panel button")?.focus());
 }
 
-function closeDrawer({ restoreScroll = true } = {}) {
+function closeDrawer({ restoreScroll = true, restoreFocus = true } = {}) {
   if (!drawer || !drawerOpenButton || !drawer.classList.contains("is-open")) return;
   drawer.classList.remove("is-open");
   drawer.setAttribute("aria-hidden", "true");
@@ -2326,9 +2517,16 @@ function closeDrawer({ restoreScroll = true } = {}) {
   if (restoreScroll) {
     window.scrollTo({ top: drawerScrollY, behavior: "auto" });
   }
-  if (lastFocusedElement && document.contains(lastFocusedElement)) {
+  if (restoreFocus && lastFocusedElement && document.contains(lastFocusedElement)) {
     lastFocusedElement.focus();
   }
+}
+
+function closeCompetingPopups(activeSurface) {
+  if (activeSurface !== "sort") setSortMenuOpen(false, { closeCompeting: false });
+  if (activeSurface !== "drawer") closeDrawer({ restoreScroll: false, restoreFocus: false });
+  if (activeSurface !== "filter") closeFilterPanel({ restoreScroll: false, restoreFocus: false });
+  if (activeSurface !== "gallery") closeGallery({ restoreFocus: false });
 }
 
 function isMobileFilterPanel() {
@@ -2347,6 +2545,7 @@ function syncFilterPanelAccessibility() {
 
 function openFilterPanel() {
   if (!filterPanel) return;
+  closeCompetingPopups("filter");
   filterLastFocusedElement = document.activeElement;
   if (isMobileFilterPanel()) {
     filterScrollY = window.scrollY;
@@ -2355,14 +2554,14 @@ function openFilterPanel() {
   filterPanel.classList.add("is-open");
   filterToggle?.setAttribute("aria-expanded", "true");
   syncFilterPanelAccessibility();
-  syncMobileFilterLayout();
   requestAnimationFrame(() => filterPanel.querySelector(".filter-panel-head button, [data-filter-apply]")?.focus());
 }
 
-function closeFilterPanel({ restoreScroll = true } = {}) {
+function closeFilterPanel({ restoreScroll = true, restoreFocus = true } = {}) {
   if (!filterPanel) return;
   const wasOpen = filterPanel.classList.contains("is-open");
   filterPanel.classList.remove("is-open");
+  setFilterResetMenuOpen(false);
   filterToggle?.setAttribute("aria-expanded", "false");
   document.body.classList.remove("filter-open");
   if (wasOpen && isMobileFilterPanel()) {
@@ -2372,22 +2571,23 @@ function closeFilterPanel({ restoreScroll = true } = {}) {
     }
   }
   syncFilterPanelAccessibility();
-  if (wasOpen && filterLastFocusedElement && document.contains(filterLastFocusedElement)) {
+  if (restoreFocus && wasOpen && filterLastFocusedElement && document.contains(filterLastFocusedElement)) {
     filterLastFocusedElement.focus();
   }
 }
 
 function openGallery() {
   if (!galleryModal) return;
+  closeCompetingPopups("gallery");
   lastFocusedElement = document.activeElement;
   galleryModal.hidden = false;
   requestAnimationFrame(() => galleryModal.querySelector(".gallery-modal-panel button")?.focus());
 }
 
-function closeGallery() {
+function closeGallery({ restoreFocus = true } = {}) {
   if (!galleryModal || galleryModal.hidden) return;
   galleryModal.hidden = true;
-  if (lastFocusedElement && document.contains(lastFocusedElement)) {
+  if (restoreFocus && lastFocusedElement && document.contains(lastFocusedElement)) {
     lastFocusedElement.focus();
   }
 }
@@ -2571,8 +2771,8 @@ function handleSubmit(form, button, errorNode, targetScreen) {
       renderSuccessReceipt();
       checkoutSubmitted = true;
     }
-    if (targetScreen === "stl-success") {
-      stlSubmitted = true;
+    if (targetScreen === "custom-3d-print-success") {
+      custom3dPrintSubmitted = true;
     }
     goToScreen(targetScreen);
   }, 420);
@@ -2687,16 +2887,23 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const reset = event.target.closest("[data-filter-reset]");
-  if (reset) {
-    resetAllCatalogFilters();
+  if (filterResetMenu && !event.target.closest("[data-filter-reset-menu]")) {
+    setFilterResetMenuOpen(false);
   }
 });
 
 filterPanel?.addEventListener("click", (event) => {
   const toggle = event.target.closest("[data-filter-toggle-group]");
   const control = event.target.closest("[data-filter-group][data-filter-value]");
+  const resetAll = event.target.closest("[data-filter-reset-all]");
   const clearGroup = event.target.closest("[data-filter-clear-group]");
+
+  if (resetAll) {
+    event.stopPropagation();
+    resetAllCatalogFilters({ navigate: false });
+    setFilterResetMenuOpen(false);
+    return;
+  }
 
   if (clearGroup) {
     clearDraftFilterGroup(clearGroup.getAttribute("data-filter-clear-group"), clearGroup.getAttribute("data-filter-clear-value"));
@@ -2704,6 +2911,7 @@ filterPanel?.addEventListener("click", (event) => {
   }
 
   if (toggle && !control) {
+    setFilterResetMenuOpen(false);
     const group = toggle.dataset.filterToggleGroup;
     toggleFilterGroup(group);
     renderDependentFilters();
@@ -2717,6 +2925,7 @@ filterPanel?.addEventListener("click", (event) => {
   }
   const parentFilterPanel = control.closest("[data-dependent-filter]");
   const parentFilterGroup = parentFilterPanel?.dataset.dependentFilter;
+  setFilterResetMenuOpen(false);
   setDraftCatalogFilter(control.dataset.filterGroup, control.dataset.filterValue);
   if (!parentFilterGroup) {
     expandedFilterGroups.clear();
@@ -2737,10 +2946,12 @@ filterCloseButtons.forEach((button) => button.addEventListener("click", () => cl
 filterApplyButton?.addEventListener("click", applyDraftCatalogFilters);
 filterResetButton?.addEventListener("click", (event) => {
   event.stopPropagation();
-  resetAllCatalogFilters();
+  if (filterResetButton.disabled) {
+    setFilterResetMenuOpen(false);
+    return;
+  }
+  toggleFilterResetMenu();
 });
-window.addEventListener("resize", syncMobileFilterLayout);
-window.addEventListener("scroll", syncMobileFilterLayout, true);
 
 sortButton?.addEventListener("click", () => {
   setSortMenuOpen(Boolean(sortMenu?.hidden));
@@ -2801,13 +3012,13 @@ checkoutForm?.addEventListener("submit", (event) => {
   handleSubmit(checkoutForm, checkoutSubmit, checkoutError, "success");
 });
 
-stlForm?.addEventListener("submit", (event) => {
+customModelForm?.addEventListener("submit", (event) => {
   event.preventDefault();
-  handleSubmit(stlForm, stlSubmit, stlError, "stl-success");
+  handleSubmit(customModelForm, customModelSubmit, customModelError, "custom-3d-print-success");
 });
 
 bindFormInvalidState(checkoutForm, checkoutError);
-bindFormInvalidState(stlForm, stlError);
+bindFormInvalidState(customModelForm, customModelError);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Tab") {
@@ -2826,6 +3037,7 @@ document.addEventListener("keydown", (event) => {
   }
 
   if (event.key !== "Escape") return;
+  setSortMenuOpen(false, { closeCompeting: false });
   closeDrawer({ restoreScroll: false });
   closeFilterPanel({ restoreScroll: false });
   closeGallery();
@@ -2850,6 +3062,8 @@ renderCart();
 updateCardQuantities();
 syncFilterPanelAccessibility();
 setupOrderInspector();
+setupJournalPreview();
+setupJournalPagePreview();
 setupScrollReveal();
 showHeroSlide(0);
 startHeroCarousel(HERO_CAROUSEL_FIRST_DELAY_MS);

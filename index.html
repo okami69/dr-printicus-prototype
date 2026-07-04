@@ -6,7 +6,7 @@
     <title>Dr. Printicus - прототип магазина</title>
     <meta name="description" content="Dr. Printicus печатает миниатюры, детали, террейн и STL-модели под заказ с аккуратной подготовкой к покраске." />
     <link rel="preload" as="image" href="./assets/merchant/hero-crimson-winged-jumppack.png" fetchpriority="high" />
-    <link rel="stylesheet" href="./assets/styles.css?v=order-flow-catalog-filters-08" />
+    <link rel="stylesheet" href="./assets/styles.css?v=order-hover-buffer-01" />
   </head>
   <body>
     <header class="topbar">
@@ -22,7 +22,7 @@
 
       <nav class="desktop-nav" aria-label="Основные разделы">
         <a href="#catalog" data-route="catalog">Каталог</a>
-        <a href="#stl" data-route="stl">Печать под заказ</a>
+        <a href="#custom-3d-print" data-route="custom-3d-print">3D-печать на заказ</a>
         <a href="#home?scroll=order-flow" data-route="home" data-scroll-to="order-flow">Как заказать</a>
         <a href="#blog" data-route="blog">Журнал лаборатории</a>
       </nav>
@@ -86,8 +86,9 @@
             </button>
           </div>
         </div>
+        <a href="#home" data-route="home">Главная</a>
         <a href="#catalog" data-route="catalog">Каталог</a>
-        <a href="#stl" data-route="stl">Печать под заказ</a>
+        <a href="#custom-3d-print" data-route="custom-3d-print">3D-печать на заказ</a>
         <a href="#home?scroll=order-flow" data-route="home" data-scroll-to="order-flow">Как заказать</a>
         <a href="#blog" data-route="blog">Журнал лаборатории</a>
         <a href="#cart" data-route="cart">Корзина</a>
@@ -99,14 +100,14 @@
         <section class="hero-section home-scene hero-scene">
           <div class="hero-copy">
             <p class="eyebrow hero-kicker">Dr. Printicus</p>
-            <h1 id="home-title" class="hero-slogan" aria-label="Печатаем с хирургической точностью">
-              <span>Печатаем с</span>
+            <h1 id="home-title" class="hero-slogan" aria-label="3D-печать с хирургической точностью">
+              <span>3D-печать с</span>
               <span>хирургической</span>
               <span>точностью</span>
             </h1>
             <div class="cta-row hero-cta-row">
               <a class="primary" href="#catalog" data-route="catalog">Открыть каталог</a>
-              <a class="secondary" href="#stl" data-route="stl">Печать под заказ</a>
+              <a class="secondary" href="#custom-3d-print" data-route="custom-3d-print">3D-печать на заказ</a>
             </div>
           </div>
           <div class="hero-visual" aria-label="Лоты Dr. Printicus">
@@ -207,20 +208,21 @@
           </div>
         </section>
 
-        <section class="stl-promo home-scene custom-print-scene section-block scroll-reveal reveal-left" aria-label="Печать под заказ">
+        <section class="custom-model-promo home-scene custom-print-scene section-block scroll-reveal reveal-left" aria-label="3D-печать на заказ">
           <div class="custom-print-copy">
-            <p class="eyebrow scene-label custom-print-kicker">Печать под заказ</p>
+            <p class="eyebrow scene-label custom-print-kicker">3D-печать на заказ</p>
             <p class="service-lead">Каталог — не предел. Присылайте файл, архив или ссылку на набор: проверим модель, оценим риски печати и рассчитаем цену со сроком.</p>
             <ol class="custom-print-steps custom-print-route" aria-label="Как проходит проверка модели перед печатью">
               <li class="custom-print-step"><span>01</span><strong>Пришлите модель</strong><p>Файл, архив или ссылка на набор.</p><figure class="custom-print-photo"><img src="./assets/custom-print/custom-print-step-upload.png" alt="Панель загрузки STL и OBJ файлов для печати модели под заказ" width="1254" height="1254" loading="lazy" decoding="async"></figure></li>
               <li class="custom-print-step"><span>02</span><strong>Проверим файл</strong><p>Масштаб, тонкие элементы, поддержки и печатные риски.</p><figure class="custom-print-photo"><img src="./assets/custom-print/custom-print-step-check.png" alt="Проверка 3D-модели перед печатью с калибром, лупой и поддержками" width="1254" height="1254" loading="lazy" decoding="async"></figure></li>
               <li class="custom-print-step"><span>03</span><strong>Рассчитаем заказ</strong><p>Подберём материал, оценим срок и стоимость.</p><figure class="custom-print-photo"><img src="./assets/custom-print/custom-print-step-quote.png" alt="Расчёт стоимости и срока печати с материалом, календарём и упаковкой" width="1254" height="1254" loading="lazy" decoding="async"></figure></li>
-              <li class="custom-print-step"><span>04</span><strong>Печатаем и отдаём</strong><p>После согласования печатаем, обрабатываем и готовим к выдаче.</p><div class="service-cta custom-print-cta custom-print-arrow-cta custom-print-cta-desktop">
-                <a class="custom-print-arrow-link primary" href="#stl" data-route="stl" aria-label="Отправить модель на проверку">Отправить</a>
-              </div></li>
+              <li class="custom-print-step"><span>04</span><strong>Печатаем и отдаём</strong><p>После согласования печатаем, обрабатываем и готовим к выдаче.</p><figure class="custom-print-photo"><img src="./assets/custom-print/custom-print-step-ready.png" alt="Готовый заказ Dr. Printicus: напечатанная миниатюра, упаковка и отправка" width="1254" height="1254" loading="lazy" decoding="async"></figure></li>
             </ol>
+            <div class="service-cta custom-print-cta custom-print-cta-desktop">
+              <a class="primary" href="#custom-3d-print" data-route="custom-3d-print" aria-label="Отправить заявку на 3D-печать">Заказать печать</a>
+            </div>
             <div class="service-cta custom-print-cta custom-print-cta-mobile">
-              <a class="primary" href="#stl" data-route="stl" aria-label="Отправить модель на проверку">Отправить</a>
+              <a class="primary" href="#custom-3d-print" data-route="custom-3d-print" aria-label="Отправить заявку на 3D-печать">Заказать печать</a>
             </div>
           </div>
         </section>
@@ -269,12 +271,12 @@
             <div class="order-route" aria-describedby="order-inspector-title order-inspector-copy">
               <ol class="order-main-path order-route-line" aria-label="Как оформить заказ">
                 <li class="order-stage" data-order-primary-stage="choose">
-                  <button class="order-stage-trigger" type="button" data-order-step="choose" data-order-step-title="Выбрать" data-order-step-copy="Начните с готового товара в каталоге или с печати под заказ, затем соберите корзину и отправьте заявку.">
+                  <button class="order-stage-trigger" type="button" data-order-step="choose" data-order-step-title="Выбрать" data-order-step-copy="Начните с готового товара в каталоге или оформите 3D-печать на заказ, затем соберите корзину и отправьте заявку.">
                     <span>01</span><strong>Выбрать</strong>
                   </button>
                   <ol class="order-branch" data-order-branch="choose" aria-label="Что входит в этап Выбрать">
                     <li><a class="order-substep order-substep-action" href="#catalog" data-route="catalog" data-order-action="catalog" data-order-step="catalog" data-order-step-title="Каталог" data-order-step-copy="Готовые лоты, наборы, детали, базы и террейн можно добавить в корзину сразу из каталога.">Каталог</a></li>
-                    <li><a class="order-substep order-substep-action" href="#stl" data-route="stl" data-order-action="custom-print" data-order-step="custom-print" data-order-step-title="Под заказ" data-order-step-copy="Если нужной позиции нет в каталоге, отправьте задачу на печать под заказ через форму.">Под заказ</a></li>
+                    <li><a class="order-substep order-substep-action" href="#custom-3d-print" data-route="custom-3d-print" data-order-action="custom-print" data-order-step="custom-print" data-order-step-title="3D-печать на заказ" data-order-step-copy="Если нужной позиции нет в каталоге, оформите заявку на 3D-печать на заказ через форму.">3D-печать на заказ</a></li>
                     <li><button class="order-substep" type="button" data-order-step="cart" data-order-step-title="Корзина" data-order-step-copy="В корзине можно проверить позиции, количество и состав перед отправкой заявки.">Корзина</button></li>
                     <li><button class="order-substep" type="button" data-order-step="request" data-order-step-title="Заявка" data-order-step-copy="Заявка передает нам состав заказа, город и удобный способ связи для дальнейшего согласования.">Заявка</button></li>
                   </ol>
@@ -306,13 +308,13 @@
             </div>
             <aside class="order-step-inspector" aria-live="polite" aria-labelledby="order-inspector-title">
               <strong id="order-inspector-title" data-order-inspector-title>Выбрать</strong>
-              <p id="order-inspector-copy" data-order-inspector-copy>Начните с готового товара в каталоге или с печати под заказ, затем соберите корзину и отправьте заявку.</p>
+              <p id="order-inspector-copy" data-order-inspector-copy>Начните с готового товара в каталоге или оформите 3D-печать на заказ, затем соберите корзину и отправьте заявку.</p>
             </aside>
             <div class="order-mobile-panels" data-order-mobile-panels aria-label="Как заказать">
               <details class="order-mobile-panel">
                 <summary><span>01</span><strong>Выбрать</strong><i aria-hidden="true"></i></summary>
-                <p>Каталог или печать под заказ, затем корзина и заявка.</p>
-                <div class="order-mobile-badges"><span>Каталог</span><span>Под заказ</span><span>Корзина</span><span>Заявка</span></div>
+                <p>Каталог или 3D-печать на заказ, затем корзина и заявка.</p>
+                <div class="order-mobile-badges"><span>Каталог</span><span>3D-печать</span><span>Корзина</span><span>Заявка</span></div>
               </details>
               <details class="order-mobile-panel">
                 <summary><span>02</span><strong>Согласовать</strong><i aria-hidden="true"></i></summary>
@@ -328,20 +330,25 @@
           </div>
         </section>
 
-        <section class="lab-journal-preview home-scene journal-scene section-block scroll-reveal reveal-right" aria-labelledby="home-blog-title">
+        <section class="lab-journal-preview home-scene journal-scene section-block scroll-reveal reveal-right" aria-labelledby="home-blog-title" data-journal-preview>
           <p class="scene-label journal-section-label" id="home-blog-title">Журнал лаборатории</p>
           <div class="journal-layout">
             <p class="eyebrow journal-mobile-kicker" aria-hidden="true">Журнал лаборатории</p>
-            <a class="journal-feature journal-lead" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur">
-              <h2>Качественная 3D-печать миниатюр</h2>
-              <p class="journal-preview-copy">3D-печать миниатюр давно перестала быть просто способом получить фигурку из смолы. В Dr. Printicus мы смотрим на печать как на производственный процесс: детали должны пережить сборку, грунт и покрас без спасательных работ. В статье разбираем, где чаще всего появляются дефекты и почему качество видно не только на фото, но и под кистью.</p>
+            <a class="journal-feature journal-lead" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur" data-journal-feature>
+              <h2 data-journal-feature-title>Качественная 3D-печать миниатюр</h2>
+              <p class="journal-preview-copy" data-journal-feature-copy>3D-печать миниатюр давно перестала быть просто способом получить фигурку из смолы. Для варгеймов, настольных ролевых игр, коллекций и покраски важно не только наличие модели, но и то, насколько точно сохранены детали, аккуратно удалены поддержки и правильно выполнена постобработка.
+
+В Dr. Printicus мы рассматриваем печать как производственный процесс. Хорошая миниатюра должна выглядеть так, чтобы её хотелось красить, а не долго шлифовать, шпаклевать и спасать после получения.
+
+На первый взгляд все смоляные миниатюры могут казаться похожими: файл загружают в слайсер, запускают принтер и получают физическую модель. На практике разница между стабильной технологией и случайным удачным запуском огромна...</p>
               <span class="journal-continue">Продолжить чтение</span>
             </a>
             <div class="journal-secondary-panel">
-              <div class="journal-secondary-list" aria-label="Другие материалы журнала">
-                <a class="blog-card journal-secondary-card" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati"><span>покраска</span><h3>Почему миниатюры для покраски должны быть напечатаны аккуратно</h3><p>Как печать влияет на грунтовку, проливки, высветления, сборку и итоговый вид.</p><span class="journal-card-icon journal-card-icon-paint" aria-hidden="true"><svg class="journal-icon-svg journal-brush-icon" viewBox="0 0 96 96" data-tilt="left" data-bristle-base="wide" focusable="false"><g class="journal-brush-left" transform="translate(96 0) scale(-1 1)"><path class="journal-brush-handle" d="M20.8 86.4c-2.5-1.8-.8-9.9 3.7-17.9l27.8-49.3c1.8-3.3 6-4 8.9-1.5l7 6.1-32.4 57.4c-4.6 8-12.5 7-15 5.2Z"></path><path class="journal-brush-handle-shadow" d="M33.1 78.6 64.4 23.2l3.8 3.3-30 53.1c-2.8 4.9-8.1 5.1-5.1-1Z"></path><path class="journal-brush-handle-highlight" d="M29.1 70.7 55.5 23.8"></path><path class="journal-brush-ferrule" d="M56.2 16.3c3.6-5.9 11.4-4.8 16.8 2.6l-5.7 15.3c-5.5-.9-11.7-4.7-16.2-9.6l5.1-8.3Z"></path><path class="journal-brush-ferrule-shadow" d="M66.4 18.2c2.4 1.7 4.6 4.1 6.6 6.9l-3.4 9.1c-2.4-.4-4.9-1.3-7.3-2.5l4.1-13.5Z"></path><path class="journal-brush-bristle" transform="translate(-6 0)" d="M68.7 4.9c6.5-4.7 13.8-5.2 19.3-2.5-6.4 5.2-7.3 11.7-8.8 19.5-2.1 10.5-11.8 19.6-22.3 16.7-7.8-2.2-6.6-11.4-1.4-18.5 4.9-6.7 6.8-10.6 13.2-15.2Z"></path><path class="journal-brush-bristle-highlight" transform="translate(-6 0)" d="M67.5 12.9c-3.6 4.9-4.6 10.6-4.4 16.1"></path></g></svg></span></a>
-                <a class="blog-card journal-secondary-card" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur"><span>смола</span><h3>Смоляная 3D-печать миниатюр</h3><p>Плюсы, ограничения, прочность, поддержки и требования к качеству процесса.</p><span class="journal-card-icon journal-card-icon-resin" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
-                <a class="blog-card journal-secondary-card" href="#blog?article=licenzionnaya-3d-pechat-miniatyur" data-route="blog" data-article-route="licenzionnaya-3d-pechat-miniatyur"><span>лицензии</span><h3>Лицензионная 3D-печать миниатюр</h3><p>Почему происхождение модели важно для устойчивого каталога и поддержки авторов.</p><span class="journal-card-icon journal-card-icon-license" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
+              <div class="journal-secondary-list" role="list" aria-label="Материалы журнала">
+                <a class="journal-secondary-card is-active" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur" data-journal-note="kachestvennaya-3d-pechat-miniatyur" data-journal-title="Качественная 3D-печать миниатюр" role="listitem" aria-label="Качественная 3D-печать миниатюр" aria-current="true"><h3>качество</h3><p>Как понять, что модель готова к сборке, грунту и покраске без спасательных работ.</p><span class="journal-card-icon journal-card-icon-quality" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
+                <a class="journal-secondary-card" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati" data-journal-note="miniatyury-dlya-pokraski-kachestvo-pechati" data-journal-title="Почему миниатюры для покраски должны быть напечатаны аккуратно" role="listitem" aria-label="Почему миниатюры для покраски должны быть напечатаны аккуратно"><h3>покраска</h3><p>Что печать меняет в грунте, проливках, высветлениях и итоговой сборке.</p><span class="journal-card-icon journal-card-icon-paint" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
+                <a class="journal-secondary-card" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur" data-journal-note="smolyanaya-3d-pechat-miniatyur" data-journal-title="Смоляная 3D-печать миниатюр" role="listitem" aria-label="Смоляная 3D-печать миниатюр"><h3>смола</h3><p>Плюсы, ограничения, прочность и требования к стабильному процессу печати.</p><span class="journal-card-icon journal-card-icon-resin" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
+                <a class="journal-secondary-card" href="#blog?article=licenzionnaya-3d-pechat-miniatyur" data-route="blog" data-article-route="licenzionnaya-3d-pechat-miniatyur" data-journal-note="licenzionnaya-3d-pechat-miniatyur" data-journal-title="Лицензионная 3D-печать миниатюр" role="listitem" aria-label="Лицензионная 3D-печать миниатюр"><h3>лицензии</h3><p>Почему происхождение модели важно для каталога, авторов и спокойной покупки.</p><span class="journal-card-icon journal-card-icon-license" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
               </div>
               <a class="secondary journal-all-link" href="#blog" data-route="blog">Все материалы</a>
             </div>
@@ -387,59 +394,72 @@
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
                 </button>
               </div>
+              <div class="filter-sheet-actions">
+                <button class="primary" type="button" data-filter-apply>Показать товары</button>
+                <div class="filter-reset-menu" data-filter-reset-menu>
+                  <button class="secondary filter-reset-toggle" type="button" data-filter-reset disabled aria-expanded="false" aria-controls="catalog-filter-reset-menu">Сбросить 0 фильтров</button>
+                  <div class="filter-reset-dropdown" id="catalog-filter-reset-menu" data-filter-reset-dropdown hidden>
+                    <button class="filter-reset-all" type="button" data-filter-reset-all hidden>Все фильтры</button>
+                    <div class="filter-draft-summary" data-filter-draft-summary aria-live="polite"></div>
+                  </div>
+                </div>
+              </div>
               <div class="filter-section" data-filter-root>
                 <strong>Категории</strong>
-                <button class="chip is-active" type="button" data-filter-group="productKind" data-filter-value="all">Все товары</button>
-                <button class="chip" type="button" data-filter-group="productKind" data-filter-value="bundle">Наборы</button>
+                <button class="chip filter-chip selected-chip is-active" type="button" data-filter-group="productKind" data-filter-value="all">Все товары</button>
+                <button class="chip filter-chip" type="button" data-filter-group="productKind" data-filter-value="bundle">Наборы</button>
                 <div class="filter-group">
-                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="universe" data-filter-trigger-label="Вселенная" aria-expanded="false">Выбор вселенной</button>
+                  <div class="filter-group-head">
+                    <button class="chip filter-chip filter-group-toggle" type="button" data-filter-toggle-group="universe" data-filter-trigger-label="Вселенная" aria-expanded="false">Выбор вселенной</button>
+                  </div>
                   <div class="filter-options" data-dependent-filter="universe" hidden>
-                    <button class="chip" type="button" data-filter-group="universe" data-filter-value="warhammer">Warhammer</button>
-                    <button class="chip" type="button" data-filter-group="universe" data-filter-value="dnd">D&amp;D</button>
-                    <button class="chip" type="button" data-filter-group="universe" data-filter-value="nri">НРИ</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="universe" data-filter-value="warhammer">Warhammer</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="universe" data-filter-value="dnd">D&amp;D</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="universe" data-filter-value="nri">НРИ</button>
                   </div>
                 </div>
                 <div class="filter-group generated-filter-group" data-generated-filter-group="faction" hidden>
-                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="faction" data-filter-trigger-label="Фракция" aria-expanded="false">Фракция</button>
+                  <div class="filter-group-head">
+                    <button class="chip filter-chip filter-group-toggle" type="button" data-filter-toggle-group="faction" data-filter-trigger-label="Фракция" aria-expanded="false">Фракция</button>
+                  </div>
                   <div class="filter-options generated-filter-options" data-dependent-filter="faction" hidden></div>
                 </div>
                 <div class="filter-group">
-                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="details" data-filter-trigger-label="Детали" aria-expanded="false">Детали</button>
+                  <div class="filter-group-head">
+                    <button class="chip filter-chip filter-group-toggle" type="button" data-filter-toggle-group="details" data-filter-trigger-label="Детали" aria-expanded="false">Детали</button>
+                  </div>
                   <div class="filter-options" data-dependent-filter="details" hidden>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="heads">Головы</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="shoulders">Наплечники</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="weapons">Оружие</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="arms">Руки</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="legs">Ноги</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="armor">Торсы / броня</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="banners">Баннеры</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="cloaks">Плащи</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="dreadnought-upgrades">Дредноут-апгрейды</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="accessories">Аксессуары</button>
-                    <button class="chip" type="button" data-filter-group="partType" data-filter-value="other">Другое</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="heads">Головы</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="shoulders">Наплечники</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="weapons">Оружие</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="arms">Руки</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="legs">Ноги</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="armor">Торсы / броня</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="banners">Баннеры</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="cloaks">Плащи</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="dreadnought-upgrades">Дредноут-апгрейды</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="accessories">Аксессуары</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="partType" data-filter-value="other">Другое</button>
                   </div>
                 </div>
                 <div class="filter-group generated-filter-group" data-generated-filter-group="unitType" hidden>
-                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="unitType" data-filter-trigger-label="Тип отряда" aria-expanded="false">Тип отряда</button>
+                  <div class="filter-group-head">
+                    <button class="chip filter-chip filter-group-toggle" type="button" data-filter-toggle-group="unitType" data-filter-trigger-label="Тип отряда" aria-expanded="false">Тип отряда</button>
+                  </div>
                   <div class="filter-options generated-filter-options" data-dependent-filter="unitType" hidden></div>
                 </div>
                 <div class="filter-group">
-                  <button class="chip filter-group-toggle" type="button" data-filter-toggle-group="bases" data-filter-trigger-label="База" aria-expanded="false">Базы</button>
+                  <div class="filter-group-head">
+                    <button class="chip filter-chip filter-group-toggle" type="button" data-filter-toggle-group="bases" data-filter-trigger-label="База" aria-expanded="false">Базы</button>
+                  </div>
                   <div class="filter-options" data-dependent-filter="bases" hidden>
-                    <button class="chip" type="button" data-filter-group="productKind" data-filter-value="base">Все базы</button>
-                    <button class="chip" type="button" data-filter-group="baseSize" data-filter-value="28mm">28 мм</button>
-                    <button class="chip" type="button" data-filter-group="baseSize" data-filter-value="32mm">32 мм</button>
-                    <button class="chip" type="button" data-filter-group="baseSize" data-filter-value="40mm">40 мм</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="productKind" data-filter-value="base">Все базы</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="baseSize" data-filter-value="28mm">28 мм</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="baseSize" data-filter-value="32mm">32 мм</button>
+                    <button class="chip filter-chip" type="button" data-filter-group="baseSize" data-filter-value="40mm">40 мм</button>
                   </div>
                 </div>
-                <button class="chip" type="button" data-filter-group="productKind" data-filter-value="terrain">Террейн</button>
-              </div>
-              <div class="filter-sheet-actions">
-                <button class="primary" type="button" data-filter-apply>Показать товары</button>
-              </div>
-              <div class="filter-draft-actions">
-                <div class="filter-draft-summary" data-filter-draft-summary aria-live="polite"></div>
-                <button class="secondary" type="button" data-filter-reset hidden>Сбросить всё</button>
+                <button class="chip filter-chip" type="button" data-filter-group="productKind" data-filter-value="terrain">Террейн</button>
               </div>
             </aside>
 
@@ -450,7 +470,7 @@
                 <article class="product-card" data-product-id="champion" data-category="model" data-tags="heroes warhammer grimdark bases-32">
                   <button class="product-card-main" type="button" data-open-product="champion">
                     <span class="product-media"><img src="./assets/merchant/card-champion.jpg" alt="Anvil Wardens: The Champion" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>хит</span><span>под заказ</span></span>
+                    <span class="product-badges"><span class="promo-badge">хит</span><span class="status-tag">под заказ</span></span>
                     <strong>Anvil Wardens: The Champion</strong>
                     <small>Геройская миниатюра для grimdark-отряда и витрины.</small>
                     <span class="spec-row">32 мм · смола · 3–7 дней</span>
@@ -460,7 +480,7 @@
                 <article class="product-card" data-product-id="hunter" data-category="model" data-tags="heroes warhammer grimdark new bases-32">
                   <button class="product-card-main" type="button" data-open-product="hunter">
                     <span class="product-media"><img src="./assets/merchant/card-hunter.jpg" alt="Anvil Wardens: The Hunter" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>новинка</span></span>
+                    <span class="product-badges"><span class="product-badge">новинка</span></span>
                     <strong>Anvil Wardens: The Hunter</strong>
                     <small>Миниатюра охотника с крупным силуэтом и тонкими деталями.</small>
                     <span class="spec-row">32 мм · смола · 3–7 дней</span>
@@ -470,7 +490,7 @@
                 <article class="product-card" data-product-id="heads" data-category="bits" data-tags="bits heads small-item conversion-kits">
                   <button class="product-card-main" type="button" data-open-product="heads">
                     <span class="product-media"><img src="./assets/merchant/card-heads.jpg" alt="Головы в респираторах" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>Мин. заказ 250 ₽</span></span>
+                    <span class="product-badges"><span class="promo-badge">Мин. заказ 250 ₽</span></span>
                     <strong>Головы в респираторах, 5 шт.</strong>
                     <small>Конверсионные детали для отрядов и героев.</small>
                     <span class="spec-row">детали · смола · 3–7 дней</span>
@@ -480,7 +500,7 @@
                 <article class="product-card" data-product-id="hounds" data-category="bundle" data-tags="terrain full-packs bundles value warhammer">
                   <button class="product-card-main" type="button" data-open-product="hounds">
                     <span class="product-media"><img src="./assets/merchant/card-primal-hounds.jpg" alt="Primal Hounds Expansion" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>выгодный набор</span></span>
+                    <span class="product-badges"><span class="promo-badge">выгодный набор</span></span>
                     <strong>Primal Hounds Expansion</strong>
                     <small>Фулл-пак деталей и террейна дешевле, чем по частям.</small>
                     <span class="spec-row">набор · смола · 3–7 дней</span>
@@ -490,7 +510,7 @@
                 <article class="product-card" data-product-id="armor" data-category="bits" data-tags="heroes warhammer new display-models">
                   <button class="product-card-main" type="button" data-open-product="armor">
                     <span class="product-media"><img src="./assets/merchant/card-ancient-armor.jpg" alt="Crimson Lords: Ancient Armor" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>новинка</span></span>
+                    <span class="product-badges"><span class="product-badge">новинка</span></span>
                     <strong>Crimson Lords: Ancient Armor</strong>
                     <small>Броня, щит и декоративные элементы для героя.</small>
                     <span class="spec-row">32 мм · смола · 3–7 дней</span>
@@ -500,7 +520,7 @@
                 <article class="product-card" data-product-id="cursed" data-category="bundle" data-tags="squads warhammer grimdark full-packs">
                   <button class="product-card-main" type="button" data-open-product="cursed">
                     <span class="product-media"><img src="./assets/merchant/card-cursed-company.jpg" alt="Cursed Company" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>отряд</span></span>
+                    <span class="product-badges"><span class="product-badge">отряд</span></span>
                     <strong>Cursed Company</strong>
                     <small>Отрядные прокси с головами, оружием и базами.</small>
                     <span class="spec-row">отряд · смола · 3–7 дней</span>
@@ -510,7 +530,7 @@
                 <article class="product-card" data-product-id="shoulders" data-category="bits" data-tags="bits small-item conversion-kits bases-32">
                   <button class="product-card-main" type="button" data-open-product="shoulders">
                     <span class="product-media"><img src="./assets/merchant/card-shoulderpads.jpg" alt="Наплечники Anvil Wardens" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>Мин. заказ 250 ₽</span></span>
+                    <span class="product-badges"><span class="promo-badge">Мин. заказ 250 ₽</span></span>
                     <strong>Наплечники Anvil Wardens, 5 шт.</strong>
                     <small>Апгрейды для пехоты, командиров и конверсий.</small>
                     <span class="spec-row">детали · смола · 3–7 дней</span>
@@ -520,7 +540,7 @@
                 <article class="product-card" data-product-id="banner" data-category="bits" data-tags="bits conversion-kits warhammer grimdark">
                   <button class="product-card-main" type="button" data-open-product="banner">
                     <span class="product-media"><img src="./assets/merchant/card-banner.jpg" alt="Crimson Lords: Banner 01" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>детали</span></span>
+                    <span class="product-badges"><span class="product-badge">детали</span></span>
                     <strong>Crimson Lords: Banner 01</strong>
                     <small>Знамя, икона и детали для командного отряда.</small>
                     <span class="spec-row">детали · смола · 3–7 дней</span>
@@ -530,7 +550,7 @@
                 <article class="product-card" data-product-id="artifacts" data-category="terrain" data-tags="rpg dnd props terrain">
                   <button class="product-card-main" type="button" data-open-product="artifacts">
                     <span class="product-media"><img src="./assets/merchant/card-hunter.jpg" alt="Кладовая артефактов" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>НРИ</span></span>
+                    <span class="product-badges"><span class="product-badge">НРИ</span></span>
                     <strong>Кладовая артефактов</strong>
                     <small>Набор пропсов для RPG-сцены и витринной базы.</small>
                     <span class="spec-row">RPG · смола · 3–7 дней</span>
@@ -540,7 +560,7 @@
                 <article class="product-card" data-product-id="mechanics" data-category="model" data-tags="rpg scifi-rpg squads">
                   <button class="product-card-main" type="button" data-open-product="mechanics">
                     <span class="product-media"><img src="./assets/merchant/card-champion.jpg" alt="Отряд полевых механиков" loading="lazy" decoding="async" fetchpriority="low" /></span>
-                    <span class="product-badges"><span>sci-fi</span></span>
+                    <span class="product-badges"><span class="product-badge">sci-fi</span></span>
                     <strong>Отряд полевых механиков</strong>
                     <small>Команда NPC для sci-fi RPG, skirmish и диорам.</small>
                     <span class="spec-row">отряд · смола · 3–7 дней</span>
@@ -633,6 +653,7 @@
       </section>
 
       <section id="cart" class="screen cart-screen" data-screen="cart" aria-labelledby="cart-title">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><a href="#catalog" data-route="catalog">Каталог</a><span>/</span><span>Корзина</span></nav>
         <div class="screen-head">
           <div><p class="eyebrow">корзина</p><h1 id="cart-title">Корзина</h1></div>
           <div class="screen-actions">
@@ -666,6 +687,7 @@
 
       <section id="cart-blocked" class="screen" data-screen="cart-blocked" aria-labelledby="cart-blocked-title">
         <div class="empty-state">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><a href="#catalog" data-route="catalog">Каталог</a><span>/</span><span>Корзина</span></nav>
           <p class="eyebrow">корзина</p>
           <h1 id="cart-blocked-title">Сумма товаров меньше минимума</h1>
           <p>Минимальная сумма заказа — 250 ₽. Добавьте товаров ещё на недостающую сумму. Доставка не учитывается в минимуме.</p>
@@ -675,6 +697,7 @@
 
       <section id="cart-empty" class="screen" data-screen="cart-empty" aria-labelledby="cart-empty-title">
         <div class="empty-state">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><a href="#catalog" data-route="catalog">Каталог</a><span>/</span><span>Корзина</span></nav>
           <p class="eyebrow">корзина</p>
           <h1 id="cart-empty-title">Корзина пока пустая</h1>
           <p>Добавьте миниатюру, пак террейна или детали, чтобы собрать заявку.</p>
@@ -683,6 +706,7 @@
       </section>
 
       <section id="checkout" class="screen" data-screen="checkout" aria-labelledby="checkout-title">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><a href="#catalog" data-route="catalog">Каталог</a><span>/</span><a href="#cart" data-route="cart">Корзина</a><span>/</span><span>Оформление заявки</span></nav>
         <div class="screen-head"><div><p class="eyebrow">оформление заявки</p><h1 id="checkout-title">Контакты и доставка</h1></div></div>
         <div class="checkout-layout">
           <form class="request-form" data-checkout-form novalidate aria-describedby="checkout-form-error">
@@ -713,6 +737,7 @@
 
       <section id="success" class="screen" data-screen="success" aria-labelledby="success-title">
         <div class="success-state">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><a href="#catalog" data-route="catalog">Каталог</a><span>/</span><a href="#cart" data-route="cart">Корзина</a><span>/</span><a href="#checkout" data-route="checkout">Оформление заявки</a><span>/</span><span>Заявка принята</span></nav>
           <p class="eyebrow">заявка принята</p>
           <h1 id="success-title">Заявка принята</h1>
           <p>Номер заявки: <strong data-success-number>будет назначен после обработки</strong>. Менеджер уточнит доставку, срок изготовления и способ оплаты.</p>
@@ -721,11 +746,12 @@
         </div>
       </section>
 
-      <section id="stl" class="screen" data-screen="stl" aria-labelledby="stl-title">
-        <div class="stl-layout">
-          <div class="stl-main">
-            <div class="screen-head compact"><div><p class="eyebrow">услуга</p><h1 id="stl-title">Печать под заказ</h1><p>Опишите задачу и приложите ссылку на облако. Автоматическую цену не обещаем: расчёт делается вручную.</p></div></div>
-            <div class="stl-process">
+      <section id="custom-3d-print" class="screen" data-screen="custom-3d-print" aria-labelledby="custom-3d-print-title">
+        <div class="custom-model-layout">
+          <div class="custom-model-main">
+            <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><span>3D-печать на заказ</span></nav>
+            <div class="screen-head compact"><div><p class="eyebrow">услуга</p><h1 id="custom-3d-print-title">3D-печать на заказ</h1><p>Опишите задачу и приложите ссылку на облако. Автоматическую цену не обещаем: расчёт делается вручную.</p></div></div>
+            <div class="custom-model-process">
               <article><span>1</span><strong>Проверяем модель</strong><p>Масштаб, стенки, тонкие элементы и разбиение.</p></article>
               <article><span>2</span><strong>Считаем объём, материал и поддержку</strong><p>Подбираем разумный способ печати.</p></article>
               <article><span>3</span><strong>Возвращаем расчёт</strong><p>Цена, срок, доставка и постобработка до старта.</p></article>
@@ -742,7 +768,7 @@
               <p>Принимаем STL, OBJ и архивы с несколькими файлами. Ориентир ответа по заявке — до 1 рабочего дня после получения ссылки.</p>
             </div>
           </div>
-          <form class="request-form stl-form" data-stl-form novalidate aria-describedby="stl-form-error">
+          <form class="request-form custom-model-form" data-custom-model-form novalidate aria-describedby="custom-model-form-error">
             <div class="form-section">
               <h2>Контакты</h2>
               <div class="form-row">
@@ -761,18 +787,19 @@
               </div>
               <label>Комментарий <textarea placeholder="Пожелания к сборке, деталям и упаковке"></textarea></label>
             </div>
-            <label class="check-row"><input type="checkbox" required data-stl-rights data-error-message="Подтвердите право передать модель в печать." /> <span>Подтверждаю, что у меня есть право передать модель в печать</span></label>
+            <label class="check-row"><input type="checkbox" required data-custom-model-rights data-error-message="Подтвердите право передать модель в печать." /> <span>Подтверждаю, что у меня есть право передать модель в печать</span></label>
             <label class="check-row"><input type="checkbox" required data-error-message="Подтвердите согласие на обработку персональных данных." /> <span>Согласие на обработку персональных данных</span></label>
-            <p class="form-error" id="stl-form-error" data-stl-error hidden aria-live="polite">Проверьте обязательные поля, ссылку на файлы и согласия.</p>
-            <button class="primary wide" type="submit" data-stl-submit data-submit-label="Получить расчёт" data-loading-label="Расчёт отправляется">Получить расчёт</button>
+            <p class="form-error" id="custom-model-form-error" data-custom-model-error hidden aria-live="polite">Проверьте обязательные поля, ссылку на файлы и согласия.</p>
+            <button class="primary wide" type="submit" data-custom-model-submit data-submit-label="Получить расчёт" data-loading-label="Расчёт отправляется">Получить расчёт</button>
           </form>
         </div>
       </section>
 
-      <section id="stl-success" class="screen" data-screen="stl-success" aria-labelledby="stl-success-title">
-        <div class="success-state stl-success">
+      <section id="custom-3d-print-success" class="screen" data-screen="custom-3d-print-success" aria-labelledby="custom-3d-print-success-title">
+        <div class="success-state custom-model-success">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><a href="#custom-3d-print" data-route="custom-3d-print">3D-печать на заказ</a><span>/</span><span>Заявка принята</span></nav>
           <p class="eyebrow">заявка на печать</p>
-          <h1 id="stl-success-title">Заявка на печать принята</h1>
+          <h1 id="custom-3d-print-success-title">Заявка на печать принята</h1>
           <p>Мы проверим модель, объём, материал и поддержку, затем вернём расчёт до 1 рабочего дня. Оплата только после согласования.</p>
           <a class="primary" href="#catalog" data-route="catalog">Посмотреть готовые лоты</a>
         </div>
@@ -782,16 +809,43 @@
         <div class="journal-page">
           <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><span>Журнал лаборатории</span></nav>
           <div data-blog-list>
-            <p class="eyebrow">журнал лаборатории</p>
-            <h1 id="blog-title">Материалы лаборатории</h1>
-            <div class="blog-grid">
-              <a class="blog-card" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur"><span>качество печати</span><h2>Качественная 3D-печать миниатюр: как понять, что модель напечатана хорошо</h2><p>Хорошая миниатюра сохраняет детали, переживает доставку и требует только минимальной подготовки перед грунтом.</p></a>
-              <a class="blog-card" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati"><span>покраска</span><h2>Почему миниатюры для покраски должны быть напечатаны аккуратно</h2><p>Чёткая геометрия, чистые поверхности и аккуратные поддержки экономят время художника.</p></a>
-              <a class="blog-card" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur"><span>смола</span><h2>Смоляная 3D-печать миниатюр: плюсы, минусы и требования к качеству</h2><p>Фотополимерная печать хорошо передаёт лица и текстуры, но требует стабильного процесса.</p></a>
-              <a class="blog-card" href="#blog?article=licenzionnaya-3d-pechat-miniatyur" data-route="blog" data-article-route="licenzionnaya-3d-pechat-miniatyur"><span>лицензии</span><h2>Лицензионная 3D-печать миниатюр: почему это важно</h2><p>Коммерческая лицензия даёт прозрачное происхождение, устойчивый каталог и поддержку авторов.</p></a>
+            <h1 id="blog-title" class="visually-hidden">Журнал лаборатории</h1>
+            <div class="journal-page-list">
+              <a class="journal-page-feature" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur" data-journal-page-feature data-journal-title="Качественная 3D-печать миниатюр">
+                <h2 data-journal-page-feature-title>Качественная 3D-печать миниатюр</h2>
+                <p data-journal-page-feature-copy>3D-печать миниатюр давно перестала быть просто способом получить фигурку из смолы. Для варгеймов, настольных ролевых игр, коллекций и покраски важно не только наличие модели, но и то, насколько точно сохранены детали, аккуратно удалены поддержки и правильно выполнена постобработка.
+
+В Dr. Printicus мы рассматриваем печать как производственный процесс. Хорошая миниатюра должна выглядеть так, чтобы её хотелось красить, а не долго шлифовать, шпаклевать и спасать после получения.
+
+На первый взгляд все смоляные миниатюры могут казаться похожими: файл загружают в слайсер, запускают принтер и получают физическую модель. На практике разница между стабильной технологией и случайным удачным запуском огромна. Плохая печать проявляется смазанными деталями, грубыми следами поддержек, липкими участками и потерянной геометрией...</p>
+                <span class="journal-continue">Продолжить чтение</span>
+              </a>
+              <div class="journal-page-rail" role="list" aria-label="Материалы журнала">
+                <a class="journal-page-note is-active" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur" data-journal-page-note="kachestvennaya-3d-pechat-miniatyur" data-journal-title="Качественная 3D-печать миниатюр" role="listitem" aria-current="true"><div><h2>качество</h2><p>Как понять, что модель готова к сборке, грунту и покраске без спасательных работ.</p></div><span class="journal-card-icon journal-card-icon-quality" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
+                <a class="journal-page-note" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati" data-journal-page-note="miniatyury-dlya-pokraski-kachestvo-pechati" data-journal-title="Почему миниатюры для покраски должны быть напечатаны аккуратно" role="listitem"><div><h2>покраска</h2><p>Как аккуратная печать экономит время на грунте, проливках, высветлениях и сборке.</p></div><span class="journal-card-icon journal-card-icon-paint" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
+                <a class="journal-page-note" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur" data-journal-page-note="smolyanaya-3d-pechat-miniatyur" data-journal-title="Смоляная 3D-печать миниатюр" role="listitem"><div><h2>смола</h2><p>Плюсы, ограничения, прочность, поддержки и требования к стабильному процессу.</p></div><span class="journal-card-icon journal-card-icon-resin" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
+                <a class="journal-page-note" href="#blog?article=licenzionnaya-3d-pechat-miniatyur" data-route="blog" data-article-route="licenzionnaya-3d-pechat-miniatyur" data-journal-page-note="licenzionnaya-3d-pechat-miniatyur" data-journal-title="Лицензионная 3D-печать миниатюр" role="listitem"><div><h2>лицензии</h2><p>Почему происхождение модели важно для устойчивого каталога и поддержки авторов.</p></div><span class="journal-card-icon journal-card-icon-license" aria-hidden="true"><span class="journal-icon-object"></span></span></a>
+                <span class="journal-page-note journal-page-note-placeholder" role="listitem" aria-disabled="true"><div><h2>поддержки</h2><p>Будущий материал о том, где ставить контакты, чтобы сохранить лицо и детали.</p></div><span class="journal-card-icon journal-card-icon-quality" aria-hidden="true"><span class="journal-icon-object"></span></span></span>
+                <span class="journal-page-note journal-page-note-placeholder" role="listitem" aria-disabled="true"><div><h2>постобработка</h2><p>Будущий разбор промывки, дозасветки, снятия поддержек и финального контроля.</p></div><span class="journal-card-icon journal-card-icon-resin" aria-hidden="true"><span class="journal-icon-object"></span></span></span>
+                <span class="journal-page-note journal-page-note-placeholder" role="listitem" aria-disabled="true"><div><h2>упаковка</h2><p>Будущая заметка о перевозке тонких деталей, битцов и собранных моделей.</p></div><span class="journal-card-icon journal-card-icon-license" aria-hidden="true"><span class="journal-icon-object"></span></span></span>
+                <span class="journal-page-note journal-page-note-placeholder" role="listitem" aria-disabled="true"><div><h2>террейн</h2><p>Будущий материал о крупных деталях, плоскостях, стыках и фактурах ландшафта.</p></div><span class="journal-card-icon journal-card-icon-quality" aria-hidden="true"><span class="journal-icon-object"></span></span></span>
+                <span class="journal-page-note journal-page-note-placeholder" role="listitem" aria-disabled="true"><div><h2>масштаб</h2><p>Будущая статья о 28 мм, 32 мм, совместимости баз и читаемости силуэта.</p></div><span class="journal-card-icon journal-card-icon-paint" aria-hidden="true"><span class="journal-icon-object"></span></span></span>
+              </div>
+            </div>
+            <div class="journal-page-mobile-list" role="list" aria-label="Материалы журнала">
+              <a class="journal-page-mobile-note" href="#blog?article=kachestvennaya-3d-pechat-miniatyur" data-route="blog" data-article-route="kachestvennaya-3d-pechat-miniatyur" role="listitem"><h2>качество</h2><p>Как понять, что модель готова к сборке, грунту и покраске без спасательных работ.</p></a>
+              <a class="journal-page-mobile-note" href="#blog?article=miniatyury-dlya-pokraski-kachestvo-pechati" data-route="blog" data-article-route="miniatyury-dlya-pokraski-kachestvo-pechati" role="listitem"><h2>покраска</h2><p>Как аккуратная печать экономит время на грунте, проливках, высветлениях и сборке.</p></a>
+              <a class="journal-page-mobile-note" href="#blog?article=smolyanaya-3d-pechat-miniatyur" data-route="blog" data-article-route="smolyanaya-3d-pechat-miniatyur" role="listitem"><h2>смола</h2><p>Плюсы, ограничения, прочность, поддержки и требования к стабильному процессу.</p></a>
+              <a class="journal-page-mobile-note" href="#blog?article=licenzionnaya-3d-pechat-miniatyur" data-route="blog" data-article-route="licenzionnaya-3d-pechat-miniatyur" role="listitem"><h2>лицензии</h2><p>Почему происхождение модели важно для устойчивого каталога и поддержки авторов.</p></a>
+              <span class="journal-page-mobile-note journal-page-mobile-note-placeholder" role="listitem" aria-disabled="true" aria-label="Будущий материал: поддержки"><h2>поддержки</h2><p>Будущий материал о том, где ставить контакты, чтобы сохранить лицо и детали.</p></span>
+              <span class="journal-page-mobile-note journal-page-mobile-note-placeholder" role="listitem" aria-disabled="true" aria-label="Будущий материал: постобработка"><h2>постобработка</h2><p>Будущий разбор промывки, дозасветки, снятия поддержек и финального контроля.</p></span>
+              <span class="journal-page-mobile-note journal-page-mobile-note-placeholder" role="listitem" aria-disabled="true" aria-label="Будущий материал: упаковка"><h2>упаковка</h2><p>Будущая заметка о перевозке тонких деталей, битцов и собранных моделей.</p></span>
+              <span class="journal-page-mobile-note journal-page-mobile-note-placeholder" role="listitem" aria-disabled="true" aria-label="Будущий материал: террейн"><h2>террейн</h2><p>Будущий материал о крупных деталях, плоскостях, стыках и фактурах ландшафта.</p></span>
+              <span class="journal-page-mobile-note journal-page-mobile-note-placeholder" role="listitem" aria-disabled="true" aria-label="Будущий материал: масштаб"><h2>масштаб</h2><p>Будущая статья о 28 мм, 32 мм, совместимости баз и читаемости силуэта.</p></span>
             </div>
           </div>
           <article class="article-reader" data-article-view hidden>
+            <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><a href="#blog" data-route="blog">Журнал лаборатории</a><span>/</span><span data-article-breadcrumb>Материал</span></nav>
             <a class="text-link" href="#blog" data-route="blog">Вернуться в журнал</a>
             <p class="eyebrow" data-article-kicker></p>
             <h1 data-article-title></h1>
@@ -802,6 +856,7 @@
 
       <section id="delivery" class="screen" data-screen="delivery" aria-labelledby="delivery-title">
         <div class="article-page">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><span>Доставка и оплата</span></nav>
           <h1 id="delivery-title">Доставка и оплата</h1>
           <p>Минимальная доставка от 350 ₽. Точную стоимость, срок изготовления и способ оплаты подтверждаем после обработки заявки.</p>
         </div>
@@ -809,6 +864,7 @@
 
       <section id="policy" class="screen" data-screen="policy" aria-labelledby="policy-title">
         <div class="article-page">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="#home" data-route="home">Главная</a><span>/</span><span>Политика</span></nav>
           <h1 id="policy-title">Политика</h1>
           <p>Данные из формы используются только для связи по заявке, расчёта печати и согласования доставки.</p>
         </div>
@@ -827,7 +883,7 @@
     <footer class="footer">
       <nav aria-label="Нижнее меню">
         <a href="#catalog" data-route="catalog">Каталог</a>
-        <a href="#stl" data-route="stl">Печать под заказ</a>
+        <a href="#custom-3d-print" data-route="custom-3d-print">3D-печать на заказ</a>
         <a href="#home?scroll=order-flow" data-route="home" data-scroll-to="order-flow">Как заказать</a>
         <a href="#blog" data-route="blog">Журнал лаборатории</a>
         <a href="#delivery" data-route="delivery">Доставка и оплата</a>
@@ -847,6 +903,6 @@
       }
     </script>
     <script type="module" src="./assets/quality-model-viewer.js?v=home-quality-3d-07"></script>
-    <script src="./assets/app.js?v=order-flow-catalog-filters-08"></script>
+    <script src="./assets/app.js?v=design-contract-normalize-01"></script>
   </body>
 </html>
